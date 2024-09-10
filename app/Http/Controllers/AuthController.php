@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\Business;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+    public function home(){
+        $businesses = Business::all();
+        return view('home', compact('businesses'));
+    }
+
     public function login(){
         return view('login');
     }
