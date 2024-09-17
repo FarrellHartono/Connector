@@ -9,14 +9,11 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function home(){
-        $businesses = Business::all();
-        return view('home', compact('businesses'));
-    }
-
+    
     public function login(){
         return view('login');
     }
+
 
     public function loginProcess(Request $request){
         $request->validate([

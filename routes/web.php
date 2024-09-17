@@ -2,12 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BusinessController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', [AuthController::class, 'home'])->name('home');
+Route::get('/home', [BusinessController::class, 'home'])->name('home');
+Route::get('/upload', [BusinessController::class, 'uploadPage'])->name('uploadpage');
+Route::post('/upload', [BusinessController::class, 'upload'])->name('business.upload');
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 
