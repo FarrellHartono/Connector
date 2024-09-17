@@ -13,7 +13,7 @@
 <div class="flex flex-wrap justify-center gap-4">
     @foreach($businesses as $business)
         <div class="flex-1 min-w-[300px] max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <img src="{{ asset('storage/' . $business->image_path) }}" alt="{{ $business->title }}" />
+            <img src="{{ asset('storage/' . str_replace('public/', '', $business->image_path)) }}" />
             
             <a href="#">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $business->title }}</h5>

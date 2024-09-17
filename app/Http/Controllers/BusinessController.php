@@ -18,7 +18,7 @@ class BusinessController extends Controller
 
        
         $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
-        $filePath = $request->file('file')->storeAs('assets/business', $fileName);
+        $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
 
         
         $businesses = Business::create([
