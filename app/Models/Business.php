@@ -7,5 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Business extends Model
 {
+    use HasFactory;
+
     protected $table = 'business';
+
+    protected $fillable = [
+        'title',        
+        'description',
+        'image_path',
+    ];
 }
