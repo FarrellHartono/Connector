@@ -8,6 +8,16 @@
 
 @extends('layout.navbar')
 
+<form action="{{ route('home') }}" method="GET">
+    <select name="sort_by" onchange="this.form.submit()">
+        <option value="title" {{ request('sort_by') == 'title' ? 'selected' : '' }}>Sort by Name</option>
+        <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Sort by Date</option>
+    </select>
+    <select name="order" onchange="this.form.submit()">
+        <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
+        <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
+    </select>
+</form>
 
 
 <div class="flex flex-wrap justify-center gap-4">

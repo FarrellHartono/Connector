@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Business;
+use App\Traits\Sortable;
 
 class BusinessController extends Controller
 {
@@ -34,8 +35,13 @@ class BusinessController extends Controller
         return view('create');
     }
 
-    public function home(){
-        $businesses = Business::all();
-        return view('home', compact('businesses'));
+    use Sortable;
+
+    public function home(Request $request){
+        
+        $businesses = Business::query();
+        $businesses = $this->applySorting($businesses, $request);
+        return view('home', ['businesses' => $businesses->get()]);
+       
     }
 }
