@@ -8,6 +8,11 @@
 
 @extends('layout.navbar')
 
+<form action="{{ route('home') }}" method="GET" class="mb-4">
+    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search businesses..." class="border p-2 rounded">
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+</form>
+
 <form action="{{ route('home') }}" method="GET">
     <select name="sort_by" onchange="this.form.submit()">
         <option value="title" {{ request('sort_by') == 'title' ? 'selected' : '' }}>Sort by Name</option>

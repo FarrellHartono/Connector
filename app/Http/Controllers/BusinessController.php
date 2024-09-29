@@ -40,6 +40,15 @@ class BusinessController extends Controller
     public function home(Request $request){
         
         $businesses = Business::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $businesses->where(function($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%')
+                      ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
         $businesses = $this->applySorting($businesses, $request);
         return view('home', ['businesses' => $businesses->get()]);
        
