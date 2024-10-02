@@ -53,4 +53,8 @@ class BusinessController extends Controller
         return view('home', ['businesses' => $businesses->get()]);
        
     }
+
+    public function manage(){
+        return view('manageBusiness');
+    }
 }
