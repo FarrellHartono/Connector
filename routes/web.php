@@ -16,4 +16,14 @@ Route::get('/login', [AuthController::class, 'login'])->name('login');
 
 Route::post('/login-process', [AuthController::class, "loginProcess"])->name('loginProcess');
 
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+
+Route::post('/register-process', [AuthController::class, "registerProcess"])->name('registerProcess');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::get('/manage', [BusinessController::class, 'manage'])->name('manageBusiness');
+
+Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])->name('business.show');
+
+Route::post('/business/{id}/buy', [BusinessController::class, 'buy'])->name('business.buy');

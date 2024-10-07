@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Business;
 use App\Traits\Sortable;
+use App\Models\Investment;
 
 class BusinessController extends Controller
 {
@@ -57,4 +58,42 @@ class BusinessController extends Controller
     public function manage(){
         return view('manageBusiness');
     }
+
+    public function viewBusinessDetail($id){
+
+        $business = Business::find($id);
+        return view('businessDetail', compact('business'));
+    }
+
+    public function buy(Request $request, $businessId)
+{
+    $request->validate([
+        'amount' => 'required|numeric|min:0.01',
+    ]);
+
+    $business = Business::findOrFail($businessId);
+    $userId = auth()->id();
+
+    // Buat nyari apakah user sudah pernah invest di bisnis ini.
+    $investment = Investment::where('user_id', $userId)
+                            ->where('business_id', $businessId)
+                            ->first();
+    if($investment){
+        $investment->amount += $request->input('amount');
+        $investment->total_investment = $investment->amount;
+        $investment->save();
+    }else{
+        Investment::create([
+            'user_id' => auth()->id(),
+            'business_id' => $businessId,
+            'amount' => $request->input('amount'),
+            'total_investment' => $request->input('amount'),
+        ]);
+
+    }
+
+
+    return redirect()->route('business.show', $businessId)
+                     ->with('success', 'Investment successful!');
+}
 }
