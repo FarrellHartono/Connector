@@ -53,7 +53,8 @@ class AuthController extends Controller
         $request->validate([
             "name" => "required|string|max:255",
             "email" => "required|string|email|max:255|unique:users",
-            "password"=>"required|string|min:8"
+            "password"=>"required|string|min:8",
+            "confirmation_password" => "required|required_with:password|same:password"
         ]);
 
         $user = User::create([
@@ -64,7 +65,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('home'))->with('successRegister', '1');
+        return redirect(route('home'))->with('successRegister', true);
     }  
     
     public function logout(Request $request){
