@@ -13,6 +13,7 @@ Route::get('/upload', [BusinessController::class, 'uploadPage'])->name('uploadpa
 Route::post('/upload', [BusinessController::class, 'upload'])->name('business.upload');
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/checkEmail', [AuthController::class, "checkEmail"])->name('checkEmail');
 
 Route::post('/login-process', [AuthController::class, "loginProcess"])->name('loginProcess');
 
