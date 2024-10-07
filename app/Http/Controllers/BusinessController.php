@@ -91,8 +91,6 @@ class BusinessController extends Controller
         ]);
 
     }
-
-
     return redirect()->route('business.show', $businessId)
                      ->with('success', 'Investment successful!');
 }
