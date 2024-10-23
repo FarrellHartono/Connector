@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Investment;
+use App\Models\Meeting;
 
 class Business extends Model
 {
@@ -21,5 +22,10 @@ class Business extends Model
     public function investors()
     {
         return $this->hasMany(Investment::class);
+    }
+
+    public function meetings()
+    {
+        return $this->hasMany(Meeting::class);
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\meetingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,8 +24,10 @@ Route::post('/register-process', [AuthController::class, "registerProcess"])->na
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/manage', [BusinessController::class, 'manage'])->name('manageBusiness');
+Route::get('/manage/{id}', [BusinessController::class, 'manage'])->name('manageBusiness');
 
 Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])->name('business.show');
 
 Route::post('/business/{id}/buy', [BusinessController::class, 'buy'])->name('business.buy');
+
+Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('addMeeting');
