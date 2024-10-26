@@ -14,7 +14,7 @@ class BusinessController extends Controller
     {
         
         $request->validate([
-            'title' => 'required|max:50|unique:business',
+            'title' => 'required|max:50|unique:businesses',
             'description' => 'required|max:255',
             'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
