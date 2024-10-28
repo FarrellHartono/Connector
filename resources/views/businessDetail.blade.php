@@ -73,14 +73,6 @@
                 </div>
             </div>
 
-            <!-- Business Image -->
-            {{-- <div class="my-4">
-            @if ($business->image_path)
-                <img class="rounded-lg w-full max-w-sm" src="{{ asset('storage/' . $business->image_path) }}"
-                    alt="Business Image">
-            @endif
-        </div> --}}
-
             <!-- Buy/Invest Button -->
             <div class="my-6">
                 <h2 class="text-xl font-semibold text-gray-700">Invest in this Business</h2>
@@ -98,6 +90,37 @@
                 </form>
             </div>
 
+            {{-- <<!-- Sorting Form -->
+                <form method="GET" action="{{ route('business.show', $business->id) }}">
+                    <label for="sort_by">Sort by:</label>
+                    <select name="sort_by" id="sort_by">
+                        <option value="title" {{ request('sort_by') == 'title' ? 'selected' : '' }}>Business Title</option>
+                        <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Investor Name</option>
+                        <option value="total_amount" {{ request('sort_by') == 'total_amount' ? 'selected' : '' }}>Total
+                            Amount</option>
+                    </select>
+
+                    <label for="order">Order:</label>
+                    <select name="order" id="order">
+                        <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                        <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
+                    </select>
+
+                    <button type="submit">Sort</button>
+                </form> --}}
+            <form id="sortForm" method="GET" action="{{ route('business.show', $business->id) }}">
+                <label for="sort_by">Sort by:</label>
+                <select name="sort_by" id="sort_by" onchange="submitSortForm()">
+                    <option value="name" {{ $sortBy === 'name' ? 'selected' : '' }}>Investor Name</option>
+                    <option value="amount" {{ $sortBy === 'amount' ? 'selected' : '' }}>Amount</option>
+                </select>
+
+                <label for="order">Order:</label>
+                <select name="order" id="order" onchange="submitSortForm()">
+                    <option value="asc" {{ $sortOrder === 'asc' ? 'selected' : '' }}>Ascending</option>
+                    <option value="desc" {{ $sortOrder === 'desc' ? 'selected' : '' }}>Descending</option>
+                </select>
+            </form>
             <!-- List of Investors -->
             <div class="my-6">
                 <h2 class="text-xl font-semibold text-gray-700">Investors</h2>
@@ -108,14 +131,15 @@
                                 Investor
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Amount
-                                Invested</th>
+                                Amount Invested
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($business->investors as $investment)
+                        @foreach ($investments as $investment)
                             <tr class="bg-white border-b">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $investment->user->name }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $investment->investor_name }} <!-- Use the aliased name -->
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $investment->total_investment > 0 ? $investment->total_investment : $investment->amount }}
@@ -136,6 +160,11 @@
         </div>
 
         <a href="{{ route('manageBusiness', ['id' => $business->id]) }}" class="btn btn-primary">Manage Business</a>
-
-    </div>
-@endsection
+        
+        <script>
+            function submitSortForm() {
+                document.getElementById('sortForm').submit();
+            }
+        </script>
+        
+    @endsection

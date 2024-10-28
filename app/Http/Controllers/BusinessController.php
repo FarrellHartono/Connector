@@ -62,12 +62,31 @@ class BusinessController extends Controller
             return view('manageBusiness', compact('business'));
         }
 
-    public function viewBusinessDetail($id){
+    public function viewBusinessDetail(Request $request, $id){
 
-        $business = Business::with('meetings', 'investors.user')->findOrFail($id);
-        return view('businessDetail', compact('business'));
+        $business = Business::findOrFail($id);
+
+        $sortBy = $request->input('sort_by', 'name');
+        $sortOrder = $request->input('order', 'asc');
+
+        // Ensure sort order is valid
+        $sortOrder = in_array($sortOrder, ['asc', 'desc']) ? $sortOrder : 'asc';
+
+        // Kalo gk ada yg dipilih biar default, buat ngecheck lagi
+        if (!in_array($sortBy, ['name', 'amount'])) {
+            $sortBy = 'name'; // Fallback to default sorting by name
+        }
+
+        $investments = Investment::join('users', 'investments.user_id', '=', 'users.id')
+        ->join('businesses', 'investments.business_id', '=', 'businesses.id')
+        ->where('businesses.id', $id) // Filter by business ID
+        ->orderBy($sortBy === 'amount' ? 'investments.amount' : 'users.name', $sortOrder)
+        ->select('investments.*', 'users.name as investor_name')
+        ->get();
+
+        return view('businessDetail', compact('business', 'investments', 'sortOrder', 'sortBy'));
     }
-
+        
     public function buy(Request $request, $businessId)
 {
     $request->validate([
