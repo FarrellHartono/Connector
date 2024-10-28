@@ -111,14 +111,14 @@
             <form id="sortForm" method="GET" action="{{ route('business.show', $business->id) }}">
                 <label for="sort_by">Sort by:</label>
                 <select name="sort_by" id="sort_by" onchange="submitSortForm()">
-                    <option value="name" {{ $sortBy === 'name' ? 'selected' : '' }}>Investor Name</option>
-                    <option value="amount" {{ $sortBy === 'amount' ? 'selected' : '' }}>Amount</option>
+                    <option value="name" {{ request('sort_by') === 'name' ? 'selected' : '' }}>Investor Name</option>
+                    <option value="amount" {{ request('sort_by') === 'amount' ? 'selected' : '' }}>Amount</option>
                 </select>
 
                 <label for="order">Order:</label>
                 <select name="order" id="order" onchange="submitSortForm()">
-                    <option value="asc" {{ $sortOrder === 'asc' ? 'selected' : '' }}>Ascending</option>
-                    <option value="desc" {{ $sortOrder === 'desc' ? 'selected' : '' }}>Descending</option>
+                    <option value="asc" {{ request('sort_order') === 'asc' ? 'selected' : '' }}>Ascending</option>
+                    <option value="desc" {{ request('sort_order') === 'desc' ? 'selected' : '' }}>Descending</option>
                 </select>
             </form>
             <!-- List of Investors -->
@@ -166,5 +166,5 @@
                 document.getElementById('sortForm').submit();
             }
         </script>
-        
+
     @endsection
