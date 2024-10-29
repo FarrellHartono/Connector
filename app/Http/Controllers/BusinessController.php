@@ -13,6 +13,7 @@ class BusinessController extends Controller
     public function upload(Request $request)
     {
 
+
         $request->validate([
             'title' => 'required|max:50|unique:businesses',
             'description' => 'required|max:255',
@@ -22,13 +23,16 @@ class BusinessController extends Controller
         ]);
 
 
+
         $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
         $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
+
 
 
         $businesses = Business::create([
             'title' => $request->title,
             'description' => $request->description,
+            'image_path' => $filePath,
             'image_path' => $filePath,
             'start_date' => $request -> startDate,
             'end_date' => $request-> endDate,
@@ -37,7 +41,8 @@ class BusinessController extends Controller
         return redirect()->route('home')->with('success', 'Business created successfully!');
     }
 
-    public function uploadPage(){
+    public function uploadPage()
+    {
         return view('create');
     }
 
@@ -45,87 +50,100 @@ class BusinessController extends Controller
 
     public function home(Request $request){
 
+    public function home(Request $request)
+    {
+
         $businesses = Business::query();
 
         if ($request->has('search')) {
             $search = $request->input('search');
-            $businesses->where(function($query) use ($search) {
+            $businesses->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%' . $search . '%')
-                      ->orWhere('description', 'like', '%' . $search . '%');
+                    ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
 
         $businesses = $this->applySorting($businesses, $request);
         return view('home', ['businesses' => $businesses->get()]);
 
+
     }
 
     public function manage($id)
-        {
-            $business = Business::findOrFail($id); // Find the business by id
-            return view('manageBusiness', compact('business'));
-        }
+    {
+        $business = Business::findOrFail($id); // Find the business by id
+        return view('manageBusiness', compact('business'));
+    }
 
-    public function viewBusinessDetail($id){
+    public function viewBusinessDetail(Request $request, $id)
+    {
 
-        $business = Business::with('meetings', 'investors.user')->findOrFail($id);
-        return view('businessDetail', compact('business'));
+        $business = Business::findOrFail($id);
+
+        $investmentsQuery = Investment::join('users', 'investments.user_id', '=', 'users.id')
+            ->join('businesses', 'investments.business_id', '=', 'businesses.id')
+            ->where('businesses.id', $id); // Filter by business ID
+
+
+        $investments = $this->applySortingInvestors($investmentsQuery, $request)
+            ->select('investments.*', 'users.name as investor_name')
+            ->get();
+
+        return view('businessDetail', compact('business', 'investments'));
     }
 
     public function buy(Request $request, $businessId)
-{
-    $request->validate([
-        'amount' => 'required|numeric|min:0.01',
-    ]);
-
-    $business = Business::findOrFail($businessId);
-    $userId = auth()->id();
-
-    // Buat nyari apakah user sudah pernah invest di bisnis ini.
-    $investment = Investment::where('user_id', $userId)
-                            ->where('business_id', $businessId)
-                            ->first();
-    if($investment){
-        $investment->amount += $request->input('amount');
-        $investment->total_investment = $investment->amount;
-        $investment->save();
-    }else{
-        Investment::create([
-            'user_id' => auth()->id(),
-            'business_id' => $businessId,
-            'amount' => $request->input('amount'),
-            'total_investment' => $request->input('amount'),
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0.01',
         ]);
 
+        $business = Business::findOrFail($businessId);
+        $userId = auth()->id();
+
+        // Buat nyari apakah user sudah pernah invest di bisnis ini.
+        $investment = Investment::where('user_id', $userId)
+            ->where('business_id', $businessId)
+            ->first();
+        if ($investment) {
+            $investment->amount += $request->input('amount');
+            $investment->save();
+        } else {
+            Investment::create([
+                'user_id' => auth()->id(),
+                'business_id' => $businessId,
+                'amount' => $request->input('amount'),
+            ]);
+
+        }
+        return redirect()->route('business.show', $businessId)
+            ->with('success', 'Investment successful!');
     }
-    return redirect()->route('business.show', $businessId)
-                     ->with('success', 'Investment successful!');
-}
 
-public function addMeeting(Request $request)
-{
-    try {
-        $data = $request->validate([
-            'date' => 'required|date',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'business_id' => 'required'
-        ]);
+    public function addMeeting(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'date' => 'required|date',
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'business_id' => 'required'
+            ]);
 
-        // Save the meeting to the database
-        Meeting::create([
-            'date' => $data['date'],
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'business_id' => $data['business_id']
-        ]);
+            // Save the meeting to the database
+            Meeting::create([
+                'date' => $data['date'],
+                'title' => $data['title'],
+                'description' => $data['description'],
+                'business_id' => $data['business_id']
+            ]);
 
-        // Return a JSON response indicating success
-        return response()->json(['success' => true], 200);
+            // Return a JSON response indicating success
+            return response()->json(['success' => true], 200);
 
-    } catch (\Exception $e) {
-        // Log the error for debugging
-        \Log::error($e->getMessage());
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error($e->getMessage());
 
         // Return an error response
         return response()->json(['success' => false, 'message' => 'Error adding meeting'], 500);
@@ -134,7 +152,7 @@ public function addMeeting(Request $request)
 
 public function listBusiness(Request $request){
     $businesses = Business::query();
-   
+
     return view('listBusiness',['businesses' => $businesses->get()] );
 }
 
