@@ -12,22 +12,26 @@ class BusinessController extends Controller
 {
     public function upload(Request $request)
     {
-        
+
         $request->validate([
             'title' => 'required|max:50|unique:businesses',
             'description' => 'required|max:255',
             'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'startDate' => 'required',
+            'endDate' => 'required',
         ]);
 
-       
+
         $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
         $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
 
-        
+
         $businesses = Business::create([
             'title' => $request->title,
             'description' => $request->description,
-            'image_path' => $filePath, 
+            'image_path' => $filePath,
+            'start_date' => $request -> startDate,
+            'end_date' => $request-> endDate,
         ]);
 
         return redirect()->route('home')->with('success', 'Business created successfully!');
@@ -40,7 +44,7 @@ class BusinessController extends Controller
     use Sortable;
 
     public function home(Request $request){
-        
+
         $businesses = Business::query();
 
         if ($request->has('search')) {
@@ -53,7 +57,7 @@ class BusinessController extends Controller
 
         $businesses = $this->applySorting($businesses, $request);
         return view('home', ['businesses' => $businesses->get()]);
-       
+
     }
 
     public function manage($id)
@@ -126,6 +130,12 @@ public function addMeeting(Request $request)
         // Return an error response
         return response()->json(['success' => false, 'message' => 'Error adding meeting'], 500);
     }
+}
+
+public function listBusiness(Request $request){
+    $businesses = Business::query();
+   
+    return view('listBusiness',['businesses' => $businesses->get()] );
 }
 
 

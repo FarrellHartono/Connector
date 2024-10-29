@@ -1,31 +1,12 @@
 @extends('layout.master')
 
 @section('title')
-  Home
+    List Business
 @endsection
 
 @section('content')
 
 @extends('layout.navbar')
-
-<div class="flex flex-col items-end px-9">
-    <form action="{{ route('home') }}" method="GET">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search businesses..." class="border p-2 rounded">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
-    </form>
-
-    <form action="{{ route('home') }}" method="GET">
-        <select name="sort_by" onchange="this.form.submit()">
-            <option value="title" {{ request('sort_by') == 'title' ? 'selected' : '' }}>Sort by Name</option>
-            <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Sort by Date</option>
-        </select>
-        <select name="order" onchange="this.form.submit()">
-            <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
-            <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
-        </select>
-    </form>
-</div>
-
 
 <div class="grid grid-cols-4 gap-3">
     @foreach($businesses as $business)
@@ -45,19 +26,4 @@
     @endforeach
 </div>
 
-
-@endsection
-
-@section('scripts')
-  @if(session('successRegister'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script>
-          Swal.fire({
-              title: 'Success!',
-              text: 'Registration successful!',
-              icon: 'success',
-              confirmButtonText: 'OK'
-          });
-      </script>
-  @endif
 @endsection

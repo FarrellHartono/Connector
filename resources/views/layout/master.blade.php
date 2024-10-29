@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <div class="grid bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] min-h-screen w-auto p-20">
+    <div class="bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] min-h-screen w-auto p-20">
     @yield('content')
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
