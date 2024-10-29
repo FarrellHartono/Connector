@@ -90,35 +90,24 @@
                 </form>
             </div>
 
-            {{-- <<!-- Sorting Form -->
-                <form method="GET" action="{{ route('business.show', $business->id) }}">
-                    <label for="sort_by">Sort by:</label>
-                    <select name="sort_by" id="sort_by">
-                        <option value="title" {{ request('sort_by') == 'title' ? 'selected' : '' }}>Business Title</option>
-                        <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Investor Name</option>
-                        <option value="total_amount" {{ request('sort_by') == 'total_amount' ? 'selected' : '' }}>Total
-                            Amount</option>
-                    </select>
-
-                    <label for="order">Order:</label>
-                    <select name="order" id="order">
-                        <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
-                        <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
-                    </select>
-
-                    <button type="submit">Sort</button>
-                </form> --}}
-            <form id="sortForm" method="GET" action="{{ route('business.show', $business->id) }}">
-                <label for="sort_by">Sort by:</label>
-                <select name="sort_by" id="sort_by" onchange="submitSortForm()">
-                    <option value="name" {{ request('sort_by') === 'name' ? 'selected' : '' }}>Investor Name</option>
-                    <option value="amount" {{ request('sort_by') === 'amount' ? 'selected' : '' }}>Amount</option>
-                </select>
-
-                <label for="order">Order:</label>
-                <select name="order" id="order" onchange="submitSortForm()">
-                    <option value="asc" {{ request('sort_order') === 'asc' ? 'selected' : '' }}>Ascending</option>
-                    <option value="desc" {{ request('sort_order') === 'desc' ? 'selected' : '' }}>Descending</option>
+            {{-- <<!-- Sorting Form --> --}}
+            <label for="sort" class="block text-sm font-medium text-gray-700">Sort Investors:</label>
+            <form id="sortForm" method="GET" action="{{ route('business.show', $business->id) }}" class="mb-4">
+                <select name="sort" id="sort"
+                    class="rounded-lg border border-gray-300 px-3 py-2 mt-1 focus:outline-none focus:ring focus:border-blue-300 w-full"
+                    onchange="submitSortForm()">
+                    <option value="asc_name"
+                        {{ request('sort') === 'name' && request('order') === 'asc' ? 'selected' : '' }}>Ascending Name
+                    </option>
+                    <option value="desc_name"
+                        {{ request('sort') === 'name' && request('order') === 'desc' ? 'selected' : '' }}>Descending Name
+                    </option>
+                    <option value="asc_amount"
+                        {{ request('sort') === 'amount' && request('order') === 'asc' ? 'selected' : '' }}>Ascending Amount
+                    </option>
+                    <option value="desc_amount"
+                        {{ request('sort') === 'amount' && request('order') === 'desc' ? 'selected' : '' }}>Descending
+                        Amount</option>
                 </select>
             </form>
             <!-- List of Investors -->
@@ -142,7 +131,7 @@
                                     {{ $investment->investor_name }} <!-- Use the aliased name -->
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $investment->total_investment > 0 ? $investment->total_investment : $investment->amount }}
+                                    {{ number_format($investment->amount, 0, ',', '.') }}
                                 </td>
                             </tr>
                         @endforeach
@@ -160,11 +149,25 @@
         </div>
 
         <a href="{{ route('manageBusiness', ['id' => $business->id]) }}" class="btn btn-primary">Manage Business</a>
-        
+
         <script>
+            // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
             function submitSortForm() {
-                document.getElementById('sortForm').submit();
+                // Buat nge get dari dropdown
+                const sortOption = document.getElementById('sort').value;
+
+                // Ini nge splitnya 
+                const [order, sort] = sortOption.split('_');
+
+                // Buat nge set URLnya
+                const url = new URL(window.location.href);
+
+                // Baru di set urlnya jadi sort dan order
+                url.searchParams.set('sort', sort);
+                url.searchParams.set('order', order);
+
+                // Buat nge redirect urlnya jadi misah
+                window.location.href = url.toString();
             }
         </script>
-
     @endsection

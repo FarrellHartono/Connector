@@ -15,7 +15,6 @@ class Investment extends Model
         'user_id',
         'business_id',
         'amount',  
-        'total_amount'
     ];
 
     public function user()
