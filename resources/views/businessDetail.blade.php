@@ -23,8 +23,8 @@
                     <!-- Item 1 -->
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
                         @if ($business->image_path)
-                            <img class="rounded-lg w-full h-full object-cover" src="{{ asset('storage/' . $business->image_path) }}"
-                                alt="Business Image">
+                            <img class="rounded-lg w-full h-full object-cover"
+                                src="{{ asset('storage/' . $business->image_path) }}" alt="Business Image">
                         @endif
                     </div>
                     <!-- Item 2 -->
@@ -152,7 +152,7 @@
                 <form action="{{ route('business.buy', $business->id) }}" method="POST" class="mt-6">
                     @csrf
                     <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
-                    <input type="number" name="amount" step="0.01" required
+                    <input type="number" name="amount" step="1" required
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
 
                     <button type="submit"
@@ -163,11 +163,36 @@
             </div>
         </div>
 
-        {{-- List Meeting for this business --}}
+
         <div class="container mx-auto my-8 p-6 rounded-lg">
-            <h2 class="text-2xl font-semibold text-gray-700">Meetings</h2>
-            <div class="calendar-container">
-                @include('components.calendar')
+            <div class="flex justify-between space-x-4 mb-4">
+                <button id="description-btn"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
+                    Description
+                </button>
+                <button id="meeting-btn"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
+                    Meeting
+                </button>
+                <button id="forum-btn"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
+                    Forum
+                </button>
+            </div>
+
+            <!-- Box Sections -->
+            <div id="description-box" style="display: none;">
+                <p>{{ $business->description }}</p>
+            </div>
+
+            <div id="meeting-box" style="display: none;">
+                <div class="calendar-container">
+                    @include('components.calendar')
+                </div>
+            </div>
+
+            <div id="forum-box" style="display: none;">
+                <p>Forum content goes here...</p>
             </div>
         </div>
 
@@ -192,5 +217,51 @@
                 // Buat nge redirect urlnya jadi misah
                 window.location.href = url.toString();
             }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Tab elements
+                const descriptionBtn = document.getElementById('description-btn');
+                const meetingBtn = document.getElementById('meeting-btn');
+                const forumBtn = document.getElementById('forum-btn');
+                const descriptionBox = document.getElementById('description-box');
+                const meetingBox = document.getElementById('meeting-box');
+                const forumBox = document.getElementById('forum-box');
+
+                // Retrieve the last active tab from localStorage
+                const lastActiveTab = localStorage.getItem('activeTab') || 'description';
+
+                // Show the last active tab content
+                function showTab(tab) {
+                    descriptionBox.style.display = 'none';
+                    meetingBox.style.display = 'none';
+                    forumBox.style.display = 'none';
+
+                    if (tab === 'description') {
+                        descriptionBox.style.display = 'block';
+                    } else if (tab === 'meeting') {
+                        meetingBox.style.display = 'block';
+                    } else if (tab === 'forum') {
+                        forumBox.style.display = 'block';
+                    }
+                }
+                showTab(lastActiveTab);
+
+                // Update active tab in localStorage and display content
+                function setActiveTab(tab) {
+                    localStorage.setItem('activeTab', tab);
+                    showTab(tab);
+                }
+
+                // Add event listeners to the tab buttons
+                descriptionBtn.addEventListener('click', function() {
+                    setActiveTab('description');
+                });
+                meetingBtn.addEventListener('click', function() {
+                    setActiveTab('meeting');
+                });
+                forumBtn.addEventListener('click', function() {
+                    setActiveTab('forum');
+                });
+            });
         </script>
     @endsection

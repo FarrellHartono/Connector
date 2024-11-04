@@ -77,6 +77,8 @@ class BusinessController extends Controller
         $investments = $this->applySortingInvestors($investmentsQuery, $request)
             ->select('investments.*', 'users.name as investor_name')
             ->get();
+        // Buat Nge test
+            // dd($investmentsQuery->toSql(), $investmentsQuery->getBindings());
 
         return view('businessDetail', compact('business', 'investments'));
     }
