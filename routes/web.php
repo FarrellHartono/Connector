@@ -28,3 +28,5 @@ Route::get('/manage', [BusinessController::class, 'manage'])->name('manageBusine
 Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])->name('business.show');
 
 Route::post('/business/{id}/buy', [BusinessController::class, 'buy'])->name('business.buy');
+
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile');

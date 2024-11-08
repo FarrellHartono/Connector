@@ -45,3 +45,17 @@
 
 
 @endsection
+
+@section('scripts')
+  @if(session('successRegister'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script>
+          Swal.fire({
+              title: 'Success!',
+              text: 'Registration successful!',
+              icon: 'success',
+              confirmButtonText: 'OK'
+          });
+      </script>
+  @endif
+@endsection
