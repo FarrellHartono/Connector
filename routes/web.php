@@ -33,3 +33,7 @@ Route::post('/business/{id}/buy', [BusinessController::class, 'buy'])->name('bus
 Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('addMeeting');
 
 Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('listBusiness');
+
+
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+

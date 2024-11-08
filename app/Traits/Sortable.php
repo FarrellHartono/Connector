@@ -28,21 +28,31 @@ trait Sortable
         return $query;
     }
 
-    public function applySortingInvestors($query, Request $request, $defaultSortBy = 'name', $defaultOrder = 'asc')
+    public function applySortingInvestors($query, Request $request)
     {
+
+
         // Get sorting parameters from the request
-        $sortBy = $request->input('sort_by', $defaultSortBy);
-        $sortOrder = $request->input('order', $defaultOrder);
+        $sortBy = $request->input('sort', 'name');
+        $sortOrder = $request->input('order', 'asc');
 
-        // Validate sort order
-        $sortOrder = in_array($sortOrder, ['asc', 'desc']) ? $sortOrder : 'asc';
-
-        // Validate sort field
-        if (!in_array($sortBy, ['name', 'amount'])) {
-            $sortBy = $defaultSortBy; // Fallback to default sorting
+        // Validate sort order to prevent invalid input
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'asc'; // Fallback to default sort order
         }
 
-        // Apply sorting logic
-        return $query->orderBy($sortBy === 'amount' ? 'investments.amount' : 'users.name', $sortOrder);
+        $sortColumn = 'users.name';
+        // Determine the column to sort by
+        if ($sortBy === 'amount') {
+            $sortColumn = 'investments.amount';
+        } elseif ($sortBy === 'name') {
+            $sortColumn = 'users.name';
+        }
+
+        // Apply sorting to the query
+        return $query->orderBy($sortColumn, $sortOrder);
+
+
+
     }
 }

@@ -16,6 +16,5 @@
 
 .fc-event {
     background-color: #f80303; /* Custom color for events */
-    color: white; /* Ensure event text is readable */
     border: none;
 }
