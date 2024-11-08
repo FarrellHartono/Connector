@@ -47,6 +47,7 @@ class AuthController extends Controller
     public function register(){
         return view('register');
     }
+
     public function registerProcess(Request $request){
         // (ricky) ini nanti tambah validasi data user
 
@@ -76,4 +77,7 @@ class AuthController extends Controller
         return redirect()->route('login')->with('sucess', 'Logged out Succesfully!');
     }
 
+    public function profile(){
+        return view("profile");
+    }
 }

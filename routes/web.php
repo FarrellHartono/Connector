@@ -31,3 +31,6 @@ Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])-
 Route::post('/business/{id}/buy', [BusinessController::class, 'buy'])->name('business.buy');
 
 Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('addMeeting');
+
+
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
