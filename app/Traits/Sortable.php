@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+
 trait Sortable
 {
     /**
@@ -23,5 +26,33 @@ trait Sortable
         }
 
         return $query;
+    }
+
+    public function applySortingInvestors($query, Request $request)
+    {
+
+
+        // Get sorting parameters from the request
+        $sortBy = $request->input('sort', 'name');
+        $sortOrder = $request->input('order', 'asc');
+
+        // Validate sort order to prevent invalid input
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'asc'; // Fallback to default sort order
+        }
+
+        $sortColumn = 'users.name';
+        // Determine the column to sort by
+        if ($sortBy === 'amount') {
+            $sortColumn = 'investments.amount';
+        } elseif ($sortBy === 'name') {
+            $sortColumn = 'users.name';
+        }
+
+        // Apply sorting to the query
+        return $query->orderBy($sortColumn, $sortOrder);
+
+
+
     }
 }

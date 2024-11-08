@@ -30,11 +30,11 @@
         </div>
 
         <div class="mb-5">
-          <label for="confirmationPW" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirmation Password</label>
-          <input type="password" name = "confirmationPW" id="confirmationPW" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Confirmation Password" required />
+          <label for="confirmation_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirmation Password</label>
+          <input type="password" name = "confirmation_password" id="confirmation_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Confirmation Password" required />
           <span id="pw-error" class="text-red-500 mt-1 hidden">Password is not the same</span>
         </div>
-
+  
         <div class="mb-5">
           <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
           <input type="tel" name="phone" id="phone" title="Please enter a valid Indonesian mobile number, starting with +62 or 08." class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" pattern="^(\+62|0)8\d{7,10}$" placeholder="e.g. +628123456789" required />
@@ -55,17 +55,9 @@
 
 @section('scripts')
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        console.log("Page is ready!");
-    });
-
-    // var emailInput = document.getElementById("email");
-    // emailInput.addEventListener('blur', function() { // saat input email kehilangan fokus
-        
-    // });
-    $("#confirmationPW").on("change", function(){
+   $("#confirmation_password").on("change", function(){
       console.log("tes: ", $("#password").val());
-      if ($("#password").val() == $("#confirmationPW").val())
+      if ($("#password").val() == $("#confirmation_password").val())
       {
         $("#pw-error").addClass('hidden');
       } else {

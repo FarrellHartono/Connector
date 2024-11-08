@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "fullcalendar/fullcalendar": "^3.10",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9"
     },
@@ -57,7 +58,10 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "composer/installers": true,
+            "robloach/component-installer": true,
+            "oomphinc/composer-installers-extender": true
         }
     },
     "minimum-stability": "stable",

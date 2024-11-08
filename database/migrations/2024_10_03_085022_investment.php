@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('business_id');
-            $table->decimal('amount', 15, 2);
-            $table->decimal('total_investment', 15, 2)->default(0);
+            $table->integer('amount');
             $table->timestamps();
 
             // Foreign keys

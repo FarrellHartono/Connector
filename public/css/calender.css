@@ -1,0 +1,20 @@
+.calendar-container {
+    width: 80%; /* Reduce width to avoid full-screen stretch */
+    max-width: 900px; /* Prevent the calendar from growing too large on big screens */
+    margin: 0 auto; /* Center the calendar */
+    padding: 10px;
+}
+
+
+/* Biar klo dikecilin gk kecil banget */
+@media (max-width: 768px) {
+    .calendar-container {
+        width: 100%; 
+        max-width: 100%; 
+    }
+}
+
+.fc-event {
+    background-color: #f80303; /* Custom color for events */
+    border: none;
+}
