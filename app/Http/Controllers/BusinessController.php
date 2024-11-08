@@ -7,6 +7,7 @@ use App\Models\Business;
 use App\Traits\Sortable;
 use App\Models\Investment;
 use App\Models\Meeting;
+use Illuminate\Support\Facades\Storage;
 
 class BusinessController extends Controller
 {
@@ -17,25 +18,40 @@ class BusinessController extends Controller
         $request->validate([
             'title' => 'required|max:50|unique:businesses',
             'description' => 'required|max:255',
-            'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'file' => 'required',
+            'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'startDate' => 'required',
             'endDate' => 'required',
-        ]);
+        ]
+        );
 
+        $filePath = 'public/assets/business/'.'/'.$request->title;
+        Storage::makeDirectory($filePath);
 
+        $count = 1;
+        if($files = $request->file('file')){
+            foreach($files as $file){
+                $image_name = (string)$count;
+                $ext = strtolower($file->getClientOriginalExtension());
+                $image_full_name = $image_name.'.'.$ext;
+                $file->storeAs('/public/assets/business/'.$request->title,$image_full_name);
+                $count++;
 
-        $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
-        $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
+            }
+        }
 
+        // $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
+        // $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
+        // $userID = $request->Auth::user()->id();
 
 
         $businesses = Business::create([
             'title' => $request->title,
             'description' => $request->description,
-            'image_path' => $filePath,
-            'image_path' => $filePath,
+            'image_path' => '/public/assets/business/'.$request->title,
             'start_date' => $request -> startDate,
             'end_date' => $request-> endDate,
+            'user_id' => 2
         ]);
 
         return redirect()->route('home')->with('success', 'Business created successfully!');
@@ -48,7 +64,7 @@ class BusinessController extends Controller
 
     use Sortable;
 
-    public function home(Request $request){
+
 
     public function home(Request $request)
     {
@@ -152,6 +168,13 @@ class BusinessController extends Controller
 
 public function listBusiness(Request $request){
     $businesses = Business::query();
+    $user = 1;
+
+            $businesses->where(function ($query) use($user): void  {
+                $query->where('user_id', 'like', $user);
+            });
+
+        $businesses = $this->applySorting($businesses, $request);
 
     return view('listBusiness',['businesses' => $businesses->get()] );
 }

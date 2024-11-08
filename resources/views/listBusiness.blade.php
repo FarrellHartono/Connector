@@ -8,7 +8,7 @@
 
 @extends('layout.navbar')
 
-<div class="grid grid-cols-4 gap-3">
+<div class="flex flex-col gap-5 flex-grow justify-center items-center w-full">
     @foreach($businesses as $business)
         <div class="flex-1 min-w-[300px] max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <img src="{{ asset('storage/' . str_replace('public/', '', $business->image_path)) }}" />

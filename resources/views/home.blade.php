@@ -29,8 +29,22 @@
 
 <div class="grid grid-cols-4 gap-3">
     @foreach($businesses as $business)
+    @php
+        $folderPath = $business->image_path;
+        $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+        $filePath = null;
+        foreach ($extensions as $extension) {
+        $fullFilePath = $folderPath . '/' . '1' . '.' . $extension;
+
+        if (Storage::disk('public')->exists(str_replace('public/','',$fullFilePath))) {
+            $filePath = $fullFilePath;
+            break;
+        }
+    }
+    @endphp
         <div class="flex-1 min-w-[300px] max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <img src="{{ asset('storage/' . str_replace('public/', '', $business->image_path)) }}" />
+            <img src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" />
+
             <a href="{{ route('business.show', $business->id) }}">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $business->title }}</h5>
             </a>

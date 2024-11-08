@@ -19,6 +19,7 @@ class BusinessSeeder extends Seeder
             'image_path' => 'assets/business/BCA.png',
             'start_date' => '2024/1/1',
             'end_date' => '2024/1/1',
+            'user_id' => '1'
         ]);
 
         Business::create([
@@ -27,6 +28,7 @@ class BusinessSeeder extends Seeder
             'image_path' => 'assets/business/BRI.png',
             'start_date' => '2024/1/1',
             'end_date' => '2024/1/1',
+            'user_id' => '1'
         ]);
 
         Business::create([
@@ -35,6 +37,7 @@ class BusinessSeeder extends Seeder
             'image_path' => 'assets/business/Apple.jpg',
             'start_date' => '2024/1/1',
             'end_date' => '2024/1/1',
+            'user_id' => '1'
         ]);
     }
 }

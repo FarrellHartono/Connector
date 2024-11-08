@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('image_path')->nullable();
             $table->date(column: 'start_date');
             $table->date(column: 'end_date');
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }
