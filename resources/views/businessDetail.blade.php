@@ -197,8 +197,46 @@
                 </div>
             </div>
 
+            {{-- Forum Sections --}}
             <div id="forum-box" style="display: none;">
-                <p>Forum content goes here...</p>
+                <table class="min-w-full">
+                    <thead class="bg-blue-500">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Id
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Name
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Company
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Created At
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-200 divide-solid">
+                        @foreach ($categories as $category)  
+                        <tr>
+                            <td>
+                                <div>{{ $category->id }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $category->name }}</div>
+                            </td>
+                            <td>
+                                <div>{{ $category->slug }}</div>
+                            </td>
+                            <td>
+                                <div class="text-center">{{ $category->created_at->format('d/m/y') }}</div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <a href="{{ route('categories.create') }}" class="btn btn-primary">Create Category</a>
             </div>
         </div>
 

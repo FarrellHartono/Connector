@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\meetingController;
 
 Route::get('/', function () {
@@ -31,3 +32,13 @@ Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])-
 Route::post('/business/{id}/buy', [BusinessController::class, 'buy'])->name('business.buy');
 
 Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('addMeeting');
+
+// Forum
+// Categories
+Route::group(['prefix'=> 'categories', 'as' => 'categories.'], function () {
+    Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/store', [CategoryController::class, 'store'])->name('store');
+        Route::get('/edit/{category:slug}', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('/{category:slug}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{category:slug}', [CategoryController::class, 'destroy'])->name('delete');
+});

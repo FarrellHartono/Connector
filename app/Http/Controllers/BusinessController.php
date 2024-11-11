@@ -7,6 +7,7 @@ use App\Models\Business;
 use App\Traits\Sortable;
 use App\Models\Investment;
 use App\Models\Meeting;
+use App\Models\Category;
 
 class BusinessController extends Controller
 {
@@ -69,6 +70,8 @@ class BusinessController extends Controller
 
         $business = Business::findOrFail($id);
 
+        $categories = Category::all();
+
         $investmentsQuery = Investment::join('users', 'investments.user_id', '=', 'users.id')
             ->join('businesses', 'investments.business_id', '=', 'businesses.id')
             ->where('businesses.id', $id); // Filter by business ID
@@ -80,7 +83,7 @@ class BusinessController extends Controller
         // Buat Nge test
             // dd($investmentsQuery->toSql(), $investmentsQuery->getBindings());
 
-        return view('businessDetail', compact('business', 'investments'));
+        return view('businessDetail', compact('business', 'investments', 'categories'));
     }
 
     public function buy(Request $request, $businessId)
@@ -89,7 +92,6 @@ class BusinessController extends Controller
             'amount' => 'required|numeric|min:0.01',
         ]);
 
-        $business = Business::findOrFail($businessId);
         $userId = auth()->id();
 
         // Buat nyari apakah user sudah pernah invest di bisnis ini.
