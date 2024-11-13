@@ -188,107 +188,156 @@
             {{-- Calendar --}}
             <div id="meeting-box" style="display: none;">
                 <div class="calendar-container">
-                   <div id="calendar"></div>
-                   <ul>
-                    @foreach($business->meetings as $meeting)
-                        <li>{{ $meeting->title }} on {{ $meeting->date }} - {{ $meeting->description }}</li>
-                    @endforeach
-                </ul>
+                    <div id="calendar"></div>
+                    <ul>
+                        @foreach ($business->meetings as $meeting)
+                            <li>{{ $meeting->title }} on {{ $meeting->date }} - {{ $meeting->description }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
 
-            <div id="forum-box" style="display: none;">
-                <p>Forum content goes here...</p>
+            <div class="flex justify-center" id="forum-box" style="display: none;">
+                <div class="block max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    <div class="flex items-center space-x-4">
+                        <img class="w-16 h-16 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
+                        <div>
+                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Noteworthy
+                                technology
+                                acquisitions 2021</h5>
+                            <p class="font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise
+                                technology
+                                acquisitions of 2021 so far, in reverse chronological order.</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 border-t pt-4">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
+                            <input
+                                type="text"
+                                placeholder="Write a comment (min 5 words)"
+                                class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+                            />
+                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">Comment</button>
+                        </div>
+                        <div class="flex items-start space-x-3 flex mb-4">
+                            <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
+                            <div class="flex flex-col">
+                                <h6 class="text-gray-900 dark:text-white font-semibold">User123</h6>
+                                <div class="flex items-start">
+                                    <p class="text-gray-700 dark:text-gray-400 text-sm">
+                                        I found this article very insightful! The acquisitions this year have been
+                                        groundbreaking.
+                                    </p>
+                                    <button class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Reply</button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="flex items-start space-x-3 flex">
+                            <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
+                            <div class="flex flex-col">
+                                <h6 class="text-gray-900 dark:text-white font-semibold">TechGuru</h6>
+                                <div class="flex items-start">
+                                    <p class="text-gray-700 dark:text-gray-400 text-sm">
+                                        I found this article very insightful! The acquisitions this year have been
+                                        groundbreaking.
+                                    </p>
+                                    <button class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <a href="{{ route('manageBusiness', ['id' => $business->id]) }}" class="btn btn-primary">Manage Business</a>
+            <a href="{{ route('manageBusiness', ['id' => $business->id]) }}" class="btn btn-primary">Manage Business</a>
 
-        <script>
-            // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
-            function submitSortForm() {
-                // Buat nge get dari dropdown
-                const sortOption = document.getElementById('sort').value;
+            <script>
+                // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
+                function submitSortForm() {
+                    // Buat nge get dari dropdown
+                    const sortOption = document.getElementById('sort').value;
 
-                // Ini nge splitnya 
-                const [order, sort] = sortOption.split('_');
+                    // Ini nge splitnya 
+                    const [order, sort] = sortOption.split('_');
 
-                // Buat nge set URLnya
-                const url = new URL(window.location.href);
+                    // Buat nge set URLnya
+                    const url = new URL(window.location.href);
 
-                // Baru di set urlnya jadi sort dan order
-                url.searchParams.set('sort', sort);
-                url.searchParams.set('order', order);
+                    // Baru di set urlnya jadi sort dan order
+                    url.searchParams.set('sort', sort);
+                    url.searchParams.set('order', order);
 
-                // Buat nge redirect urlnya jadi misah
-                window.location.href = url.toString();
-            }
+                    // Buat nge redirect urlnya jadi misah
+                    window.location.href = url.toString();
+                }
 
-            document.addEventListener('DOMContentLoaded', function() {
-                // Tab elements
-                const descriptionBtn = document.getElementById('description-btn');
-                const meetingBtn = document.getElementById('meeting-btn');
-                const forumBtn = document.getElementById('forum-btn');
-                const descriptionBox = document.getElementById('description-box');
-                const meetingBox = document.getElementById('meeting-box');
-                const forumBox = document.getElementById('forum-box');
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Tab elements
+                    const descriptionBtn = document.getElementById('description-btn');
+                    const meetingBtn = document.getElementById('meeting-btn');
+                    const forumBtn = document.getElementById('forum-btn');
+                    const descriptionBox = document.getElementById('description-box');
+                    const meetingBox = document.getElementById('meeting-box');
+                    const forumBox = document.getElementById('forum-box');
 
-                // Retrieve the last active tab from localStorage
-                const lastActiveTab = localStorage.getItem('activeTab') || 'description';
+                    // Retrieve the last active tab from localStorage
+                    const lastActiveTab = localStorage.getItem('activeTab') || 'description';
 
-                // Show the last active tab content
-                function showTab(tab) {
-                    descriptionBox.style.display = 'none';
-                    meetingBox.style.display = 'none';
-                    forumBox.style.display = 'none';
+                    // Show the last active tab content
+                    function showTab(tab) {
+                        descriptionBox.style.display = 'none';
+                        meetingBox.style.display = 'none';
+                        forumBox.style.display = 'none';
 
-                    if (tab === 'description') {
-                        descriptionBox.style.display = 'block';
-                    } else if (tab === 'meeting') {
-                        meetingBox.style.display = 'block';
-                        var calendarEl = document.getElementById('calendar');
+                        if (tab === 'description') {
+                            descriptionBox.style.display = 'block';
+                        } else if (tab === 'meeting') {
+                            meetingBox.style.display = 'block';
+                            var calendarEl = document.getElementById('calendar');
 
-                    // Create the event data directly in Blade
-                        var meetings = @json($business->meetings->map(function($meeting) {
-                        return [
-                                'title' => $meeting->title,
-                                'start' => $meeting->date,
-                                'description' => $meeting->description
-                            ];
-                        }));
+                            // Create the event data directly in Blade
+                            var meetings = @json($business->meetings->map(function($meeting) {
+                                return [
+                                        'title' => $meeting->title,
+                                        'start' => $meeting->date,
+                                        'description' => $meeting->description
+                                    ];
+                                }));
 
-                        var calendar = new FullCalendar.Calendar(calendarEl, {
-                            initialView: 'dayGridMonth',
-                            events: meetings,
-                            eventClick: function(info) {
-                                alert('Meeting: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
-                            }
-                        });
+                            var calendar = new FullCalendar.Calendar(calendarEl, {
+                                    initialView: 'dayGridMonth',
+                                    events: meetings,
+                                    eventClick: function(info) {
+                                        alert('Meeting: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
+                                    }
+                                }); 
 
-                    calendar.render();
-                        
-                    } else if (tab === 'forum') {
-                        forumBox.style.display = 'block';
+                            calendar.render();
+
+                        } else if (tab === 'forum') {
+                            forumBox.style.display = '';
+                        }
                     }
-                }
-                showTab(lastActiveTab);
+                    showTab(lastActiveTab);
 
-                // Update active tab in localStorage and display content
-                function setActiveTab(tab) {
-                    localStorage.setItem('activeTab', tab);
-                    showTab(tab);
-                }
+                    // Update active tab in localStorage and display content
+                    function setActiveTab(tab) {
+                        localStorage.setItem('activeTab', tab);
+                        showTab(tab);
+                    }
 
-                // Add event listeners to the tab buttons
-                descriptionBtn.addEventListener('click', function() {
-                    setActiveTab('description');
+                    // Add event listeners to the tab buttons
+                    descriptionBtn.addEventListener('click', function() {
+                        setActiveTab('description');
+                    });
+                    meetingBtn.addEventListener('click', function() {
+                        setActiveTab('meeting');
+                    });
+                    forumBtn.addEventListener('click', function() {
+                        setActiveTab('forum');
+                    });
                 });
-                meetingBtn.addEventListener('click', function() {
-                    setActiveTab('meeting');
-                });
-                forumBtn.addEventListener('click', function() {
-                    setActiveTab('forum');
-                });
-            });
-        </script>
-    @endsection
+            </script>
+        @endsection
