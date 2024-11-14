@@ -229,7 +229,7 @@
 
                         {{-- Comment List --}}
                         @foreach ($business->comments as $comment)
-                            <div class="flex items-start space-x-3 mb-4">
+                            <div class="flex items-start space-x-3 mb-4 border-t">
                                 <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
                                 <div class="flex flex-col">
                                     <h6 class="text-gray-900 dark:text-white font-semibold">{{ $comment->user->name }}</h6>
@@ -246,25 +246,9 @@
                                                 <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">Reply</button>
                                             </div>
                                         </form>
-                                        <!-- Display Replies -->
-                                            @foreach ($comment->replies as $reply)
-                                            <div class="ml-10 mt-4 flex items-start space-x-4">
-                                                <img class="w-8 h-8 rounded-full" src="{{ $reply->user->avatar_url }}" alt="User avatar">
-                                                <div>
-                                                    <p class="font-semibold">{{ $reply->user->name }}</p>
-                                                    <p>{{ $reply->content }}</p>
-                                                    <form action="{{ route('business.reply', ['business' => $business->id, 'comment' => $comment->id]) }}" method="POST" class="mt-2">
-                                                        @csrf
-                                                        <div class="flex items-start space-x-4">
-                                                            <input type="text" name="content" class="w-full p-2 border rounded" placeholder="Write a reply..." required>
-                                                            <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">Reply</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                            @endforeach
+                                        <!-- Display Replies Using the Partial View -->
+                                            @include('partials.comment', ['comments' => $comment->replies])
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
