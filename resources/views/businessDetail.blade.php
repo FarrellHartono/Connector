@@ -197,6 +197,7 @@
                 </div>
             </div>
 
+            {{-- Forum --}}
             <div class="flex justify-center" id="forum-box" style="display: none;">
                 <div class="block max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <div class="flex items-center space-x-4">
@@ -210,31 +211,66 @@
                                 acquisitions of 2021 so far, in reverse chronological order.</p>
                         </div>
                     </div>
+                    {{-- Create Comment --}}
                     <div class="mt-6 border-t pt-4">
-                        <div class="flex items-center space-x-4 mb-6">
-                            <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
-                            <input
-                                type="text"
-                                placeholder="Write a comment (min 5 words)"
-                                class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
-                            />
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">Comment</button>
-                        </div>
-                        <div class="flex items-start space-x-3 flex mb-4">
-                            <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
-                            <div class="flex flex-col">
-                                <h6 class="text-gray-900 dark:text-white font-semibold">User123</h6>
-                                <div class="flex items-start">
-                                    <p class="text-gray-700 dark:text-gray-400 text-sm">
-                                        I found this article very insightful! The acquisitions this year have been
-                                        groundbreaking.
-                                    </p>
-                                    <button class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Reply</button>
+                        <form action="{{ route('business.storeComment', $business->id) }}" method="POST">
+                            @csrf
+                            <div class="flex items-center space-x-4 mb-6">
+                                <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
+                                <input
+                                    name="content"
+                                    type="text"
+                                    placeholder="Write a comment (min 5 words)"
+                                    class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+                                />
+                                <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">Comment</button>
+                            </div>
+                        </form>
+
+                        {{-- Comment List --}}
+                        @foreach ($business->comments as $comment)
+                            <div class="flex items-start space-x-3 mb-4">
+                                <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
+                                <div class="flex flex-col">
+                                    <h6 class="text-gray-900 dark:text-white font-semibold">{{ $comment->user->name }}</h6>
+                                    <div class="flex items-start">
+                                        <p class="text-gray-700 dark:text-gray-400 text-sm">
+                                            {{ $comment->content }}
+                                        </p>
+                                        <!-- Reply Form -->
+                                        <div class="flex flex-col">
+                                        <form action="{{ route('business.reply', ['business' => $business->id, 'comment' => $comment->id]) }}" method="POST" class="mt-2">
+                                            @csrf
+                                            <div class="flex items-start space-x-4">
+                                                <input type="text" name="content" class="w-full p-2 border rounded" placeholder="Write a reply..." required>
+                                                <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">Reply</button>
+                                            </div>
+                                        </form>
+                                        <!-- Display Replies -->
+                                            @foreach ($comment->replies as $reply)
+                                            <div class="ml-10 mt-4 flex items-start space-x-4">
+                                                <img class="w-8 h-8 rounded-full" src="{{ $reply->user->avatar_url }}" alt="User avatar">
+                                                <div>
+                                                    <p class="font-semibold">{{ $reply->user->name }}</p>
+                                                    <p>{{ $reply->content }}</p>
+                                                    <form action="{{ route('business.reply', ['business' => $business->id, 'comment' => $comment->id]) }}" method="POST" class="mt-2">
+                                                        @csrf
+                                                        <div class="flex items-start space-x-4">
+                                                            <input type="text" name="content" class="w-full p-2 border rounded" placeholder="Write a reply..." required>
+                                                            <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">Reply</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
+                        @endforeach
 
-                        </div>
-                        <div class="flex items-start space-x-3 flex">
+                        {{-- <div class="flex items-start space-x-3 flex">
                             <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
                             <div class="flex flex-col">
                                 <h6 class="text-gray-900 dark:text-white font-semibold">TechGuru</h6>
@@ -246,7 +282,7 @@
                                     <button class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Reply</button>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
