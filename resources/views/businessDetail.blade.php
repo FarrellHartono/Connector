@@ -233,12 +233,12 @@
                                 <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
                                 <div class="flex flex-col">
                                     <h6 class="text-gray-900 dark:text-white font-semibold">{{ $comment->user->name }}</h6>
-                                    <div class="flex items-start">
+                                    <div class="flex flex-col items-start">
                                         <p class="text-gray-700 dark:text-gray-400 text-sm">
                                             {{ $comment->content }}
                                         </p>
                                         <!-- Reply Form -->
-                                        <div class="flex flex-col">
+                                        <div class="flex flex-col w-full">
                                         <form action="{{ route('business.reply', ['business' => $business->id, 'comment' => $comment->id]) }}" method="POST" class="mt-2">
                                             @csrf
                                             <div class="flex items-start space-x-4">
