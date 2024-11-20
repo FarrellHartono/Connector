@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Investment;
 use App\Models\Meeting;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Comment;
 
 class Business extends Model
@@ -16,9 +17,12 @@ class Business extends Model
     protected $table = 'businesses';
 
     protected $fillable = [
-        'title',        
+        'title',
         'description',
         'image_path',
+        'start_date',
+        'end_date',
+        'user_id'
     ];
 
     public function investors(): HasMany
@@ -29,6 +33,11 @@ class Business extends Model
     public function meetings(): HasMany
     {
         return $this->hasMany(Meeting::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function comments(): HasMany

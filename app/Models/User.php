@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Investment;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Comment;
 
 class User extends Authenticatable
@@ -51,6 +52,11 @@ class User extends Authenticatable
     public function investments(): HasMany
     {
         return $this->hasMany(Investment::class);
+    }
+
+    public function business(): HasMany
+    {
+        return $this->hasMany(Business::class);
     }
 
     public function comments(): HasMany

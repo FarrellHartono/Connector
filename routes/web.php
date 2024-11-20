@@ -36,3 +36,9 @@ Route::post('/businesses/{id}/comments', [CommentController::class, 'storeCommen
 Route::post('/businesses/{business}/comments/{comment}/reply', [CommentController::class, 'reply'])->name('business.reply');
 
 Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('addMeeting');
+
+Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('listBusiness');
+
+
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+
