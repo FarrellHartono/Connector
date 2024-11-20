@@ -8,7 +8,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Investment;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Comment;
 
 class User extends Authenticatable
