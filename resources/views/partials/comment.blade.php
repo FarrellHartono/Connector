@@ -11,7 +11,9 @@
                 @csrf
                 <div class="flex items-start space-x-4">
                     <input type="text" name="content" class="w-full p-2 border rounded" placeholder="Write a reply..." required>
-                    <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">Reply</button>
+                    <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">
+                        <x-svg-icon name="reply" />
+                    </button>
                 </div>
             </form>
 

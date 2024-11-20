@@ -223,7 +223,9 @@
                                     placeholder="Write a comment (min 5 words)"
                                     class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
                                 />
-                                <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">Comment</button>
+                                <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">
+                                    <x-svg-icon name="comment" />
+                                </button>
                             </div>
                         </form>
 
@@ -243,7 +245,9 @@
                                             @csrf
                                             <div class="flex items-start space-x-4">
                                                 <input type="text" name="content" class="w-full p-2 border rounded" placeholder="Write a reply..." required>
-                                                <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">Reply</button>
+                                                <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">
+                                                    <x-svg-icon name="reply" />
+                                                </button>
                                             </div>
                                         </form>
                                         <!-- Display Replies Using the Partial View -->
@@ -253,20 +257,6 @@
                                 </div>
                             </div>
                         @endforeach
-
-                        {{-- <div class="flex items-start space-x-3 flex">
-                            <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
-                            <div class="flex flex-col">
-                                <h6 class="text-gray-900 dark:text-white font-semibold">TechGuru</h6>
-                                <div class="flex items-start">
-                                    <p class="text-gray-700 dark:text-gray-400 text-sm">
-                                        I found this article very insightful! The acquisitions this year have been
-                                        groundbreaking.
-                                    </p>
-                                    <button class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Reply</button>
-                                </div>
-                            </div>
-                        </div> --}}
                     </div>
                 </div>
             </div>
