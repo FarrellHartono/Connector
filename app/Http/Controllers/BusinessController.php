@@ -186,5 +186,7 @@ public function listBusiness(Request $request){
     return view('listBusiness',['businesses' => $businesses->get()] );
 }
 
-
+    public function detailProfile(){
+        return view("profileDetail");
+    }
 }
