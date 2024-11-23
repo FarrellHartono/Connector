@@ -53,16 +53,34 @@
                 @enderror
             </div> --}}
 
-
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
-                <p class="block text-gray-700 text-sm font-bold mb-2">Business Image</p>
-                <label for="file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500">
+                <p class="block text-gray-700 text-sm font-bold mb-2">Business Profile Picture</p>
+                <label for="image" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500">
                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                        <svg id = "main-upload" class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                         </svg>
+                        <img src="" alt="" id="image-preview" class="max-h-44">
                         <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPEG, JPG or GIF (MAX. 800x400px)</p>
+                    </div>
+                    <input id="image" type="file" class="hidden" name="image" required/>
+                </label>
+                @error('image')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 h-auto overflow-hidden">
+                <p class="block text-gray-700 text-sm font-bold mb-2">Additional Photos</p>
+                <label for="file" class="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500">
+                    <div class="flex flex-col items-center justify-center pt-5 pb-6 h-auto overflow-hidden">
+                        <svg id="file-upload" class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                        </svg>
+                        <div id="file-preview-container" class="flex gap-2 flex-wrap overflow-hidden"></div>
+                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPEG, JPG or GIF (MAX. 800x400px)</p>
                     </div>
                     <input id="file" type="file" class="hidden" name="file[]" multiple/>
                 </label>
@@ -127,4 +145,41 @@
     </div>
 </div>
 
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function (e){
+            $('#image').change(function(){
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#main-upload').attr('class','hidden');
+                    $('#image-preview').attr('src',e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            $('#file').change(function () {
+                let file = this.files[0];
+                if(file){
+                    $('#file-preview-container').empty();
+                    // Loop through all selected files
+                    Array.from(this.files).forEach(file => {
+                        let reader = new FileReader();
+
+                        reader.onload = (e) => {
+                                $('#file-upload').attr('class','hidden');
+                                // Create a new img element and set its src to the file's data URL
+                                let img = $('<img>').attr('src', e.target.result).attr('class','max-h-44');
+                                // Append the img element to the preview container
+                                $('#file-preview-container').append(img);
+                            };
+
+                            // Read the file as a data URL
+                            reader.readAsDataURL(file);
+                    });
+                }
+            });
+        });
+    </script>
 @endsection
