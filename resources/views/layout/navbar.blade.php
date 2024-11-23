@@ -101,12 +101,15 @@
             $("#calendar").css("display", "block");
             $("#modal").css("display", "block");
             var calendarEl = document.getElementById('calendarContent');
+
+            
+
             var calendar = new FullCalendar.Calendar(calendarEl, {
               initialView: 'dayGridMonth',
+              
               fixedWeekCount: false
             });
             calendar.render();
-            
         });
 
         // Menutup pop-up jika klik di luar

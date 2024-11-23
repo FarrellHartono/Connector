@@ -141,5 +141,7 @@ class BusinessController extends Controller
         }
     }
 
-
+    public function detailProfile(){
+        return view("profileDetail");
+    }
 }
