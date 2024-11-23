@@ -39,9 +39,6 @@ Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('ad
 
 Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('listBusiness');
 
-
-Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-
 Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 
 Route::get('/investments', [BusinessController::class, 'detailProfile'])->name('investments');
