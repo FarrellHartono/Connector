@@ -18,6 +18,7 @@ class BusinessController extends Controller
         $request->validate([
             'title' => 'required|max:50|unique:businesses',
             'description' => 'required|max:255',
+            'image' => 'required|image|mimes:png,jpg,jpeg,gif,svg|max:2048',
             'file' => 'required',
             'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'startDate' => 'required',
@@ -27,6 +28,10 @@ class BusinessController extends Controller
 
         $filePath = 'public/assets/business/'.'/'.$request->title;
         Storage::makeDirectory($filePath);
+
+        $imageName = 'main'.'.'. $request->file('image')->getClientOriginalExtension();
+        $request->file('image')->storeAs('/public/assets/business/'.$request->title,$imageName);
+
 
         $count = 1;
         if($files = $request->file('file')){
