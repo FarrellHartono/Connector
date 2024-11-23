@@ -34,7 +34,7 @@
         $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
         $filePath = null;
         foreach ($extensions as $extension) {
-        $fullFilePath = $folderPath . '/' . '1' . '.' . $extension;
+        $fullFilePath = $folderPath . '/' . 'main' . '.' . $extension;
 
         if (Storage::disk('public')->exists(str_replace('public/','',$fullFilePath))) {
             $filePath = $fullFilePath;
