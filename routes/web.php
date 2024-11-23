@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\meetingController;
 
 Route::get('/', function () {
@@ -30,8 +31,16 @@ Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])-
 
 Route::post('/business/{id}/buy', [BusinessController::class, 'buy'])->name('business.buy');
 
+Route::post('/businesses/{id}/comments', [CommentController::class, 'storeComment'])->name('business.storeComment');
+
+Route::post('/businesses/{business}/comments/{comment}/reply', [CommentController::class, 'reply'])->name('business.reply');
+
 Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('addMeeting');
 
+Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('listBusiness');
+
+
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 
 Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 

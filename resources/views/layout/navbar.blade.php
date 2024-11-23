@@ -1,5 +1,5 @@
 
-<div id="modal" class="fixed w-screen h-full bg-black opacity-50 z-50 hidden">   
+<div id="modal" class="fixed w-screen h-full bg-black opacity-50 z-50 hidden">
 </div>
 <nav class="bg-white dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 ">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -8,7 +8,7 @@
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
     </a> -->
 
-    
+
 
     <div class="relative ">
       <!-- Icon Tanggal -->
@@ -27,21 +27,21 @@
       <div id="calendar-popup" class="hidden absolute top-20 left-20 z-10 bg-white rounded-md shadow-lg">
           <!-- <iframe src="{{ route('home') }}" class="absolute w-60 h-60"></iframe> -->
       </div>
-      
+
 
       <!-- Day name sliding from calendar button to right -->
-      
+
     </div>
-    
+
 
     <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
     @if(Auth::check())
-      Welcome, {{ Auth::user()->name }}! 
+      Welcome, {{ Auth::user()->name }}!
       <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">Logout</button>
       </form>
-      
+
     @else
       <a href="{{ route('profile') }}" class=" bg-black text-white w-10 h-10 rounded-full"></a>
       <a href="{{ route('login') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Login</a>
@@ -53,13 +53,13 @@
           <a href="{{ route('home') }}" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
         </li>
         <li>
-          <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</a>
+          <a href="{{ route('listBusiness') }}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">My Business</a>
         </li>
         <li>
-          <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
+          <a href="{{ route('profile') }}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Profile</a>
         </li>
         <li>
-          <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact</a>
+          <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Approval</a>
         </li>
       </ul>
     </div>
@@ -126,7 +126,7 @@
       });
 
       document.addEventListener('DOMContentLoaded', function() {
-        
+
       });
 </script>
 
