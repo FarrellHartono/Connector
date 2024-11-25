@@ -154,19 +154,21 @@
 
 
         <div class="container mx-auto my-8 p-6 rounded-lg">
-            <div class="flex justify-between space-x-4 mb-4">
-                <button id="description-btn"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
-                    Description
-                </button>
-                <button id="meeting-btn"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
-                    Meeting
-                </button>
-                <button id="forum-btn"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
-                    Forum
-                </button>
+            <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl shadow-lg mb-4">
+                <div class="flex justify-between space-x-4">
+                    <button id="description-btn"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:shadow-xl">
+                        Description
+                    </button>
+                    <button id="meeting-btn"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:shadow-xl">
+                        Meeting
+                    </button>
+                    <button id="forum-btn"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:shadow-xl">
+                        Forum
+                    </button>
+                </div>
             </div>
 
             <!-- Box Sections -->
@@ -200,6 +202,7 @@
                                 acquisitions of 2021 so far, in reverse chronological order.</p>
                         </div>
                     </div>
+                    
                     {{-- Create Comment --}}
                     <div class="mt-6 border-t pt-4">
                         <form action="{{ route('business.storeComment', $business->id) }}" method="POST">
