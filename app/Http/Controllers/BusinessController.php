@@ -8,6 +8,7 @@ use App\Traits\Sortable;
 use App\Models\Investment;
 use App\Models\Meeting;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class BusinessController extends Controller
 {
@@ -92,7 +93,7 @@ class BusinessController extends Controller
 
     public function manage($id)
     {
-        $business = Business::findOrFail($id); // Find the business by id
+        $business = Business::findOrFail($id);
         return view('manageBusiness', compact('business'));
     }
 
@@ -112,7 +113,17 @@ class BusinessController extends Controller
         // Buat Nge test
             // dd($investmentsQuery->toSql(), $investmentsQuery->getBindings());
 
-        return view('businessDetail', compact('business', 'investments'));
+        $imageFolderPath1 = storage_path('app/public/assets/business/tes1234567890');
+        $imageFolderPath2 = storage_path('app' . $business->image_path);
+
+        $imageFiles = [];
+        if (File::exists($imageFolderPath2)) {
+            $imageFiles = File::files($imageFolderPath2); // Returns array of file paths
+        }
+        // dd($business->image_path, $imageFolderPath1, $imageFolderPath2, File::exists($imageFolderPath1) ,File::exists($imageFolderPath2));
+        // dd(File::exists(public_path('storage/assets/business/tes1234567890')));
+
+        return view('businessDetail', compact('business', 'investments', 'imageFiles'));
     }
 
     public function buy(Request $request, $businessId)

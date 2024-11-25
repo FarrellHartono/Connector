@@ -20,33 +20,22 @@
             <div id="default-carousel" class="relative w-full md:w-1/2" data-carousel="static">
                 <!-- Carousel wrapper -->
                 <div class="relative h-[28rem] overflow-hidden rounded-lg">
-                    <!-- Item 1 -->
+                    
+                    @foreach ($imageFiles as $file)
+                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                        <img src="{{ Storage::url(ltrim($business->image_path, '/') .'/'. $file->getFilename()) }}"
+                        class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" 
+                        alt="Business Image">
+                    </div>
+                    @endforeach
+                    
+                    {{-- <!-- Item 1 -->
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
                         @if ($business->image_path)
                             <img class="rounded-lg w-full h-full object-cover"
-                                src="{{ asset('storage/' . $business->image_path) }}" alt="Business Image">
+                                src="{{ asset('storage/assets/business/tes1234567890/1.jpg' ) }}" alt="Business Image">
                         @endif
-                    </div>
-                    <!-- Item 2 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-2.svg"
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    </div>
-                    <!-- Item 3 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-3.svg"
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    </div>
-                    <!-- Item 4 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-4.svg"
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    </div>
-                    <!-- Item 5 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-5.svg"
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    </div>
+                    </div> --}}
                 </div>
                 <!-- Slider indicators -->
                 <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
