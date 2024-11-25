@@ -113,15 +113,12 @@ class BusinessController extends Controller
         // Buat Nge test
             // dd($investmentsQuery->toSql(), $investmentsQuery->getBindings());
 
-        $imageFolderPath1 = storage_path('app/public/assets/business/tes1234567890');
-        $imageFolderPath2 = storage_path('app' . $business->image_path);
+        $imageFolderPath = storage_path('app' . $business->image_path);
 
         $imageFiles = [];
-        if (File::exists($imageFolderPath2)) {
-            $imageFiles = File::files($imageFolderPath2); // Returns array of file paths
+        if (File::exists($imageFolderPath)) {
+            $imageFiles = File::files($imageFolderPath); // Returns array of file paths
         }
-        // dd($business->image_path, $imageFolderPath1, $imageFolderPath2, File::exists($imageFolderPath1) ,File::exists($imageFolderPath2));
-        // dd(File::exists(public_path('storage/assets/business/tes1234567890')));
 
         return view('businessDetail', compact('business', 'investments', 'imageFiles'));
     }
