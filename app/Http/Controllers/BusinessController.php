@@ -24,6 +24,7 @@ class BusinessController extends Controller
             'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'startDate' => 'required',
             'endDate' => 'required',
+            'nominal' => 'required',
         ]
         );
 
@@ -95,6 +96,63 @@ class BusinessController extends Controller
     {
         $business = Business::findOrFail($id);
         return view('manageBusiness', compact('business'));
+    }
+
+    public function updateBusiness(Request $request, $id){
+        $request->validate([
+            'description' => 'required|max:255',
+            'image' => 'image|mimes:png,jpg,jpeg,gif,svg|max:2048',
+            'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'startDate' => 'required',
+            'endDate' => 'required',
+            'nominal' => 'required',
+        ]
+        );
+
+
+        $filePath = 'public/assets/business/'.'/'.$request->title;
+        Storage::makeDirectory($filePath);
+
+        if($request->file('image')){
+            $files = Storage::disk('public')->files(str_replace('public/', '', $filePath));
+            foreach ($files as $file) {
+                if (pathinfo($file, PATHINFO_FILENAME) === 'main') {
+                    Storage::disk('public')->delete($file);
+                }
+            }
+            $imageName = 'main'.'.'. $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->storeAs('/public/assets/business/'.$request->title,$imageName);
+        }
+
+        if($request->file('file')){
+            $files = Storage::disk('public')->files(str_replace('public/', '', $filePath));
+            foreach ($files as $file) {
+                if (pathinfo($file, PATHINFO_FILENAME) !== 'main') {
+                    Storage::disk('public')->delete($file);
+                }
+            }
+            $count = 1;
+            if($files = $request->file('file')){
+                foreach($files as $file){
+                    $image_name = (string)$count;
+                    $ext = strtolower($file->getClientOriginalExtension());
+                    $image_full_name = $image_name.'.'.$ext;
+                    $file->storeAs('/public/assets/business/'.$request->title,$image_full_name);
+                    $count++;
+
+                }
+            }
+        }
+
+        // $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
+        // $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
+        // $userID = $request->Auth::user()->id();
+
+        $business = Business::findOrFail($id);
+
+        $business->description = $request->description;
+
+        return redirect()->route('listBusiness')->with('success', 'Business updated successfully!');
     }
 
     public function viewBusinessDetail(Request $request, $id)

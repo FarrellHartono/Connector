@@ -27,6 +27,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/manage/{id}', [BusinessController::class, 'manage'])->name('manageBusiness');
 
+// buat update business
+Route::put('/manage/{id}',[BusinessController::class,'updateBusiness'])->name('business.update');
+
 Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])->name('business.show');
 
 Route::post('/business/{id}/transaction', [BusinessController::class, 'transaction'])->name('business.transaction');
