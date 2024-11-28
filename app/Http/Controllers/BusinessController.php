@@ -49,7 +49,7 @@ class BusinessController extends Controller
         // $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
         // $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
         // $userID = $request->Auth::user()->id();
-
+        $userId = auth()->id();
 
         $businesses = Business::create([
             'title' => $request->title,
@@ -57,7 +57,7 @@ class BusinessController extends Controller
             'image_path' => '/public/assets/business/'.$request->title,
             'start_date' => $request -> startDate,
             'end_date' => $request-> endDate,
-            'user_id' => 2
+            'user_id' => $userId
         ]);
 
         return redirect()->route('home')->with('success', 'Business created successfully!');
@@ -120,15 +120,13 @@ class BusinessController extends Controller
             $imageFiles = File::files($imageFolderPath); // Returns array of file paths
         }
 
-        $showDescription = false;
-        $showMeeting = false;
 
-        return view('businessDetail', compact('business', 'investments', 'imageFiles', 'showDescription', 'showMeeting'));
+        return view('businessDetail', compact('business', 'investments', 'imageFiles'));
     }
 
-    public function buy(Request $request, $businessId)
+    public function transaction(Request $request, $businessId)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'amount' => 'required|numeric|min:0.01',
         ]);
 
@@ -139,19 +137,49 @@ class BusinessController extends Controller
         $investment = Investment::where('user_id', $userId)
             ->where('business_id', $businessId)
             ->first();
-        if ($investment) {
-            $investment->amount += $request->input('amount');
-            $investment->save();
-        } else {
-            Investment::create([
-                'user_id' => auth()->id(),
-                'business_id' => $businessId,
-                'amount' => $request->input('amount'),
-            ]);
 
-        }
-        return redirect()->route('business.show', $businessId)
-            ->with('success', 'Investment successful!');
+            $action = $request->input('action');
+
+            if ($action === 'invest') {
+                // Logic Investment
+                if ($investment) {
+                    $investment->amount += $validatedData['amount'];
+                    $investment->save();
+                } else {
+                    Investment::create([
+                        'user_id' => $userId,
+                        'business_id' => $businessId,
+                        'amount' => $validatedData['amount'],
+                    ]);
+                }
+        
+                $message = 'Investment successful!';
+            } elseif ($action === 'withdraw') {
+                // Logic Withdraw
+                if (!$investment) {
+                    return redirect()->back()->with('error', 'No investment found.');
+                }
+        
+                $withdrawalAmount = $validatedData['amount'];
+                if ($withdrawalAmount > $investment->amount) {
+                    return redirect()->back()->with('error', 'Withdrawal amount exceeds your investment.');
+                }
+        
+                $investment->amount -= $withdrawalAmount;
+                $investment->save();
+        
+                $message = 'Withdrawal successful!';
+            } else {
+                return redirect()->back()->with('error', 'Invalid transaction type.');
+            }
+        
+            return redirect()->route('business.show', $businessId)
+                ->with([
+                    'success' => $message,
+                    'error' => $action === 'withdraw' && $withdrawalAmount > $investment->amount 
+                        ? 'Withdrawal amount exceeds your investment.' 
+                        : null,
+                ]);
     }
 
     public function addMeeting(Request $request)

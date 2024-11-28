@@ -138,21 +138,39 @@
 
 
                 <!-- Investment Amount -->
-                <form action="{{ route('business.buy', $business->id) }}" method="POST" class="mt-6">
+                <form action="{{ route('business.transaction', $business->id) }}" method="POST" class="mt-6">
                     @csrf
-                    <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
-                    <input type="number" name="amount" step="1" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
+                        <div class="flex flex-col">
+                            <input type="number" name="amount" id="amount" step="1" required
+                                class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 
+                                @error('amount') @enderror">
+                            
+                            <div class="flex justify-between">
+                                <button type="submit" name="action" value="invest"
+                                    class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
+                                    Buy/Invest
+                                </button>
+                                
+                                <button type="submit" name="action" value="withdraw"
+                                    class="bg-red-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-red-700">
+                                    Withdraw
+                                </button>
 
-                    <button type="submit"
-                        class="mt-4 bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
-                        Buy/Invest
-                    </button>
+                                @error('amount')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        
+                        @error('amount')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                 </form>
+
             </div>
         </div>
-
-
+        
         <div class="container mx-auto my-8 p-6 rounded-lg">
             <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl mb-4">
                 <div class="flex justify-between space-x-4">
@@ -341,5 +359,24 @@
                         setActiveTab('forum');
                     });
                 });
+
+                @if (session('success'))
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                @endif
+
+                // SweetAlert logic for error
+                @if (session('error'))
+                    Swal.fire({
+                        title: 'Error!',
+                        text: '{{ session('error') }}',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                @endif
             </script>
         @endsection
