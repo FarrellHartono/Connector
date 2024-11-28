@@ -49,21 +49,22 @@ class AuthController extends Controller
     }
 
     public function registerProcess(Request $request){
-        // (ricky) ini nanti tambah validasi data user
-
+        error_log("tes");
+        error_log($request);
         $request->validate([
             "name" => "required|string|max:255",
             "email" => "required|string|email|max:255|unique:users",
             "password"=>"required|string|min:8",
             "confirmation_password" => "required|required_with:password|same:password"
         ]);
-
+        error_log($request);
         $user = User::create([
             "name" => $request->name,
             "email" => $request->email,
             "password" => Hash::make($request->password), // Hash password sebelum disimpan
         ]);
-
+        error_log("tesssss");
+        error_log($user);
         Auth::login($user);
 
         return redirect(route('home'))->with('successRegister', true);

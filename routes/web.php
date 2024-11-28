@@ -32,7 +32,7 @@ Route::put('/manage/{id}',[BusinessController::class,'updateBusiness'])->name('b
 
 Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])->name('business.show');
 
-Route::post('/business/{id}/buy', [BusinessController::class, 'buy'])->name('business.buy');
+Route::post('/business/{id}/transaction', [BusinessController::class, 'transaction'])->name('business.transaction');
 
 Route::post('/businesses/{id}/comments', [CommentController::class, 'storeComment'])->name('business.storeComment');
 
@@ -42,6 +42,6 @@ Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('ad
 
 Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('listBusiness');
 
-
 Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 
+Route::get('/investments', [BusinessController::class, 'detailProfile'])->name('investments');

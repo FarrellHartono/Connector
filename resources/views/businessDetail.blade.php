@@ -20,33 +20,22 @@
             <div id="default-carousel" class="relative w-full md:w-1/2" data-carousel="static">
                 <!-- Carousel wrapper -->
                 <div class="relative h-[28rem] overflow-hidden rounded-lg">
-                    <!-- Item 1 -->
+                    
+                    @foreach ($imageFiles as $file)
+                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                        <img src="{{ Storage::url(ltrim($business->image_path, '/') .'/'. $file->getFilename()) }}"
+                        class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" 
+                        alt="Business Image">
+                    </div>
+                    @endforeach
+                    
+                    {{-- <!-- Item 1 -->
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
                         @if ($business->image_path)
                             <img class="rounded-lg w-full h-full object-cover"
-                                src="{{ asset('storage/' . $business->image_path) }}" alt="Business Image">
+                                src="{{ asset('storage/assets/business/tes1234567890/1.jpg' ) }}" alt="Business Image">
                         @endif
-                    </div>
-                    <!-- Item 2 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-2.svg"
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    </div>
-                    <!-- Item 3 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-3.svg"
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    </div>
-                    <!-- Item 4 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-4.svg"
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    </div>
-                    <!-- Item 5 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-5.svg"
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    </div>
+                    </div> --}}
                 </div>
                 <!-- Slider indicators -->
                 <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
@@ -149,35 +138,55 @@
 
 
                 <!-- Investment Amount -->
-                <form action="{{ route('business.buy', $business->id) }}" method="POST" class="mt-6">
+                <form action="{{ route('business.transaction', $business->id) }}" method="POST" class="mt-6">
                     @csrf
-                    <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
-                    <input type="number" name="amount" step="1" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
+                        <div class="flex flex-col">
+                            <input type="number" name="amount" id="amount" step="1" required
+                                class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 
+                                @error('amount') @enderror">
+                            
+                            <div class="flex justify-between">
+                                <button type="submit" name="action" value="invest"
+                                    class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
+                                    Buy/Invest
+                                </button>
+                                
+                                <button type="submit" name="action" value="withdraw"
+                                    class="bg-red-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-red-700">
+                                    Withdraw
+                                </button>
 
-                    <button type="submit"
-                        class="mt-4 bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
-                        Buy/Invest
-                    </button>
+                                @error('amount')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        
+                        @error('amount')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                 </form>
+
             </div>
         </div>
-
-
+        
         <div class="container mx-auto my-8 p-6 rounded-lg">
-            <div class="flex justify-between space-x-4 mb-4">
-                <button id="description-btn"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
-                    Description
-                </button>
-                <button id="meeting-btn"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
-                    Meeting
-                </button>
-                <button id="forum-btn"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
-                    Forum
-                </button>
+            <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl mb-4">
+                <div class="flex justify-between space-x-4">
+                    <button id="description-btn"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:shadow-xl">
+                        Description
+                    </button>
+                    <button id="meeting-btn"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:shadow-xl">
+                        Meeting
+                    </button>
+                    <button id="forum-btn"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:shadow-xl">
+                        Forum
+                    </button>
+                </div>
             </div>
 
             <!-- Box Sections -->
@@ -211,6 +220,7 @@
                                 acquisitions of 2021 so far, in reverse chronological order.</p>
                         </div>
                     </div>
+                    
                     {{-- Create Comment --}}
                     <div class="mt-6 border-t pt-4">
                         <form action="{{ route('business.storeComment', $business->id) }}" method="POST">
@@ -349,5 +359,24 @@
                         setActiveTab('forum');
                     });
                 });
+
+                @if (session('success'))
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                @endif
+
+                // SweetAlert logic for error
+                @if (session('error'))
+                    Swal.fire({
+                        title: 'Error!',
+                        text: '{{ session('error') }}',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                @endif
             </script>
         @endsection
