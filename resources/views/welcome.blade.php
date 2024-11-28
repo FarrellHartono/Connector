@@ -18,8 +18,12 @@ Welcome Page
             <a href="{{ route('login') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Login</a>
         </nav>
     </div>
+
+    <div>
+
+    </div>
     <!-- Hero Section -->
-    <section class="relative h-screen bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2024/03/07/22/56/handshake-8619508_1280.jpg');">
+    <div class="relative h-screen bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2024/03/07/22/56/handshake-8619508_1280.jpg');">
         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
             <h1 class="text-5xl md:text-6xl font-bold mb-4">Fund Your Business</h1>
@@ -30,11 +34,9 @@ Welcome Page
                 Explore Businesses
             </a>
         </div>
-    </section>
-
+    </div>
     <!-- Highlight Section -->
-    <section class="py-16 bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] text-center h-full">
-        <div class="container mx-auto px-4 h-100">
+        <div class="container mx-auto px-4 h-100 py-16 text-center h-full">
             <h2 class="text-3xl font-bold mb-6">Why Choose Us?</h2>
             <p class="text-gray-700 max-w-xl mx-auto mb-12">
                 Connect with investors and business owners through various ways
@@ -54,7 +56,34 @@ Welcome Page
                 </div>
             </div>
         </div>
-    </section>
+
+
+        {{-- FAQ --}}
+        <div class="py-16 text-left">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-6 text-center">FAQs</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded p-8 drop-shadow" data-aos="fade-right">
+                        <h3 class="font-bold mb-2">What is Connector?</h3>
+                        <p class="text-gray-600">Connector is a platform that connects businesses with potential investors to help ideas flourish.</p>
+                    </div>
+                    <div class="bg-white rounded p-8 drop-shadow" data-aos="fade-right">
+                        <h3 class="font-bold mb-2">How do I find investors?</h3>
+                        <p class="text-gray-600">Create a detailed business profile, participate in forums, and schedule meetings with interested parties.</p>
+                    </div>
+                    <div class="bg-white rounded p-8 drop-shadow" data-aos="fade-left">
+                        <h3 class="font-bold mb-2">Is there a fee to use Connector?</h3>
+                        <p class="text-gray-600">No, We don't charge anything small commission on successful funding deals. Creating an account is free.</p>
+                    </div>
+                    <div class="bg-white rounded p-8 drop-shadow" data-aos="fade-left">
+                        <h3 class="font-bold mb-2">How do I start funding my business?</h3>
+                        <p class="text-gray-600">Sign up, create your business page, and start connecting with potential backers!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 @endsection
 
 @section('scripts')

@@ -22,6 +22,7 @@ class Business extends Model
         'image_path',
         'start_date',
         'end_date',
+        'nominal',
         'user_id'
     ];
 
