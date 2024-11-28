@@ -154,7 +154,7 @@
 
 
         <div class="container mx-auto my-8 p-6 rounded-lg">
-            <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl shadow-lg mb-4">
+            <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl mb-4">
                 <div class="flex justify-between space-x-4">
                     <button id="description-btn"
                         class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:shadow-xl">

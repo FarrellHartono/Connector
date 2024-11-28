@@ -120,7 +120,10 @@ class BusinessController extends Controller
             $imageFiles = File::files($imageFolderPath); // Returns array of file paths
         }
 
-        return view('businessDetail', compact('business', 'investments', 'imageFiles'));
+        $showDescription = false;
+        $showMeeting = false;
+
+        return view('businessDetail', compact('business', 'investments', 'imageFiles', 'showDescription', 'showMeeting'));
     }
 
     public function buy(Request $request, $businessId)
