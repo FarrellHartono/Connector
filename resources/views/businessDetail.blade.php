@@ -197,7 +197,7 @@
             {{-- Calendar --}}
             <div id="meeting-box" style="display: none;">
                 <div class="calendar-container">
-                    <div id="calendar"></div>
+                    <div id="calendar-detail"></div>
                     <ul>
                         @foreach ($business->meetings as $meeting)
                             <li>{{ $meeting->title }} on {{ $meeting->date }} - {{ $meeting->description }}</li>
@@ -315,7 +315,7 @@
                             descriptionBox.style.display = 'block';
                         } else if (tab === 'meeting') {
                             meetingBox.style.display = 'block';
-                            var calendarEl = document.getElementById('calendar');
+                            var calendarEl = document.getElementById('calendar-detail');
 
                             // Create the event data directly in Blade
                             var meetings = @json($business->meetings->map(function($meeting) {
