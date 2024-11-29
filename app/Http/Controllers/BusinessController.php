@@ -175,7 +175,25 @@ class BusinessController extends Controller
 
         $imageFiles = [];
         if (File::exists($imageFolderPath)) {
-            $imageFiles = File::files($imageFolderPath); // Returns array of file paths
+            $allFiles = File::files($imageFolderPath); // Returns array of file paths
+            
+            $mainFile = null;
+            $otherFiles = [];
+            // Separasi main dari file lain
+            foreach ($allFiles as $file) {
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                if (strtolower($filename) === 'main') {
+                    $mainFile = $file;
+                } else {
+                    $otherFiles[] = $file;
+                }
+            }
+            // main dlu
+            if ($mainFile) {
+                $imageFiles[] = $mainFile;
+            }
+            // baru masukin yg laen
+            $imageFiles = array_merge($imageFiles, $otherFiles);
         }
 
 
