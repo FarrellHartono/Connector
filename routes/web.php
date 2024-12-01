@@ -20,9 +20,11 @@ Route::middleware(['user.access'])->group(function () {
 });
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('welcome');
+Route::get('/',[BusinessController::class,'welcome'])->name('welcome');
+
 Route::get('/home', [BusinessController::class, 'home'])->name('home');
 
 // Authentication routes
@@ -32,3 +34,5 @@ Route::post('/login-process', [AuthController::class, "loginProcess"])->name('lo
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register-process', [AuthController::class, "registerProcess"])->name('registerProcess');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/manage/{id}', [BusinessController::class, 'manage'])->name('manageBusiness');

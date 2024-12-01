@@ -14,8 +14,6 @@ class BusinessController extends Controller
 {
     public function upload(Request $request)
     {
-
-
         $request->validate([
             'title' => 'required|max:50|unique:businesses',
             'description' => 'required|max:255',
@@ -23,8 +21,12 @@ class BusinessController extends Controller
             'file' => 'required',
             'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'startDate' => 'required',
-            'endDate' => 'required',
+            'endDate' => 'required|after_or_equal:startDate',
             'nominal' => 'required',
+            'address'=>'required',
+            'phone'=>'required',
+        ],[
+            'endDate.after_or_equal' => 'The end date must be a date after or equal to the start date.',
         ]
         );
 
@@ -58,7 +60,11 @@ class BusinessController extends Controller
             'image_path' => '/public/assets/business/'.$request->title,
             'start_date' => $request -> startDate,
             'end_date' => $request-> endDate,
-            'user_id' => $userId
+            'nominal' => $request-> nominal,
+            'address' => $request-> address,
+            'phone_number' => $request -> phone,
+            'user_id' => $userId,
+
         ]);
 
         return redirect()->route('home')->with('success', 'Business created successfully!');
@@ -228,32 +234,32 @@ class BusinessController extends Controller
                         'amount' => $validatedData['amount'],
                     ]);
                 }
-        
+
                 $message = 'Investment successful!';
             } elseif ($action === 'withdraw') {
                 // Logic Withdraw
                 if (!$investment) {
                     return redirect()->back()->with('error', 'No investment found.');
                 }
-        
+
                 $withdrawalAmount = $validatedData['amount'];
                 if ($withdrawalAmount > $investment->amount) {
                     return redirect()->back()->with('error', 'Withdrawal amount exceeds your investment.');
                 }
-        
+
                 $investment->amount -= $withdrawalAmount;
                 $investment->save();
-        
+
                 $message = 'Withdrawal successful!';
             } else {
                 return redirect()->back()->with('error', 'Invalid transaction type.');
             }
-        
+
             return redirect()->route('business.show', $businessId)
                 ->with([
                     'success' => $message,
-                    'error' => $action === 'withdraw' && $withdrawalAmount > $investment->amount 
-                        ? 'Withdrawal amount exceeds your investment.' 
+                    'error' => $action === 'withdraw' && $withdrawalAmount > $investment->amount
+                        ? 'Withdrawal amount exceeds your investment.'
                         : null,
                 ]);
     }
@@ -304,4 +310,11 @@ public function listBusiness(Request $request){
     public function detailProfile(){
         return view("profileDetail");
     }
+    public function welcome(Request $request){
+        $businesses = Business::whereIn('id', [1, 2, 3])->get();
+
+            // Return the welcome view and pass the businesses to it
+            return view('welcome', compact('businesses'));
+    }
 }
+

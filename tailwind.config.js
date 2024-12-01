@@ -10,6 +10,7 @@ export default {
     theme: {
         extend: {
             colors: {
+                'footer-grey':'#505050',
                 primary: {
                     50: "#eff6ff",
                     100: "#dbeafe",

@@ -83,7 +83,92 @@ Welcome Page
             </div>
         </div>
 
+        {{-- Tampilin 3 bisnis --}}
+        <div class="py-16 text-center">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-6">Featured Businesses</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-8">
 
+                @if(isset($businesses[0]))
+                @php
+                $folderPath = $businesses[0]->image_path;
+                $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+                $filePath = null;
+                foreach ($extensions as $extension) {
+                $fullFilePath = $folderPath . '/' . 'main' . '.' . $extension;
+
+                if (Storage::disk('public')->exists(str_replace('public/','',$fullFilePath))) {
+                    $filePath = $fullFilePath;
+                    break;
+                }
+                }
+                @endphp
+                <div class="bg-white shadow-lg rounded-lg p-6 col-start-1 row-start-1" data-aos="fade-right">
+                    <div class="flex">
+                        <img src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" class="max-h-44 mr-2" />
+                        <div>
+                            <h2 class="text-xl font-bold mb-4 text-left">{{ $businesses[0]->title }}</h2>
+                            <p class="text-gray-600 mb-4 text-justify">{{ $businesses[0]->description }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Middle Right -->
+                @if(isset($businesses[1]))
+                @php
+                $folderPath = $businesses[1]->image_path;
+                $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+                $filePath = null;
+                foreach ($extensions as $extension) {
+                $fullFilePath = $folderPath . '/' . 'main' . '.' . $extension;
+
+                if (Storage::disk('public')->exists(str_replace('public/','',$fullFilePath))) {
+                    $filePath = $fullFilePath;
+                    break;
+                }
+                }
+                @endphp
+                    <div class="bg-white shadow-lg rounded-lg p-6 col-start-2 row-start-2" data-aos="fade-left">
+                        <div class="flex">
+                            <img src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" class="max-h-44 mr-2" />
+                            <div>
+                                <h2 class="text-xl font-bold mb-4 text-left">{{ $businesses[1]->title }}</h2>
+                                <p class="text-gray-600 mb-4 text-justify">{{ $businesses[1]->description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Bottom Left -->
+                @if(isset($businesses[2]))
+                @php
+                $folderPath = $businesses[2]->image_path;
+                $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+                $filePath = null;
+                foreach ($extensions as $extension) {
+                $fullFilePath = $folderPath . '/' . 'main' . '.' . $extension;
+
+                if (Storage::disk('public')->exists(str_replace('public/','',$fullFilePath))) {
+                    $filePath = $fullFilePath;
+                    break;
+                }
+                }
+                @endphp
+                    <div class="bg-white shadow-lg rounded-lg p-6 col-start-1 row-start-3" data-aos="fade-right">
+                        <div class="flex">
+                            <img src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" class="max-h-44 mr-2" />
+                            <div>
+                                <h2 class="text-xl font-bold mb-4 text-left">{{ $businesses[2]->title }}</h2>
+                                <p class="text-gray-600 mb-4 text-justify">{{ $businesses[2]->description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                </div>
+            </div>
+        </div>
+    @include('layout.footer')
 @endsection
 
 @section('scripts')

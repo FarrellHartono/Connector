@@ -19,6 +19,9 @@ return new class extends Migration
             $table->date(column: 'start_date');
             $table->date(column: 'end_date');
             $table->integer(column:'nominal');
+            $table->string('address');
+            $table->string('phone_number');
+            $table->integer('status')->default(0);
             $table->foreignId('user_id');
             $table->timestamps();
         });
