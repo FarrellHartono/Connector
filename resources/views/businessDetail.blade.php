@@ -258,6 +258,7 @@
 
             <a href="{{ route('manageBusiness', ['id' => $business->id]) }}" class="btn btn-primary">Manage Business</a>
 
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
                 // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
                 function submitSortForm() {

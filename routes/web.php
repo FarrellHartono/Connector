@@ -7,6 +7,8 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\meetingController;
 
 Route::middleware(['user.access'])->group(function () {
+    Route::get('/upload', [BusinessController::class, 'uploadPage'])->name('uploadpage');
+    Route::post('/upload', [BusinessController::class, 'upload'])->name('business.upload');
     Route::get('/manage/{id}', [BusinessController::class, 'manage'])->name('manageBusiness');
     Route::put('/manage/{id}',[BusinessController::class,'updateBusiness'])->name('business.update');
     Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])->name('business.show');
