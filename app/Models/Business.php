@@ -23,6 +23,9 @@ class Business extends Model
         'start_date',
         'end_date',
         'nominal',
+        'phone_number',
+        'address',
+        'status',
         'user_id'
     ];
 

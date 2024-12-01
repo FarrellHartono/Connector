@@ -58,9 +58,9 @@
         </div>
     @endforeach
 </div>
-
-
+@include('layout.footer')
 @endsection
+
 
 @section('scripts')
   @if(session('successRegister'))

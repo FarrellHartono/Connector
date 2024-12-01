@@ -8,11 +8,11 @@
 
 @extends('layout.navbar')
 
-  <div class="justify-self-center bg-gray-300 w-[400px] h-[700px] p-6 rounded-lg">
+  <div class="justify-self-center bg-gray-300 w-[400px]  p-6 rounded-lg h-auto">
     <h2 class="text-2xl font-bold text-center mb-6">Sign Up</h2>
     <form action="{{ route('registerProcess') }}" method="Post" class="max-w-sm mx-auto">
       @csrf
-      <div  class="grid">
+      <div  class="flex flex-col">
         <div class="mb-5">
           <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
           <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" required />
@@ -23,7 +23,7 @@
           <input type="email" name = "email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="connector@gmail.com" required />
           <span id="email-error" class="text-red-500 mt-1 hidden">Email is already exists</span>
         </div>
-        
+
         <div class="mb-5">
           <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
           <input type="password" name = "password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="password" required />
@@ -34,7 +34,7 @@
           <input type="password" name = "confirmation_password" id="confirmation_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Confirmation Password" required />
           <span id="pw-error" class="text-red-500 mt-1 hidden">Password is not the same</span>
         </div>
-  
+
         <div class="mb-5">
           <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
           <input type="tel" name="phone" id="phone" title="Please enter a valid Indonesian mobile number, starting with +62 or 08." class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" pattern="^(\+62|0)8\d{7,10}$" placeholder="e.g. +628123456789" required />
@@ -43,6 +43,7 @@
         <div class="mb-5">
           <label for="birthDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
           <input type="date" name="birthDate" id="birthDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+          <span id="dob-error" class="text-red-500 mt-1 hidden">You must be at least 18 years old.</span>
         </div>
 
         <button type="submit" class="justify-self-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-3">Submit</button>
@@ -81,5 +82,21 @@
             }
         });
     });
+
+    $('#birthDate').on("change",function(){
+        var dobInput = document.getElementById('birthDate');
+        var errorMessage = document.getElementById('dob-error');
+        var dob = new Date(dobInput.value);
+        var today = new Date();
+        var age = today.getFullYear() - dob.getFullYear();
+        var monthDiff = today.getMonth() - dob.getMonth();
+        // Check if the user is at least 18 years old
+        if (age < 18 || (age === 18 && monthDiff < 0)) {
+            errorMessage.classList.remove('hidden'); // Show error message
+
+        } else {
+            errorMessage.classList.add('hidden'); // Hide error message
+        }
+    })
 </script>
 @endsection

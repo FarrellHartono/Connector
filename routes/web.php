@@ -6,9 +6,10 @@ use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\meetingController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('welcome');
+Route::get('/',[BusinessController::class,'welcome'])->name('welcome');
 
 Route::get('/home', [BusinessController::class, 'home'])->name('home');
 Route::get('/upload', [BusinessController::class, 'uploadPage'])->name('uploadpage');

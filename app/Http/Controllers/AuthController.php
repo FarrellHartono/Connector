@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    
+
     public function login(){
         return view('login');
     }
@@ -32,7 +32,7 @@ class AuthController extends Controller
             return redirect()->back()->with('show_register_confirmation', true)->with('email', $request->email);
             // return redirect(route('register'));
         }
-    } 
+    }
 
     public function checkEmail(Request $request) {
         // $email = $request->input('email');
@@ -40,10 +40,10 @@ class AuthController extends Controller
         error_log("tes") ;
         error_log($email);
         $exists = User::where('email', $email)->exists(); // Cek emailnya udah ada ga
-    
+
         return response()->json(['exists' => $exists]);
     }
-    
+
     public function register(){
         return view('register');
     }
@@ -55,21 +55,28 @@ class AuthController extends Controller
             "name" => "required|string|max:255",
             "email" => "required|string|email|max:255|unique:users",
             "password"=>"required|string|min:8",
-            "confirmation_password" => "required|required_with:password|same:password"
+            "confirmation_password" => "required|required_with:password|same:password",
+            "birthDate" => [
+            "required",
+            "date",
+            "before_or_equal:" . now()->subYears(18)->format('Y-m-d')
+        ],
         ]);
         error_log($request);
         $user = User::create([
             "name" => $request->name,
             "email" => $request->email,
             "password" => Hash::make($request->password), // Hash password sebelum disimpan
+            "phone_number" => $request->phone,
+            "dob" => $request->birthDate
         ]);
         error_log("tesssss");
         error_log($user);
         Auth::login($user);
 
         return redirect(route('home'))->with('successRegister', true);
-    }  
-    
+    }
+
     public function logout(Request $request){
         Auth::logout();
         $request->session()->invalidate();
