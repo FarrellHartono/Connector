@@ -13,7 +13,6 @@
         <div class="flex justify-center">
             <h1 class="text-3xl font-semibold text-gray-800">{{ $business->title }}</h1>
         </div>
-        {{-- <p class="mt-3 text-gray-600">{{ $business->description }}</p> --}}
 
         <div class="flex flex-col md:flex-row items-start mt-6">
             <!-- Carousel occupying half the screen -->
@@ -28,14 +27,6 @@
                         alt="Business Image">
                     </div>
                     @endforeach
-                    
-                    {{-- <!-- Item 1 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        @if ($business->image_path)
-                            <img class="rounded-lg w-full h-full object-cover"
-                                src="{{ asset('storage/assets/business/tes1234567890/1.jpg' ) }}" alt="Business Image">
-                        @endif
-                    </div> --}}
                 </div>
                 <!-- Slider indicators -->
                 <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
