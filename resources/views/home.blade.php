@@ -58,6 +58,7 @@
         </div>
     @endforeach
 </div>
+<a href="{{ route('admin.businesses') }}"> Admin Business </a>
 @include('layout.footer')
 @endsection
 

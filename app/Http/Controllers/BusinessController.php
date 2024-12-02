@@ -64,6 +64,7 @@ class BusinessController extends Controller
             'address' => $request-> address,
             'phone_number' => $request -> phone,
             'user_id' => $userId,
+            'status'=> $status = 0,
 
         ]);
 
@@ -93,7 +94,9 @@ class BusinessController extends Controller
         }
 
         $businesses = $this->applySorting($businesses, $request);
-        return view('home', ['businesses' => $businesses->get()]);
+
+        $businesses = Business::where('status', 1)->get();
+        return view('home', compact('businesses'));
 
 
     }

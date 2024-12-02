@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // custom middleware
         $middleware->alias([
             'user.access' => \App\Http\Middleware\UserAccessMiddleware::class,
+            'admin.access'=> \App\Http\Middleware\AdminMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

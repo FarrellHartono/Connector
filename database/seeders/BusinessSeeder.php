@@ -22,7 +22,8 @@ class BusinessSeeder extends Seeder
             'nominal'=>'12345',
             'phone_number'=>'08123456789',
             'address'=>'qwerty street',
-            'user_id' => '1'
+            'user_id' => '1',
+            'status'=> '1'
         ]);
 
         Business::create([
@@ -34,7 +35,8 @@ class BusinessSeeder extends Seeder
             'nominal'=>'12345',
             'phone_number'=>'08123456789',
             'address'=>'qwerty street',
-            'user_id' => '1'
+            'user_id' => '1',
+            'status' => '0'
         ]);
 
         Business::create([
@@ -46,7 +48,8 @@ class BusinessSeeder extends Seeder
             'nominal'=>'12345',
             'phone_number'=>'08123456789',
             'address'=>'qwerty street',
-            'user_id' => '1'
+            'user_id' => '1',
+            'status' => '2'
         ]);
     }
 }
