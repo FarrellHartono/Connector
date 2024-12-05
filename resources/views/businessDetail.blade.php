@@ -13,7 +13,6 @@
         <div class="flex justify-center">
             <h1 class="text-3xl font-semibold text-gray-800">{{ $business->title }}</h1>
         </div>
-        {{-- <p class="mt-3 text-gray-600">{{ $business->description }}</p> --}}
 
         <div class="flex flex-col md:flex-row items-start mt-6">
             <!-- Carousel occupying half the screen -->
@@ -28,27 +27,13 @@
                         alt="Business Image">
                     </div>
                     @endforeach
-                    
-                    {{-- <!-- Item 1 -->
-                    <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        @if ($business->image_path)
-                            <img class="rounded-lg w-full h-full object-cover"
-                                src="{{ asset('storage/assets/business/tes1234567890/1.jpg' ) }}" alt="Business Image">
-                        @endif
-                    </div> --}}
                 </div>
                 <!-- Slider indicators -->
                 <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-                    <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1"
-                        data-carousel-slide-to="0"></button>
-                    <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2"
-                        data-carousel-slide-to="1"></button>
-                    <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3"
-                        data-carousel-slide-to="2"></button>
-                    <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4"
-                        data-carousel-slide-to="3"></button>
-                    <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5"
-                        data-carousel-slide-to="4"></button>
+                    @foreach ($imageFiles as $index => $file)
+                        <button type="button" class="w-3 h-3 rounded-full" aria-current="{{ $index === 0 ? 'true' : 'false' }}"
+                            aria-label="Slide {{ $index + 1 }}" data-carousel-slide-to="{{ $index }}"></button>
+                    @endforeach
                 </div>
                 <!-- Slider controls -->
                 <button type="button"
@@ -197,7 +182,7 @@
             {{-- Calendar --}}
             <div id="meeting-box" style="display: none;">
                 <div class="calendar-container">
-                    <div id="calendar"></div>
+                    <div id="calendar-detail"></div>
                     <ul>
                         @foreach ($business->meetings as $meeting)
                             <li>{{ $meeting->title }} on {{ $meeting->date }} - {{ $meeting->description }}</li>
@@ -207,8 +192,8 @@
             </div>
 
             {{-- Forum --}}
-            <div class="flex justify-center" id="forum-box" style="display: none;">
-                <div class="block max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <div class="flex justify-center w-full" id="forum-box" style="display: none;">
+                <div class="block max-w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <div class="flex items-center space-x-4">
                         <img class="w-16 h-16 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
                         <div>
@@ -241,7 +226,7 @@
 
                         {{-- Comment List --}}
                         @foreach ($business->comments as $comment)
-                            <div class="flex items-start space-x-3 mb-4 border-t">
+                            <div class="flex items-start space-x-3 mb-4 pt-3 border-t">
                                 <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
                                 <div class="flex flex-col">
                                     <h6 class="text-gray-900 dark:text-white font-semibold">{{ $comment->user->name }}</h6>
@@ -273,6 +258,7 @@
 
             <a href="{{ route('manageBusiness', ['id' => $business->id]) }}" class="btn btn-primary">Manage Business</a>
 
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
                 // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
                 function submitSortForm() {
@@ -315,7 +301,7 @@
                             descriptionBox.style.display = 'block';
                         } else if (tab === 'meeting') {
                             meetingBox.style.display = 'block';
-                            var calendarEl = document.getElementById('calendar');
+                            var calendarEl = document.getElementById('calendar-detail');
 
                             // Create the event data directly in Blade
                             var meetings = @json($business->meetings->map(function($meeting) {
