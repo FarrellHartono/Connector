@@ -58,7 +58,7 @@
         </div>
     @endforeach
 </div>
-@include('layout.footer')
+{{-- @include('layout.footer') --}}
 @endsection
 
 

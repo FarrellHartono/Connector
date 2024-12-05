@@ -38,5 +38,6 @@
     {{-- <script src="{{ asset('js/calender.js') }}"></script> --}}
     @yield('scripts')
     </div>
+    @include('layout.footer')
 </body>
 </html>

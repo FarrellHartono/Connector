@@ -278,7 +278,7 @@ class BusinessController extends Controller
 
 public function listBusiness(Request $request){
     $businesses = Business::query();
-    $user = 1;
+    $user = auth()->id();
 
             $businesses->where(function ($query) use($user): void  {
                 $query->where('user_id', 'like', $user);
