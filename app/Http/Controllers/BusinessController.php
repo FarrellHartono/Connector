@@ -176,7 +176,9 @@ class BusinessController extends Controller
 
         $investments = $this->applySortingInvestors($investmentsQuery, $request)
             ->select('investments.*', 'users.name as investor_name')
+            ->where('investments.status', 1)
             ->get();
+        
         // Buat Nge test
             // dd($investmentsQuery->toSql(), $investmentsQuery->getBindings());
 
@@ -217,32 +219,32 @@ class BusinessController extends Controller
 
         $business = Business::findOrFail($businessId);
         $userId = auth()->id();
+        $action = $request->input('action');
 
         // Buat nyari apakah user sudah pernah invest di bisnis ini.
         $investment = Investment::where('user_id', $userId)
             ->where('business_id', $businessId)
             ->first();
 
-            $action = $request->input('action');
 
             if ($action === 'invest') {
-                // Logic Investment
-                if ($investment) {
-                    $investment->amount += $validatedData['amount'];
-                    $investment->save();
-                } else {
-                    Investment::create([
-                        'user_id' => $userId,
-                        'business_id' => $businessId,
-                        'amount' => $validatedData['amount'],
-                    ]);
-                }
-
-                $message = 'Investment successful!';
+                Investment::create([
+                    'user_id' => $userId,
+                    'business_id' => $businessId,
+                    'amount' => $validatedData['amount'],
+                    'status' => 0,
+                ]);
+                
+                $message = 'Investment submitted for approval!';
             } elseif ($action === 'withdraw') {
-                // Logic Withdraw
+                // Check dlu statusnya biar gk withdraw langsung
+                $investment = Investment::where('user_id', $userId)
+                ->where('business_id', $businessId)
+                ->where('status', 1) // Only approved investments
+                ->first();
+                
                 if (!$investment) {
-                    return redirect()->back()->with('error', 'No investment found.');
+                    return redirect()->back()->with('error', 'No approved investment found for withdrawal.');
                 }
 
                 $withdrawalAmount = $validatedData['amount'];
@@ -251,19 +253,22 @@ class BusinessController extends Controller
                 }
 
                 $investment->amount -= $withdrawalAmount;
-                $investment->save();
+
+                // Kalau misalnya amountnya udah 0 delete
+                if ($investment->amount == 0) {
+                        $investment->delete();
+                    } else {
+                        $investment->save();
+                    }
 
                 $message = 'Withdrawal successful!';
             } else {
                 return redirect()->back()->with('error', 'Invalid transaction type.');
             }
-
+            
             return redirect()->route('business.show', $businessId)
                 ->with([
-                    'success' => $message,
-                    'error' => $action === 'withdraw' && $withdrawalAmount > $investment->amount
-                        ? 'Withdrawal amount exceeds your investment.'
-                        : null,
+                    'success' => $message
                 ]);
     }
 

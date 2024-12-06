@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('title')
-  Home
+  Approval Admin
 @endsection
 
 @section('content')

@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function adminApprovalView()
     {
         $businesses = Business::where('status', 0)->get();
         $declinedBusinesses = Business::where('status', 2)->get();
-        return view('approval', compact('businesses', 'declinedBusinesses'));
+        return view('approvalAdmin', compact('businesses', 'declinedBusinesses'));
     }
 
     public function approve($id)
