@@ -42,4 +42,5 @@ Route::middleware(['admin.access'])->group(function () {
     Route::get('/admin/businesses', [AdminController::class, 'index'])->name('admin.businesses');
     Route::post('/admin/businesses/{id}/approve', [AdminController::class, 'approve'])->name('admin.businesses.approve');
     Route::post('/admin/businesses/{id}/decline', [AdminController::class, 'decline'])->name('admin.businesses.decline');
+    Route::delete('/admin/businesses/{id}/delete', [AdminController::class, 'delete'])->name('admin.businesses.delete');
 });
