@@ -2,7 +2,7 @@
 <div id="modal" class="fixed w-screen h-full bg-black opacity-50 z-50 hidden">
 </div>
 <nav class="bg-white dark:bg-gray-900 w-full z-20 top-0 border-b border-gray-200 dark:border-gray-600 flex justify-evenly">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between p-4 w-full">
+  <div class="flex flex-wrap items-center justify-between p-4 w-full">
     <!-- <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo">
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
@@ -34,39 +34,60 @@
     </div>
 
 
-    <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-    @if(Auth::check())
-      Welcome, {{ Auth::user()->name }}!
-      <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">Logout</button>
-      </form>
-
-    @else
-      <a href="{{ route('profile') }}" class=" bg-black text-white w-10 h-10 rounded-full mr-5"></a>
-
-      <a href="{{ route('login') }}" class="bg-blue-500 text-white px-4 py-2 rounded    ">Login</a>
-    @endif
+    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        @if(Auth::check())
+        <p class="flex items-center m-0">
+            Welcome, {{ Auth::user()->name }}!
+        </p>
+        <form action="{{ route('logout') }}" method="POST" class="flex items-center m-0">
+            @csrf
+            <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">
+                Logout
+            </button>
+        </form>
+        @else
+        <a href="{{ route('login') }}" class="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
+            Login
+        </a>
+        @endif
     </div>
-    <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-      <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-        <li>
-          <a href="{{ route('home') }}" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
-        </li>
-        <li>
-          <a href="{{ route('listBusiness') }}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">My Business</a>
-        </li>
-        <li>
-          <a href="{{ route('profile') }}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Profile</a>
-        </li>
-        @admin
-        <li>
-          <a href="{{ route('admin.businesses') }}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Approval</a>
-        </li>
-        @endadmin
-      </ul>
+
+
+    <div class="items-center justify-center flex-grow hidden md:flex" id="navbar-sticky">
+        <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-12 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+            <li>
+                <a href="{{ route('home') }}"
+                   class="group relative block py-2 px-3 {{ request()->routeIs('home') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                   aria-current="page">
+                    Home
+                    <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('listBusiness') }}"
+                   class="group relative block py-2 px-3 {{ request()->routeIs('listBusiness') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                    My Business
+                    <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('profile') }}"
+                   class="group relative block py-2 px-3 {{ request()->routeIs('profile') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                    Profile
+                    <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                   class="group relative block py-2 px-3 {{ request()->routeIs('approval') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                    Approval
+                    <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </li>
+        </ul>
+      </div>
     </div>
-  </div>
+
 </nav>
 
 <div id="calendar" class="fixed left-1/3 top-32 w-4/12 h-5/12 hidden z-50">
@@ -105,11 +126,11 @@
             $("#modal").css("display", "block");
             var calendarEl = document.getElementById('calendarContent');
 
-            
+
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
               initialView: 'dayGridMonth',
-              
+
               fixedWeekCount: false
             });
             calendar.render();
