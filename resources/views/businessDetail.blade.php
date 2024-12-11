@@ -8,22 +8,28 @@
     @extends('layout.navbar')
     <link rel="stylesheet" href="{{ asset('css/calender.css') }}">
 
+    <div class="relative flex justify-center">
+        <a href="{{ route('home') }}" class="absolute left-4 flex items-center bg-white border rounded-full p-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" class="">
+                <rect width="24" height="24" fill="none" />
+                <path fill="currentColor" d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1" />
+            </svg>
+        </a>
+        <h1 class="text-5xl font-bold text-gray-800">{{ $business->title }}</h1>
+    </div>
     <div class="container mx-auto mt-6 p-6 rounded-lg">
         <!-- Business Title and Description -->
-        <div class="flex justify-center">
-            <h1 class="text-3xl font-semibold text-gray-800">{{ $business->title }}</h1>
-        </div>
 
         <div class="flex flex-col md:flex-row items-start mt-6">
             <!-- Carousel occupying half the screen -->
             <div id="default-carousel" class="relative w-full md:w-1/2" data-carousel="static">
                 <!-- Carousel wrapper -->
                 <div class="relative h-[28rem] overflow-hidden rounded-lg">
-                    
+
                     @foreach ($imageFiles as $file)
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
                         <img src="{{ Storage::url(ltrim($business->image_path, '/') .'/'. $file->getFilename()) }}"
-                        class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" 
+                        class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                         alt="Business Image">
                     </div>
                     @endforeach
@@ -128,15 +134,15 @@
                         <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
                         <div class="flex flex-col">
                             <input type="number" name="amount" id="amount" step="1" required
-                                class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 
+                                class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300
                                 @error('amount') @enderror">
-                            
+
                             <div class="flex justify-between">
                                 <button type="submit" name="action" value="invest"
                                     class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
                                     Buy/Invest
                                 </button>
-                                
+
                                 <button type="submit" name="action" value="withdraw"
                                     class="bg-red-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-red-700">
                                     Withdraw
@@ -150,7 +156,7 @@
 
             </div>
         </div>
-        
+
         <div class="container mx-auto my-8 p-6 rounded-lg">
             <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl mb-4">
                 <div class="flex justify-between space-x-4">
@@ -200,7 +206,7 @@
                                 acquisitions of 2021 so far, in reverse chronological order.</p>
                         </div>
                     </div>
-                    
+
                     {{-- Create Comment --}}
                     <div class="mt-6 border-t pt-4">
                         <form action="{{ route('business.storeComment', $business->id) }}" method="POST">
@@ -250,8 +256,19 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <a href="{{ route('manageBusiness', ['id' => $business->id]) }}" class="btn btn-primary">Manage Business</a>
+
+        @if (auth()->id() === $business->id)
+        <a href="{{ route('manageBusiness', ['id' => $business->id]) }}"
+            class="inline-flex items-center justify-center px-3 py-3 text-l font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            Manage Business
+        </a>
+        @endif
+    </div>
+
+
+
 
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
@@ -260,7 +277,7 @@
                     // Buat nge get dari dropdown
                     const sortOption = document.getElementById('sort').value;
 
-                    // Ini nge splitnya 
+                    // Ini nge splitnya
                     const [order, sort] = sortOption.split('_');
 
                     // Buat nge set URLnya
@@ -313,7 +330,7 @@
                                     eventClick: function(info) {
                                         alert('Meeting: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
                                     }
-                                }); 
+                                });
 
                             calendar.render();
 

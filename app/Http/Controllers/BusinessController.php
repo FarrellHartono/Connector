@@ -178,7 +178,7 @@ class BusinessController extends Controller
             ->select('investments.*', 'users.name as investor_name')
             ->where('investments.status', 1)
             ->get();
-        
+
         // Buat Nge test
             // dd($investmentsQuery->toSql(), $investmentsQuery->getBindings());
 
@@ -187,7 +187,7 @@ class BusinessController extends Controller
         $imageFiles = [];
         if (File::exists($imageFolderPath)) {
             $allFiles = File::files($imageFolderPath); // Returns array of file paths
-            
+
             $mainFile = null;
             $otherFiles = [];
             // Separasi main dari file lain
@@ -234,7 +234,7 @@ class BusinessController extends Controller
                     'amount' => $validatedData['amount'],
                     'status' => 0,
                 ]);
-                
+
                 $message = 'Investment submitted for approval!';
             } elseif ($action === 'withdraw') {
                 // Check dlu statusnya biar gk withdraw langsung
@@ -242,7 +242,7 @@ class BusinessController extends Controller
                 ->where('business_id', $businessId)
                 ->where('status', 1) // Only approved investments
                 ->first();
-                
+
                 if (!$investment) {
                     return redirect()->back()->with('error', 'No approved investment found for withdrawal.');
                 }
@@ -265,7 +265,7 @@ class BusinessController extends Controller
             } else {
                 return redirect()->back()->with('error', 'Invalid transaction type.');
             }
-            
+
             return redirect()->route('business.show', $businessId)
                 ->with([
                     'success' => $message
@@ -306,13 +306,21 @@ public function listBusiness(Request $request){
     $businesses = Business::query();
     $user = auth()->id();
 
-            $businesses->where(function ($query) use($user): void  {
-                $query->where('user_id', 'like', $user);
-            });
 
-        $businesses = $this->applySorting($businesses, $request);
+    $businesses->where(function ($query) use ($user) {
+        $query->where('user_id', 'like', $user);
+    });
 
-    return view('listBusiness',['businesses' => $businesses->get()] );
+
+    $businesses = $this->applySorting($businesses, $request);
+
+
+    $acc = Business::where('user_id', $user)->where('status', '1')->count();
+    $pend = Business::where('user_id', $user)->where('status', '0')->count();
+    $rej = Business::where('user_id', $user)->where('status', '2')->count();
+    $tot = Business::where('user_id', $user)->count();
+
+    return view('listBusiness', ['businesses' => $businesses->get(), 'acc' => $acc,'pend' => $pend, 'rej' => $rej,'tot'=>$tot]);
 }
 
     public function detailProfile(){
