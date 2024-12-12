@@ -1,7 +1,6 @@
 {{-- Partial view Buat Reply biar bisa dimodif fisini --}}
 @foreach ($comments as $reply)
-    <div class="mt-4 flex items-start space-x-4 w-full">
-        <img class="w-8 h-8 rounded-full" src="https://via.placeholder.com/40" alt="User avatar">
+    <div class="mt-4 ml-8 flex space-x-4 w-full">
         <div class="flex flex-col w-full">
             <h6 class="text-gray-900 dark:text-white font-semibold">{{ $reply->user->name }}</h6>
             <p class="text-gray-700 dark:text-gray-400 text-sm">{{ $reply->content }}</p>
