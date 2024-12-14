@@ -37,24 +37,27 @@
         </div>
 
 
-        <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            @if (Auth::check())
-                <p class="flex items-center m-0">
-                    Welcome, {{ Auth::user()->name }}!
-                </p>
-                <form action="{{ route('logout') }}" method="POST" class="flex items-center m-0">
-                    @csrf
-                    <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">
-                        Logout
-                    </button>
-                </form>
-            @else
-                <a href="{{ route('login') }}"
-                    class="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
-                    Login
-                </a>
-            @endif
-        </div>
+    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        @if(Auth::check())
+        <p class="flex flex-col text-right items-center m-0 sm:flex-row">
+            <div class="relative w-32 text-right">
+                <span id="typewriter" class=""></span>
+            </div>
+            <span>, {{ Auth::user()->name }}!</span>
+        </p>
+
+        <form action="{{ route('logout') }}" method="POST" class="flex items-center m-0">
+            @csrf
+            <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">
+                Logout
+            </button>
+        </form>
+        @else
+        <a href="{{ route('login') }}" class="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
+            Login
+        </a>
+        @endif
+    </div>
 
 
         <div class="items-center justify-center flex-grow hidden md:flex" id="navbar-sticky">
@@ -114,8 +117,30 @@
 </div>
 
 
+<style>
+   /* .typing-animation {
+    display: inline-block;
+  overflow: hidden;
+  border-right: .15em solid black;
+  white-space: nowrap;
+  margin: 0 auto;
+  animation:
+    typing 2s steps(40, end) infinite, blink 0.5s step-end infinite,
+    blink-caret .75s step-end infinite;
+}
 
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: black; }
+} */
+</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -162,5 +187,11 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
+      });
+
+      var typed = new Typed('#typewriter', {
+      strings: ['Welcome','Selamat Datang','환영','歓迎','欢迎'],
+      typeSpeed: 120,
+      loop: true
     });
 </script>

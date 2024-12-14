@@ -5,17 +5,16 @@
 @endsection
 
 @section('content')
-    @extends('layout.navbar')
-    <div class="relative flex items-center">
-        <a href="{{ route('listBusiness') }}" class="absolute left-4 flex items-center bg-white border rounded-full p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" class="">
-                <rect width="24" height="24" fill="none" />
-                <path fill="currentColor"
-                    d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1" />
-            </svg>
-        </a>
-        <h1 class="mx-auto text-5xl font-bold">Manage Business</h1>
-    </div>
+@extends('layout.navbar')
+<div class="relative flex items-center">
+    <a href="{{ url()->previous() }}" class="absolute left-4 flex items-center bg-white border rounded-full p-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" class="">
+            <rect width="24" height="24" fill="none" />
+            <path fill="currentColor" d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1" />
+        </svg>
+    </a>
+    <h1 class="mx-auto text-5xl font-bold">Manage Business</h1>
+</div>
 
 
     <div class="flex justify-center mt-10">
@@ -195,28 +194,19 @@
                 @csrf
                 <div class="grid">
                     <div class="mb-5">
-                        <label for="date"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                        <input type="date" name="date" id="date"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
-                            required />
+                        <label for="date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                        <input type="date" name="date" id="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                     </div>
                     <div class="mb-5">
-                        <label for="title"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
-                        <input type="text" name="title" id="title"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
-                            required />
+                        <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                        <input type="text" name="title" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                     </div>
                     <div class="mb-5">
-                        <label for="description"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                        <textarea name="description" id="description"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
+                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                        <textarea name="description" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
                     </div>
                     <input type="hidden" name="business_id" value="{{ $business->id }}" />
-                    <button type="submit"
-                        class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
+                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
                 </div>
             </form>
             <div class="flex justify-center">
@@ -224,12 +214,11 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const addMeetingBtn = document.getElementById('addMeetingBtn');
-            const addMeetingModal = document.getElementById('addMeetingModal');
-            const closeModalBtn = document.getElementById('closeModalBtn');
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        const addMeetingBtn = document.getElementById('addMeetingBtn');
+        const addMeetingModal = document.getElementById('addMeetingModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
 
             // Buat nge show pop up add meeting
             addMeetingBtn.addEventListener('click', function() {
