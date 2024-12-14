@@ -190,7 +190,7 @@
       });
 
       var typed = new Typed('#typewriter', {
-      strings: ['Welcome','Selamat Datang','환영','歓迎','欢迎'],
+      strings: ['Welcome','Selamat Datang','환영','歓迎','欢迎','Bonjour'],
       typeSpeed: 120,
       loop: true
     });
