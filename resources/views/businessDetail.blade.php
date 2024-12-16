@@ -229,36 +229,45 @@
                                 <div class="flex flex-col">
                                     <h6 class="text-gray-900 dark:text-white font-semibold">{{ $comment->user->name }}
                                     </h6>
-                                    <div class="flex flex-col items-start">
+                                    <div class="flex justify-between items-start">
+                                        <p id="comment-content-{{ $comment->id }}" class="text-gray-700 dark:text-gray-400 text-sm">
+                                            {{ $comment->content }}
+                                        </p>
                                         {{-- Edit and Delete Options --}}
                                         @if (Auth::id() === $comment->user_id || Auth::user()->is_admin)
-                                            <div class="flex space-x-2 mt-2">
-                                                <form action="{{ route('business.updateComment', $comment->id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <input type="text" name="content" value="{{ $comment->content }}"
-                                                        required class="border p-2 rounded w-full">
-                                                    <button type="submit"
-                                                        class="bg-blue-500 text-white px-2 py-1 rounded">
-                                                        Save
-                                                    </button>
-                                                </form>
-                                                <form action="{{ route('business.deleteComment', $comment->id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="bg-red-500 text-white px-2 py-1 rounded">
-                                                        Delete
-                                                    </button>
-                                                </form>
+                                            <div class="flex space-x-2 edit-delete-buttons">
+                                                {{-- Edit button --}}
+                                                <button type="button" onclick="toggleEdit({{ $comment->id }}, true)">
+                                                    <x-svg-icon name="edit-comment" />
+                                                </button>
+                                                <!-- Delete Button -->
+                                                <button type="button" onclick="confirmDelete({{ $comment->id }})">
+                                                    <x-svg-icon name="delete-comment" />
+                                                </button>
                                             </div>
                                         @endif
+
+                                        {{-- Hidden edit --}}
+                                        <form id="edit-form-{{ $comment->id }}" action="{{ route('business.updateComment', $comment->id) }}"
+                                            method="POST" class="hidden">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="text" name="content" value="{{ $comment->content }}" required
+                                                class="border p-2 rounded">
+                                            <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded">
+                                                Save
+                                            </button>
+                                            <button type="button" class="bg-gray-500 text-white px-2 py-1 rounded"
+                                                onclick="toggleEdit({{ $comment->id }}, false)">Cancel</button>
+                                        </form>
+
+                                        <!-- Hidden Delete Form -->
+                                        <form id="delete-form-{{ $comment->id }}" action="{{ route('business.deleteComment', $comment->id) }}" method="POST" class="hidden">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+
                                     </div>
-                                    <p class="text-gray-700 dark:text-gray-400 text-sm">
-                                        {{ $comment->content }}
-                                    </p>
 
 
                                     <!-- Reply Form -->
@@ -275,8 +284,14 @@
                                                 </button>
                                             </div>
                                         </form>
-                                        <!-- Display Replies Using the Partial View -->
-                                        @include('partials.comment', ['comments' => $comment->replies])
+                                        <div id="replies-{{ $comment->id }}" class="mt-3 hidden">
+                                            @include('partials.comment', ['comments' => $comment->replies])
+                                        </div>
+                                        @if ($comment->replies->count())
+                                            <button class="text-blue-500 hover:underline mt-2" onclick="toggleReplies({{ $comment->id }})">
+                                                View more replies
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -383,7 +398,7 @@
                     setActiveTab('forum');
                 });
             });
-
+            //  Ini buat confirmation di buy button dan withdraw button
             @if (session('success'))
                 Swal.fire({
                     title: 'Success!',
@@ -402,5 +417,51 @@
                     confirmButtonText: 'OK'
                 });
             @endif
+
+            function toggleEdit(commentId, isEditing) {
+                const contentElement = document.getElementById(`comment-content-${commentId}`);
+                const formElement = document.getElementById(`edit-form-${commentId}`);
+                const buttonElement = document.querySelector(`#comment-content-${commentId} + .edit-delete-buttons`);
+                if (isEditing) {
+                    contentElement.style.display = 'none';
+                    formElement.style.display = 'block';
+                    buttonElement.style.display = 'none';
+                } else {
+                    contentElement.style.display = 'block';
+                    formElement.style.display = 'none';
+                    buttonElement.style.display = 'flex';
+                }
+            }
+            // Buat delete reply button 
+            function confirmDelete(commentId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to undo this action!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Submit the corresponding delete form
+                        document.getElementById(`delete-form-${commentId}`).submit();
+                    }
+                });
+            }
+
+
+            function toggleReplies(commentId) {
+                const repliesElement = document.getElementById(`replies-${commentId}`);
+                const button = repliesElement.nextElementSibling;
+                if (repliesElement.style.display === 'none' || !repliesElement.style.display) {
+                    repliesElement.style.display = 'block';
+                    button.textContent = 'Hide replies';
+                } else {
+                    repliesElement.style.display = 'none';
+                    button.textContent = 'View more replies';
+                }
+            }
         </script>
     @endsection
