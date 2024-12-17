@@ -19,7 +19,11 @@ Route::middleware(['user.access'])->group(function () {
     Route::post('/transactions/approve/{investmentId}', [ApprovalFundController::class, 'approveTransaction'])->name('transaction.approve');
     Route::delete('/transactions/decline/{investmentId}', [ApprovalFundController::class, 'declineTransaction'])->name('transaction.decline');
     Route::post('/businesses/{id}/comments', [CommentController::class, 'storeComment'])->name('business.storeComment');
+    Route::put('/comments/{comment}', [CommentController::class, 'updateComment'])->name('business.updateComment');
+    Route::delete('/comments/{comment}', [CommentController::class, 'deleteComment'])->name('business.deleteComment');
     Route::post('/businesses/{business}/comments/{comment}/reply', [CommentController::class, 'reply'])->name('business.reply');
+    Route::put('/businesses/comments/reply/{reply}', [CommentController::class, 'updateReply'])->name('business.updateReply');
+    Route::delete('/businesses/comments/reply/{reply}', [CommentController::class, 'deleteReply'])->name('business.deleteReply');
     Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('addMeeting');
     Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('listBusiness');
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
