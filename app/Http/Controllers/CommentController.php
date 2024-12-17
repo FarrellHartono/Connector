@@ -67,4 +67,30 @@ class CommentController extends Controller
 
         return back()->with('success', 'Reply posted successfully.');
     }
+
+    public function updateReply(Request $request, Comment $reply)
+    {
+        if (Gate::denies('update', $reply)) {
+            return back()->with('error', 'Unauthorized to update this reply.');
+        }
+
+        $request->validate([
+            'content' => 'required|min:5',
+        ]);
+
+        $reply->update(['content' => $request->content]);
+
+        return back()->with('success', 'Reply updated successfully.');
+    }
+
+    public function deleteReply(Comment $reply)
+    {
+        if (Gate::denies('delete', $reply)) {
+            return back()->with('error', 'Unauthorized to delete this reply.');
+        }
+
+        $reply->delete();
+
+        return back()->with('success', 'Reply deleted successfully.');
+    }
 }
