@@ -4,41 +4,41 @@
         <div class="flex flex-col w-full">
             <h6 class="text-gray-900 dark:text-white font-semibold">{{ $reply->user->name }}</h6>
             <div class="flex justify-between items-start">
-            <p id="reply-content-{{ $reply->id }}" class="text-gray-700 dark:text-gray-400 text-sm">
-                {{ $reply->content }}</p>
+                <p id="reply-content-{{ $reply->id }}" class="text-gray-700 dark:text-gray-400 text-sm">
+                    {{ $reply->content }}</p>
 
-            
-            @if (Auth::id() === $reply->user_id || Auth::user()->is_admin)
-                <div class="flex space-x-2 edit-delete-buttons">
-                    <!-- Edit Button -->
-                    <button type="button" onclick="toggleEditReply({{ $reply->id }}, true)">
-                        <x-svg-icon name="edit-comment" />
-                    </button>
-                    <!-- Delete Button -->
-                    <button type="button" onclick="confirmDeleteReply({{ $reply->id }})">
-                        <x-svg-icon name="delete-comment" />
-                    </button>
-                </div>
 
-                <!-- Hidden Edit Form -->
-                <form id="edit-reply-form-{{ $reply->id }}" action="{{ route('business.updateReply', $reply->id) }}"
-                    method="POST" class="hidden">
-                    @csrf
-                    @method('PUT')
-                    <input type="text" name="content" value="{{ $reply->content }}" required
-                        class="border p-2 rounded">
-                    <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded">Save</button>
-                    <button type="button" class="bg-gray-500 text-white px-2 py-1 rounded"
-                        onclick="toggleEditReply({{ $reply->id }}, false)">Cancel</button>
-                </form>
+                @if (Auth::id() === $reply->user_id || Auth::user()->is_admin)
+                    <div class="flex space-x-2 edit-delete-buttons">
+                        <!-- Edit Button -->
+                        <button type="button" onclick="toggleEditReply({{ $reply->id }}, true)">
+                            <x-svg-icon name="edit-comment" />
+                        </button>
+                        <!-- Delete Button -->
+                        <button type="button" onclick="confirmDeleteReply({{ $reply->id }})">
+                            <x-svg-icon name="delete-comment" />
+                        </button>
+                    </div>
 
-                <!-- Hidden Delete Form -->
-                <form id="delete-reply-form-{{ $reply->id }}"
-                    action="{{ route('business.deleteReply', $reply->id) }}" method="POST" class="hidden">
-                    @csrf
-                    @method('DELETE')
-                </form>
-            @endif
+                    <!-- Hidden Edit Form -->
+                    <form id="edit-reply-form-{{ $reply->id }}"
+                        action="{{ route('business.updateReply', $reply->id) }}" method="POST" class="hidden">
+                        @csrf
+                        @method('PUT')
+                        <input type="text" name="content" value="{{ $reply->content }}" required
+                            class="border p-2 rounded">
+                        <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded">Save</button>
+                        <button type="button" class="bg-gray-500 text-white px-2 py-1 rounded"
+                            onclick="toggleEditReply({{ $reply->id }}, false)">Cancel</button>
+                    </form>
+
+                    <!-- Hidden Delete Form -->
+                    <form id="delete-reply-form-{{ $reply->id }}"
+                        action="{{ route('business.deleteReply', $reply->id) }}" method="POST" class="hidden">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endif
             </div>
             <!-- Reply Form for Nested Replies -->
             <form action="{{ route('business.reply', ['business' => $reply->business_id, 'comment' => $reply->id]) }}"
