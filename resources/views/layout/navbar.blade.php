@@ -67,6 +67,9 @@
                     <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
                 </a>
             </li>
+            @if ()
+
+            @endif
             <li>
                 <a href="{{ route('listBusiness') }}"
                    class="group relative block py-2 px-3 {{ request()->routeIs('listBusiness') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
