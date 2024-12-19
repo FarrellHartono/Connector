@@ -25,8 +25,8 @@ class UserAccessMiddleware
             return $next($request);
         }
 
-        return response()->view('errors.401', [
+        return response()->view('errors.404', [
             'message' => 'You must be logged in to access this page.'
-        ], 401);
+        ], 404);
     }
 }

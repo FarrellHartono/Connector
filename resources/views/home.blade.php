@@ -27,7 +27,7 @@
 </div>
 
 
-<div class="grid grid-cols-4 gap-3">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4  gap-3">
     @foreach($businesses as $business)
     @php
         $folderPath = $business->image_path;
@@ -42,7 +42,7 @@
         }
     }
     @endphp
-        <div class="flex-1 min-w-[300px] max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex-1 w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <img src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" />
 
             <a href="{{ route('business.show', $business->id) }}">
