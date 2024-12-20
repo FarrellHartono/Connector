@@ -12,8 +12,9 @@ class AdminController extends Controller
     public function adminApprovalView()
     {
         $businesses = Business::where('status', 0)->get();
+        $approveBusinesses = Business::where('status', 1)->get();
         $declinedBusinesses = Business::where('status', 2)->get();
-        return view('approvalAdmin', compact('businesses', 'declinedBusinesses'));
+        return view('approvalAdmin', compact('businesses', 'approveBusinesses', 'declinedBusinesses'));
     }
 
     public function approve($id)
