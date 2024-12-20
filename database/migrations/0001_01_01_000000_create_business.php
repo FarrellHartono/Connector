@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date(column: 'start_date');
             $table->date(column: 'end_date');
             $table->integer(column:'nominal');
+            $table->integer('current_investment')->default(0);
             $table->string('address');
             $table->string('phone_number');
             $table->integer('status')->default(0);

@@ -58,7 +58,6 @@
         </div>
     @endforeach
 </div>
-<a href="{{ route('business.transactions.view', $business->id) }}"> User Bisnis view </a>
 @endsection
 
 

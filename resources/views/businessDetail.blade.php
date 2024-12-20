@@ -23,7 +23,7 @@
 
         <div class="flex flex-col md:flex-row items-start mt-6">
             <!-- Carousel occupying half the screen -->
-            <div id="default-carousel" class="bg-white relative w-full md:w-1/2" data-carousel="static">
+            <div id="default-carousel" class="relative w-full md:w-1/2" data-carousel="static">
                 <!-- Carousel wrapper -->
                 <div class="relative h-[28rem] overflow-hidden rounded-lg">
 
@@ -70,6 +70,7 @@
                         <span class="sr-only">Next</span>
                     </span>
                 </button>
+                
             </div>
 
             <!-- Investor List and Sorting Section (other half of the screen) -->
@@ -155,7 +156,19 @@
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </form>
-
+                
+                <div class="flex justify-between mb-1">
+                    @php
+                    // Calculate the progress percentage
+                    $progressPercentage = ($business->current_investment / $business->nominal) * 100;
+                    @endphp
+                    
+                    <span class="text-base font-medium text-blue-700 dark:text-white">Current Investment</span>
+                    <span class="text-sm font-medium text-blue-700 dark:text-white">{{ number_format($progressPercentage, 2) }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
+                </div>
             </div>
         </div>
 
@@ -281,9 +294,9 @@
                                             method="POST" class="mt-2">
                                             @csrf
                                             <div class="flex items-start space-x-4">
-                                                <input type="text" name="content" class="w-full p-2 border rounded"
+                                                <input type="text" name="content" class="p-2 border rounded"
                                                     placeholder="Write a reply..." required>
-                                                <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">
+                                                <button type="submit" class="py-1 rounded">
                                                     <x-svg-icon name="reply" />
                                                 </button>
                                             </div>

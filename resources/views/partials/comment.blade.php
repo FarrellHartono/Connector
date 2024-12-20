@@ -45,7 +45,7 @@
                 method="POST" class="mt-2">
                 @csrf
                 <div class="flex items-start space-x-4">
-                    <input type="text" name="content" class="w-full p-2 border rounded"
+                    <input type="text" name="content" class="placeholder-gray-500 h-6 p-2 border rounded"
                         placeholder="Write a reply..." required>
                     <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">
                         <x-svg-icon name="reply" />
