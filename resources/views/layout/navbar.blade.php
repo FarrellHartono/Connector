@@ -1,7 +1,6 @@
 <div id="modal" class="fixed w-screen h-full bg-black opacity-50 z-50 hidden">
 </div>
-<nav
-    class="bg-white dark:bg-gray-900 w-full z-20 top-0 border-b border-gray-200 dark:border-gray-600 flex justify-evenly">
+<nav class="bg-white dark:bg-gray-900 w-full z-20 top-0 border-b border-gray-200 dark:border-gray-600 flex justify-evenly">
     <div class="flex flex-wrap items-center justify-between p-4 w-full">
         <!-- <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo">
@@ -70,9 +69,7 @@
                     <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
                 </a>
             </li>
-            @if ()
-
-            @endif
+            @if (auth()->id() !== 1)
             <li>
                 <a href="{{ route('listBusiness') }}"
                    class="group relative block py-2 px-3 {{ request()->routeIs('listBusiness') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
@@ -94,6 +91,15 @@
                     <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
                 </a>
             </li>
+            @else
+            <li>
+                <a href="{{ route('admin.businesses') }}"
+                   class="group relative block py-2 px-3 {{ request()->routeIs('admin.businesses') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                    Business Approval
+                    <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </li>
+            @endif
         </ul>
       </div>
     </div>
