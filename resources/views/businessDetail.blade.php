@@ -101,6 +101,19 @@
                     </select>
                 </form>
 
+                <div class="flex justify-between mb-1">
+                    @php
+                    // Calculate the progress percentage
+                    $progressPercentage = ($business->current_investment / $business->nominal) * 100;
+                    @endphp
+                    
+                    <span class="text-base font-medium text-blue-700 dark:text-white">Current Investment</span>
+                    <span class="text-sm font-medium text-blue-700 dark:text-white">{{ number_format($progressPercentage, 2) }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
+                </div>
+                
                 <!-- Investor List -->
                 <h2 class="text-xl font-semibold text-gray-700 mt-4">Investors</h2>
                 <div class="overflow-y-scroll max-h-48 rounded-lg shadow border border-gray-200">
@@ -156,19 +169,6 @@
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </form>
-                
-                <div class="flex justify-between mb-1">
-                    @php
-                    // Calculate the progress percentage
-                    $progressPercentage = ($business->current_investment / $business->nominal) * 100;
-                    @endphp
-                    
-                    <span class="text-base font-medium text-blue-700 dark:text-white">Current Investment</span>
-                    <span class="text-sm font-medium text-blue-700 dark:text-white">{{ number_format($progressPercentage, 2) }}%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
-                </div>
             </div>
         </div>
 
