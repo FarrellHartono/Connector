@@ -70,6 +70,7 @@
                         <span class="sr-only">Next</span>
                     </span>
                 </button>
+                
             </div>
 
             <!-- Investor List and Sorting Section (other half of the screen) -->
@@ -100,6 +101,19 @@
                     </select>
                 </form>
 
+                <div class="flex justify-between mb-1">
+                    @php
+                    // Calculate the progress percentage
+                    $progressPercentage = ($business->current_investment / $business->nominal) * 100;
+                    @endphp
+                    
+                    <span class="text-base font-medium text-blue-700 dark:text-white">Current Investment</span>
+                    <span class="text-sm font-medium text-blue-700 dark:text-white">{{ number_format($progressPercentage, 2) }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
+                </div>
+                
                 <!-- Investor List -->
                 <h2 class="text-xl font-semibold text-gray-700 mt-4">Investors</h2>
                 <div class="overflow-y-scroll max-h-48 rounded-lg shadow border border-gray-200">
@@ -155,13 +169,12 @@
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </form>
-
             </div>
         </div>
 
         <div class="container mx-auto my-8 p-6 rounded-lg">
             <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl mb-4">
-                <div class="flex justify-between space-x-4">
+                <div class="flex flex-wrap items-center justify-between space-x-4">
                     <button id="description-btn"
                         class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:shadow-xl">
                         Description
@@ -230,7 +243,8 @@
                                     <h6 class="text-gray-900 dark:text-white font-semibold">{{ $comment->user->name }}
                                     </h6>
                                     <div class="flex justify-between items-start">
-                                        <p id="comment-content-{{ $comment->id }}" class="text-gray-700 dark:text-gray-400 text-sm">
+                                        <p id="comment-content-{{ $comment->id }}"
+                                            class="text-gray-700 dark:text-gray-400 text-sm">
                                             {{ $comment->content }}
                                         </p>
                                         {{-- Edit and Delete Options --}}
@@ -248,12 +262,13 @@
                                         @endif
 
                                         {{-- Hidden edit --}}
-                                        <form id="edit-form-{{ $comment->id }}" action="{{ route('business.updateComment', $comment->id) }}"
-                                            method="POST" class="hidden">
+                                        <form id="edit-form-{{ $comment->id }}"
+                                            action="{{ route('business.updateComment', $comment->id) }}" method="POST"
+                                            class="hidden">
                                             @csrf
                                             @method('PUT')
-                                            <input type="text" name="content" value="{{ $comment->content }}" required
-                                                class="border p-2 rounded">
+                                            <input type="text" name="content" value="{{ $comment->content }}"
+                                                required class="border p-2 rounded">
                                             <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded">
                                                 Save
                                             </button>
@@ -262,7 +277,9 @@
                                         </form>
 
                                         <!-- Hidden Delete Form -->
-                                        <form id="delete-form-{{ $comment->id }}" action="{{ route('business.deleteComment', $comment->id) }}" method="POST" class="hidden">
+                                        <form id="delete-form-{{ $comment->id }}"
+                                            action="{{ route('business.deleteComment', $comment->id) }}" method="POST"
+                                            class="hidden">
                                             @csrf
                                             @method('DELETE')
                                         </form>
@@ -277,9 +294,9 @@
                                             method="POST" class="mt-2">
                                             @csrf
                                             <div class="flex items-start space-x-4">
-                                                <input type="text" name="content" class="w-full p-2 border rounded"
+                                                <input type="text" name="content" class="p-2 border rounded"
                                                     placeholder="Write a reply..." required>
-                                                <button type="submit" class="bg-gray-500 text-white px-2 py-1 rounded">
+                                                <button type="submit" class="py-1 rounded">
                                                     <x-svg-icon name="reply" />
                                                 </button>
                                             </div>
@@ -288,7 +305,8 @@
                                             @include('partials.comment', ['comments' => $comment->replies])
                                         </div>
                                         @if ($comment->replies->count())
-                                            <button class="text-blue-500 hover:underline mt-2" onclick="toggleReplies({{ $comment->id }})">
+                                            <button class="text-blue-500 hover:underline mt-2"
+                                                onclick="toggleReplies({{ $comment->id }})">
                                                 View more replies
                                             </button>
                                         @endif
@@ -310,158 +328,158 @@
     </div>
 
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
-            function submitSortForm() {
-                // Buat nge get dari dropdown
-                const sortOption = document.getElementById('sort').value;
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
+        function submitSortForm() {
+            // Buat nge get dari dropdown
+            const sortOption = document.getElementById('sort').value;
 
-                // Ini nge splitnya 
-                const [order, sort] = sortOption.split('_');
+            // Ini nge splitnya 
+            const [order, sort] = sortOption.split('_');
 
-                // Buat nge set URLnya
-                const url = new URL(window.location.href);
+            // Buat nge set URLnya
+            const url = new URL(window.location.href);
 
-                // Baru di set urlnya jadi sort dan order
-                url.searchParams.set('sort', sort);
-                url.searchParams.set('order', order);
+            // Baru di set urlnya jadi sort dan order
+            url.searchParams.set('sort', sort);
+            url.searchParams.set('order', order);
 
-                // Buat nge redirect urlnya jadi misah
-                window.location.href = url.toString();
-            }
+            // Buat nge redirect urlnya jadi misah
+            window.location.href = url.toString();
+        }
 
-            document.addEventListener('DOMContentLoaded', function() {
-                // Tab elements
-                const descriptionBtn = document.getElementById('description-btn');
-                const meetingBtn = document.getElementById('meeting-btn');
-                const forumBtn = document.getElementById('forum-btn');
-                const descriptionBox = document.getElementById('description-box');
-                const meetingBox = document.getElementById('meeting-box');
-                const forumBox = document.getElementById('forum-box');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab elements
+            const descriptionBtn = document.getElementById('description-btn');
+            const meetingBtn = document.getElementById('meeting-btn');
+            const forumBtn = document.getElementById('forum-btn');
+            const descriptionBox = document.getElementById('description-box');
+            const meetingBox = document.getElementById('meeting-box');
+            const forumBox = document.getElementById('forum-box');
 
-                // Retrieve the last active tab from localStorage
-                const lastActiveTab = localStorage.getItem('activeTab') || 'description';
+            // Retrieve the last active tab from localStorage
+            const lastActiveTab = localStorage.getItem('activeTab') || 'description';
 
-                // Show the last active tab content
-                function showTab(tab) {
-                    descriptionBox.style.display = 'none';
-                    meetingBox.style.display = 'none';
-                    forumBox.style.display = 'none';
+            // Show the last active tab content
+            function showTab(tab) {
+                descriptionBox.style.display = 'none';
+                meetingBox.style.display = 'none';
+                forumBox.style.display = 'none';
 
-                    if (tab === 'description') {
-                        descriptionBox.style.display = 'block';
-                    } else if (tab === 'meeting') {
-                        meetingBox.style.display = 'block';
-                        var calendarEl = document.getElementById('calendar-detail');
+                if (tab === 'description') {
+                    descriptionBox.style.display = 'block';
+                } else if (tab === 'meeting') {
+                    meetingBox.style.display = 'block';
+                    var calendarEl = document.getElementById('calendar-detail');
 
-                        // Create the event data directly in Blade
-                        var meetings = @json($business->meetings->map(function($meeting) {
+                    // Create the event data directly in Blade
+                    var meetings = @json($business->meetings->map(function($meeting) {
                                 return [
-                                        'title' => $meeting->title,
-                                        'start' => $meeting->date,
+                                    'title' => $meeting->title,
+                                    'start' => $meeting->date,
                                         'description' => $meeting->description
                                     ];
                                 }));
 
-                        var calendar = new FullCalendar.Calendar(calendarEl, {
-                            initialView: 'dayGridMonth',
-                            events: meetings,
-                            eventClick: function(info) {
-                                alert('Meeting: ' + info.event.title + '\nDescription: ' + info.event
-                                    .extendedProps.description);
-                            }
-                        });
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        events: meetings,
+                        eventClick: function(info) {
+                            alert('Meeting: ' + info.event.title + '\nDescription: ' + info.event
+                                .extendedProps.description);
+                        }
+                    });
 
-                        calendar.render();
+                    calendar.render();
 
-                    } else if (tab === 'forum') {
-                        forumBox.style.display = '';
-                    }
+                } else if (tab === 'forum') {
+                    forumBox.style.display = '';
                 }
-                showTab(lastActiveTab);
+            }
+            showTab(lastActiveTab);
 
-                // Update active tab in localStorage and display content
-                function setActiveTab(tab) {
-                    localStorage.setItem('activeTab', tab);
-                    showTab(tab);
-                }
+            // Update active tab in localStorage and display content
+            function setActiveTab(tab) {
+                localStorage.setItem('activeTab', tab);
+                showTab(tab);
+            }
 
-                // Add event listeners to the tab buttons
-                descriptionBtn.addEventListener('click', function() {
-                    setActiveTab('description');
-                });
-                meetingBtn.addEventListener('click', function() {
-                    setActiveTab('meeting');
-                });
-                forumBtn.addEventListener('click', function() {
-                    setActiveTab('forum');
-                });
+            // Add event listeners to the tab buttons
+            descriptionBtn.addEventListener('click', function() {
+                setActiveTab('description');
             });
-            //  Ini buat confirmation di buy button dan withdraw button
-            @if (session('success'))
-                Swal.fire({
-                    title: 'Success!',
-                    text: '{{ session('success') }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            @endif
+            meetingBtn.addEventListener('click', function() {
+                setActiveTab('meeting');
+            });
+            forumBtn.addEventListener('click', function() {
+                setActiveTab('forum');
+            });
+        });
+        //  Ini buat confirmation di buy button dan withdraw button
+        @if (session('success'))
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        @endif
 
-            // SweetAlert logic for error
-            @if (session('error'))
-                Swal.fire({
-                    title: 'Error!',
-                    text: '{{ session('error') }}',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            @endif
+        // SweetAlert logic for error
+        @if (session('error'))
+            Swal.fire({
+                title: 'Error!',
+                text: '{{ session('error') }}',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        @endif
 
-            function toggleEdit(commentId, isEditing) {
-                const contentElement = document.getElementById(`comment-content-${commentId}`);
-                const formElement = document.getElementById(`edit-form-${commentId}`);
-                const buttonElement = document.querySelector(`#comment-content-${commentId} + .edit-delete-buttons`);
-                if (isEditing) {
-                    contentElement.style.display = 'none';
-                    formElement.style.display = 'block';
-                    buttonElement.style.display = 'none';
-                } else {
-                    contentElement.style.display = 'block';
-                    formElement.style.display = 'none';
-                    buttonElement.style.display = 'flex';
+        function toggleEdit(commentId, isEditing) {
+            const contentElement = document.getElementById(`comment-content-${commentId}`);
+            const formElement = document.getElementById(`edit-form-${commentId}`);
+            const buttonElement = document.querySelector(`#comment-content-${commentId} + .edit-delete-buttons`);
+            if (isEditing) {
+                contentElement.style.display = 'none';
+                formElement.style.display = 'block';
+                buttonElement.style.display = 'none';
+            } else {
+                contentElement.style.display = 'block';
+                formElement.style.display = 'none';
+                buttonElement.style.display = 'flex';
+            }
+        }
+        // Buat delete reply button 
+        function confirmDelete(commentId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to undo this action!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the corresponding delete form
+                    document.getElementById(`delete-form-${commentId}`).submit();
                 }
-            }
-            // Buat delete reply button 
-            function confirmDelete(commentId) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to undo this action!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Submit the corresponding delete form
-                        document.getElementById(`delete-form-${commentId}`).submit();
-                    }
-                });
-            }
+            });
+        }
 
 
-            function toggleReplies(commentId) {
-                const repliesElement = document.getElementById(`replies-${commentId}`);
-                const button = repliesElement.nextElementSibling;
-                if (repliesElement.style.display === 'none' || !repliesElement.style.display) {
-                    repliesElement.style.display = 'block';
-                    button.textContent = 'Hide replies';
-                } else {
-                    repliesElement.style.display = 'none';
-                    button.textContent = 'View more replies';
-                }
+        function toggleReplies(commentId) {
+            const repliesElement = document.getElementById(`replies-${commentId}`);
+            const button = repliesElement.nextElementSibling;
+            if (repliesElement.style.display === 'none' || !repliesElement.style.display) {
+                repliesElement.style.display = 'block';
+                button.textContent = 'Hide replies';
+            } else {
+                repliesElement.style.display = 'none';
+                button.textContent = 'View more replies';
             }
-        </script>
-    @endsection
+        }
+    </script>
+@endsection

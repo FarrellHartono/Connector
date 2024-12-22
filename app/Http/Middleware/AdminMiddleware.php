@@ -20,8 +20,8 @@ class AdminMiddleware
             return $next($request);
         }
     
-        return response()->view('errors.401', [
+        return response()->view('errors.404', [
             'message' => 'Admin access required to view this page.'
-        ], 401);
+        ], 404);
     }
 }

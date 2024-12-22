@@ -226,16 +226,23 @@ class BusinessController extends Controller
             ->where('business_id', $businessId)
             ->first();
 
-
             if ($action === 'invest') {
+                $investmentAmount = $validatedData['amount'];
+                $remainingNominal = $business->nominal - $business->current_investment;
+                
+                if($investmentAmount > $remainingNominal){
+                    return redirect()->back()->with('error', 'Investment exceeds the target amount.');
+                }
+
                 Investment::create([
                     'user_id' => $userId,
                     'business_id' => $businessId,
-                    'amount' => $validatedData['amount'],
-                    'status' => 0,
+                    'amount' => $investmentAmount,
+                    'status' => 0, // Status untuk accept atau deny.
                 ]);
 
                 $message = 'Investment submitted for approval!';
+            
             } elseif ($action === 'withdraw') {
                 // Check dlu statusnya biar gk withdraw langsung
                 $investment = Investment::where('user_id', $userId)
@@ -253,6 +260,9 @@ class BusinessController extends Controller
                 }
 
                 $investment->amount -= $withdrawalAmount;
+
+                $business->current_investment -= $withdrawalAmount;
+                $business->save();
 
                 // Kalau misalnya amountnya udah 0 delete
                 if ($investment->amount == 0) {

@@ -39,27 +39,28 @@
         </div>
 
 
-    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-        @if(Auth::check())
-        <p class="flex flex-col text-right items-center m-0 sm:flex-row">
-            <div class="relative w-32 text-right">
-                <span id="typewriter" class=""></span>
-            </div>
-            <span>, {{ Auth::user()->name }}!</span>
-        </p>
+        <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+            @if (Auth::check())
+                <p class="flex flex-col text-right items-center m-0 sm:flex-row">
+                <div class="relative w-32 text-right">
+                    <span id="typewriter" class=""></span>
+                </div>
+                <span>, {{ Auth::user()->name }}!</span>
+                </p>
 
-        <form action="{{ route('logout') }}" method="POST" class="flex items-center m-0">
-            @csrf
-            <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">
-                Logout
-            </button>
-        </form>
-        @else
-        <a href="{{ route('login') }}" class="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
-            Login
-        </a>
-        @endif
-    </div>
+                <form action="{{ route('logout') }}" method="POST" class="flex items-center m-0">
+                    @csrf
+                    <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">
+                        Logout
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}"
+                    class="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
+                    Login
+                </a>
+            @endif
+        </div>
 
 
     <div class="items-center justify-center flex-grow hidden md:flex" id="navbar-sticky">
@@ -174,7 +175,7 @@
 
 
 <style>
-   /* .typing-animation {
+    /* .typing-animation {
     display: inline-block;
   overflow: hidden;
   border-right: .15em solid black;
@@ -243,11 +244,11 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
-      });
+    });
 
-      var typed = new Typed('#typewriter', {
-      strings: ['Welcome','Selamat Datang','환영','歓迎','欢迎','Bonjour'],
-      typeSpeed: 120,
-      loop: true
+    var typed = new Typed('#typewriter', {
+        strings: ['Welcome', 'Selamat Datang', '환영', '歓迎', '欢迎', 'Bonjour'],
+        typeSpeed: 120,
+        loop: true
     });
 </script>

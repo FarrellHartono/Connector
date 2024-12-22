@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ApprovalFundController extends Controller
 {
+
     public function approvalView($businessId)
     {
         $business = Business::findOrFail($businessId);
@@ -46,12 +47,18 @@ class ApprovalFundController extends Controller
             $approvedInvestment->amount += $investment->amount;
             $approvedInvestment->save();
 
+            $business->current_investment += $investment->amount;
+            $business->save();
+
             // Delete investmentnya biar, user yang sama masih perlu approve
             $investment->delete();
         } else {
             // Approve the new investment kalau misalnya sebelumnya belum ada approval
             $investment->status = 1;
             $investment->save();
+
+            $business->current_investment += $investment->amount;
+            $business->save();
         }
         
         $message = 'Transaction Approved Successfully!';

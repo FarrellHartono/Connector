@@ -15,7 +15,7 @@ Route::middleware(['user.access'])->group(function () {
     Route::put('/manage/{id}',[BusinessController::class,'updateBusiness'])->name('business.update');
     Route::get('/business/{id}', [BusinessController::class, 'viewBusinessDetail'])->name('business.show');
     Route::post('/business/{id}/transactions', [BusinessController::class, 'transaction'])->name('business.transaction');
-    Route::get('/business/{id}/transactions/approve', [ApprovalFundController::class, 'approvalView'])->name('business.transactions.view');
+    Route::get('/business/{id}/transactions/approve', [ApprovalFundController::class, 'approvalView'])->name('business.approve.view');
     Route::post('/transactions/approve/{investmentId}', [ApprovalFundController::class, 'approveTransaction'])->name('transaction.approve');
     Route::delete('/transactions/decline/{investmentId}', [ApprovalFundController::class, 'declineTransaction'])->name('transaction.decline');
     Route::post('/businesses/{id}/comments', [CommentController::class, 'storeComment'])->name('business.storeComment');

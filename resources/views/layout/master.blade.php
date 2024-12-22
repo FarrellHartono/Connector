@@ -29,7 +29,7 @@
 </head>
 
 <body>
-    <div id="container" class="bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] min-h-screen w-auto p-20">
+    <div id="container" class="bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] min-h-screen w-auto p-4 sm:p-6 md:p-8 lg:p-14 xl:p-20">
     @yield('content')
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
