@@ -358,9 +358,6 @@ public function listBusiness(Request $request){
     return view('listBusiness', ['businesses' => $businesses->get(), 'acc' => $acc,'pend' => $pend, 'rej' => $rej,'tot'=>$tot]);
 }
 
-    public function detailProfile(){
-        return view("profileDetail");
-    }
     public function welcome(Request $request){
         $businesses = Business::whereIn('id', [1, 2, 3])->get();
 
