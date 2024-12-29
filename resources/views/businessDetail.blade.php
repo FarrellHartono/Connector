@@ -245,20 +245,32 @@
                                     </h6>
                                     <div class="flex justify-between items-start">
                                         <p id="comment-content-{{ $comment->id }}"
-                                            class="text-gray-700 dark:text-gray-400 text-sm">
+                                            class="text-gray-700 dark:text-gray-400 text-sm pr-2">
                                             {{ $comment->content }}
                                         </p>
                                         {{-- Edit and Delete Options --}}
-                                        @if (Auth::id() === $comment->user_id || Auth::user()->is_admin)
+                                        @if (Auth::check())
                                             <div class="flex space-x-2 edit-delete-buttons">
-                                                {{-- Edit button --}}
-                                                <button type="button" onclick="toggleEdit({{ $comment->id }}, true)">
-                                                    <x-svg-icon name="edit-comment" />
-                                                </button>
-                                                <!-- Delete Button -->
-                                                <button type="button" onclick="confirmDelete({{ $comment->id }})">
-                                                    <x-svg-icon name="delete-comment" />
-                                                </button>
+                                                {{-- Show Delete Icon for Admins --}}
+                                                @if (Auth::user()->isAdmin === 1)
+                                                    <!-- Delete Button -->
+                                                    <button type="button" class="px-4" onclick="confirmDelete({{ $comment->id }})">
+                                                        <x-svg-icon name="delete-comment" />
+                                                    </button>
+                                                @endif
+
+                                                {{-- Show Edit and Delete Icons for Comment Owner --}}
+                                                @if (Auth::id() === $comment->user_id)
+                                                    <!-- Edit Button -->
+                                                    <button type="button"
+                                                        onclick="toggleEdit({{ $comment->id }}, true)">
+                                                        <x-svg-icon name="edit-comment" />
+                                                    </button>
+                                                    <!-- Delete Button -->
+                                                    <button type="button" onclick="confirmDelete({{ $comment->id }})">
+                                                        <x-svg-icon name="delete-comment" />
+                                                    </button>
+                                                @endif
                                             </div>
                                         @endif
 
