@@ -10,7 +10,7 @@
 
   <div class="justify-self-center bg-gray-300 w-[400px]  p-6 rounded-lg h-auto">
     <h2 class="text-2xl font-bold text-center mb-6">Sign Up</h2>
-    <form action="{{ route('registerProcess') }}" method="Post" class="max-w-sm mx-auto">
+    <form action="{{ route('registerProcess') }}" method="Post" class="max-w-sm mx-auto" id="registerForm">
       @csrf
       <div  class="flex flex-col">
         <div class="mb-5">
@@ -43,7 +43,6 @@
         <div class="mb-5">
           <label for="birthDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
           <input type="date" name="birthDate" id="birthDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-          <span id="dob-error" class="text-red-500 mt-1 hidden">You must be at least 18 years old.</span>
         </div>
 
         <button type="submit" class="justify-self-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-3">Register</button>
@@ -55,48 +54,112 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script>
-   $("#confirmation_password").on("change", function(){
-      console.log("tes: ", $("#password").val());
-      if ($("#password").val() == $("#confirmation_password").val())
-      {
-        $("#pw-error").addClass('hidden');
-      } else {
-        $("#pw-error").removeClass('hidden');
-      }
-    });
+    $.validator.addMethod(
+        "adult",
+        function (value, element) {
+            const today = new Date();
+            const birthDate = new Date(value);
+            const age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            return (
+                age > 18 || (age === 18 && m >= 0 && today.getDate() >= birthDate.getDate())
+            );
+        },
+        "You must be at least 18 years old."
+    );
 
-    $("#email").on("change", function(){// saat input email isinya berubah
-        var email = $("#email").val();
-        console.log("asdasdasdasd: ", email);
-        $.ajax({
-            url: "{{ route('checkEmail') }}",
-            method: "GET",
-            data: { email: email },
-            success: function(response) {
-                if (response.exists) {
-                  $('#email-error').removeClass('hidden');
-                } else {
-                  $('#email-error').addClass('hidden');
-                }
-            }
+    $.validator.addMethod(
+         "validPhone",
+         function (value, element) {
+             const phoneRegex = /^(08\d{8,10}|\+62\d{9,11})$/;
+             return this.optional(element) || phoneRegex.test(value);
+         },
+         "Please enter a valid phone number starting with 08 or +62 and having 10-12 digits (excluding +)."
+    );
+
+        $("#registerForm").validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 255,
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    maxlength: 255,
+                    remote: {
+                        url: "/checkEmail",
+                        type: "GET",
+                        data: {
+                            email: function () {
+                                return $("#email").val();
+                            },
+                        },
+                    },
+                },
+                password: {
+                    required: true,
+                    minlength: 6,
+                },
+                confirmation_password: {
+                    required: true,
+                    equalTo: "#password",
+                },
+                phone: {
+                    required: true,
+                    validPhone: true,
+                },
+                birthDate: {
+                    required: true,
+                    date: true,
+                    adult: true,
+                },
+            },
+            messages: {
+                name: {
+                    required: "Name is required.",
+                    maxlength: "Name cannot exceed 255 characters.",
+                },
+                email: {
+                    required: "Email is required.",
+                    email: "Please enter a valid email address.",
+                    maxlength: "Email cannot exceed 255 characters.",
+                    remote: "This email is already registered.",
+                },
+                password: {
+                    required: "Password is required.",
+                    minlength: "Password must be at least 6 characters long.",
+                },
+                confirmation_password: {
+                    required: "Password confirmation is required.",
+                    equalTo: "Passwords do not match.",
+                },
+                phone: {
+                    required: "Phone Number is required.",
+                    validPhone: "Phone number must start with 08 or +62 and have 10-12 digits (excluding +).",
+                },
+                birthDate: {
+                    required: "Birth date is required.",
+                    date: "Please enter a valid date.",
+                    adult: "You must be at least 18 years old.",
+                },
+            },
+            onfocusout: false,
+            onkeyup: false,
+            onclick: false,
+            errorPlacement: function (error, element) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Validation Error",
+                    text: error.text(),
+                });
+            },
+            submitHandler: function (form) {
+                form.submit();
+            },
         });
-    });
-
-    $('#birthDate').on("change",function(){
-        var dobInput = document.getElementById('birthDate');
-        var errorMessage = document.getElementById('dob-error');
-        var dob = new Date(dobInput.value);
-        var today = new Date();
-        var age = today.getFullYear() - dob.getFullYear();
-        var monthDiff = today.getMonth() - dob.getMonth();
-        // Check if the user is at least 18 years old
-        if (age < 18 || (age === 18 && monthDiff < 0)) {
-            errorMessage.classList.remove('hidden'); // Show error message
-
-        } else {
-            errorMessage.classList.add('hidden'); // Hide error message
-        }
-    })
 </script>
 @endsection

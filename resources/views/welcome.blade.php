@@ -15,7 +15,19 @@ Welcome Page
     <div class="fixed z-10 p-5 w-full">
         <nav class="flex justify-between">
             <p class="text-white text-center text-2xl font-bold">Connector</p>
-            <a href="{{ route('login') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Login</a>
+            @if (Auth::check())
+                <form action="{{ route('logout') }}" method="POST" class="flex items-center m-0">
+                    @csrf
+                    <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">
+                        Logout
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}"
+                    class="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
+                    Login
+                </a>
+            @endif
         </nav>
     </div>
 

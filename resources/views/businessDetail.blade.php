@@ -71,6 +71,7 @@
                     </span>
                 </button>
 
+
             </div>
 
             <!-- Investor List and Sorting Section (other half of the screen) -->
@@ -150,7 +151,7 @@
                     <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
                     <div class="flex flex-col">
                         <input type="number" name="amount" id="amount" step="1" required
-                            class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 
+                            class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300
                                 @error('amount') @enderror">
 
                         <div class="flex justify-between">
@@ -347,7 +348,7 @@
             // Buat nge get dari dropdown
             const sortOption = document.getElementById('sort').value;
 
-            // Ini nge splitnya 
+            // Ini nge splitnya
             const [order, sort] = sortOption.split('_');
 
             // Buat nge set URLnya
@@ -457,7 +458,7 @@
                 buttonElement.style.display = 'flex';
             }
         }
-        // Buat delete reply button 
+        // Buat delete reply button
         function confirmDelete(commentId) {
             Swal.fire({
                 title: 'Are you sure?',

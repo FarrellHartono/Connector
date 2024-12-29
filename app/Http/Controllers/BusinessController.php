@@ -10,26 +10,11 @@ use App\Models\Meeting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
+
 class BusinessController extends Controller
 {
     public function upload(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:50|unique:businesses',
-            'description' => 'required|max:255',
-            'image' => 'required|image|mimes:png,jpg,jpeg,gif,svg|max:2048',
-            'file' => 'required',
-            'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'startDate' => 'required',
-            'endDate' => 'required|after_or_equal:startDate',
-            'nominal' => 'required',
-            'address'=>'required',
-            'phone'=>'required',
-        ],[
-            'endDate.after_or_equal' => 'The end date must be a date after or equal to the start date.',
-        ]
-        );
-
         $filePath = 'public/assets/business/'.'/'.$request->title;
         Storage::makeDirectory($filePath);
 
@@ -49,9 +34,6 @@ class BusinessController extends Controller
             }
         }
 
-        // $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
-        // $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
-        // $userID = $request->Auth::user()->id();
         $userId = auth()->id();
 
         $businesses = Business::create([
@@ -71,6 +53,14 @@ class BusinessController extends Controller
         return redirect()->route('home')->with('success', 'Business created successfully!');
     }
 
+    public function checkTitle(Request $request){
+        $title = $request->query('title');
+
+        $exists = Business::where('title','LIKE', $title)->exists();
+
+        return response($exists ? 'false' : 'true');
+    }
+
     public function uploadPage()
     {
         return view('create');
@@ -82,23 +72,21 @@ class BusinessController extends Controller
 
     public function home(Request $request)
     {
-
-        $businesses = Business::query();
+        $businesses = Business::query()->where('status', 1);
 
         if ($request->has('search')) {
             $search = $request->input('search');
             $businesses->where(function ($query) use ($search) {
                 $query->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%');
+                      ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
 
         $businesses = $this->applySorting($businesses, $request);
 
-        $businesses = Business::where('status', 1)->get();
+        $businesses = $businesses->get();
+
         return view('home', compact('businesses'));
-
-
     }
 
     public function manage($id)
@@ -108,17 +96,6 @@ class BusinessController extends Controller
     }
 
     public function updateBusiness(Request $request, $id){
-        $request->validate([
-            'description' => 'required|max:255',
-            'image' => 'image|mimes:png,jpg,jpeg,gif,svg|max:2048',
-            'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'startDate' => 'required',
-            'endDate' => 'required',
-            'nominal' => 'required',
-        ]
-        );
-
-
         $filePath = 'public/assets/business/'.'/'.$request->title;
         Storage::makeDirectory($filePath);
 
@@ -153,13 +130,9 @@ class BusinessController extends Controller
             }
         }
 
-        // $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
-        // $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
-        // $userID = $request->Auth::user()->id();
-
         $business = Business::findOrFail($id);
-
         $business->description = $request->description;
+        $business->save();
 
         return redirect()->route('listBusiness')->with('success', 'Business updated successfully!');
     }
@@ -229,7 +202,7 @@ class BusinessController extends Controller
             if ($action === 'invest') {
                 $investmentAmount = $validatedData['amount'];
                 $remainingNominal = $business->nominal - $business->current_investment;
-                
+
                 if($investmentAmount > $remainingNominal){
                     return redirect()->back()->with('error', 'Investment exceeds the target amount.');
                 }
@@ -242,7 +215,7 @@ class BusinessController extends Controller
                 ]);
 
                 $message = 'Investment submitted for approval!';
-            
+
             } elseif ($action === 'withdraw') {
                 // Check dlu statusnya biar gk withdraw langsung
                 $investment = Investment::where('user_id', $userId)
