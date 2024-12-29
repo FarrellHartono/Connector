@@ -16,11 +16,6 @@ class AuthController extends Controller
     }
 
     public function loginProcess(Request $request){
-        $request->validate([
-            "email" => "required|email",
-            "password"=>"required"
-        ]);
-
         $data = [
             'email' => $request->email,
             'password' => $request->password,
@@ -35,13 +30,11 @@ class AuthController extends Controller
     }
 
     public function checkEmail(Request $request) {
-        // $email = $request->input('email');
-        $email = $request->email;
-        error_log("tes") ;
-        error_log($email);
-        $exists = User::where('email', $email)->exists(); // Cek emailnya udah ada ga
+        $email = $request->query('email');
 
-        return response()->json(['exists' => $exists]);
+        $exists = User::where('email','LIKE', $email)->exists();
+
+        return response($exists ? 'false' : 'true');
     }
 
     public function register(){
@@ -49,20 +42,6 @@ class AuthController extends Controller
     }
 
     public function registerProcess(Request $request){
-        error_log("tes");
-        error_log($request);
-        $request->validate([
-            "name" => "required|string|max:255",
-            "email" => "required|string|email|max:255|unique:users",
-            "password"=>"required|string|min:8",
-            "confirmation_password" => "required|required_with:password|same:password",
-            "birthDate" => [
-            "required",
-            "date",
-            "before_or_equal:" . now()->subYears(18)->format('Y-m-d')
-        ],
-        ]);
-        error_log($request);
         $user = User::create([
             "name" => $request->name,
             "email" => $request->email,

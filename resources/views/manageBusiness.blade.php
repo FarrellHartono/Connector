@@ -19,7 +19,7 @@
 
     <div class="flex justify-center mt-10">
         <div class="w-full">
-            <form action="{{ route('business.update', $business->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('business.update', $business->id) }}" method="POST" enctype="multipart/form-data" oninput="validateForm()" id="manage-business">
                 @csrf
                 @method('PUT')
                 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -27,7 +27,7 @@
                         Title
                     </label>
                     <input type="text" name="title" id="title" value="{{ $business->title }}" readonly
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed leading-tight focus:outline-none focus:shadow-outline">
                     @error('title')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -58,7 +58,7 @@
                             <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPEG, JPG or GIF (MAX. 800x400px)
                             </p>
                         </div>
-                        <input id="image" type="file" class="hidden" name="image" />
+                        <input id="image" type="file" class="hidden" name="image" accept="image/*" />
                     </label>
                     @error('image')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
@@ -71,20 +71,6 @@
                         class="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500">
                         <div class="flex flex-col items-center justify-center pt-5 pb-6 h-auto overflow-hidden">
                             @php
-                                // $folderPath = $business->image_path;
-                                // $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-                                // $filePath = array();
-                                // $filesCount = Storage::disk('public')->files(str_replace('public/','',$folderPath));
-                                // $max = count($filesCount);
-
-                                // for ($i=1; $i < $max ; $i++) {
-                                //     foreach ($extensions as $extension) {
-                                //     $fullFilePath = $folderPath . '/' . $i. '.' . $extension;
-                                //     if (Storage::disk('public')->exists(str_replace('public/','',$fullFilePath))) {
-                                //         $filePath[] = $fullFilePath;
-                                //     }
-                                //     }
-                                // }
                                 $folderPath = $business->image_path;
                                 $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
                                 $filePath = [];
@@ -113,7 +99,7 @@
                             <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPEG, JPG or GIF (MAX. 800x400px)
                             </p>
                         </div>
-                        <input id="file" type="file" class="hidden" name="file[]" multiple />
+                        <input id="file" type="file" class="hidden" name="file[]" multiple accept="image/*" />
                     </label>
                     @error('file')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
@@ -137,13 +123,13 @@
                     @enderror
                 </div>
 
-                <div class="flex gap-4">
+                <div class="flex gap-4 max-lg:flex-col">
                     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex-grow">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="startDate">
                             Start Date
                         </label>
                         <input type="date" name="startDate" id="startDate" value="{{ $business->start_date }}" readonly
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed leading-tight focus:outline-none focus:shadow-outline">
                         @error('startDate')
                             <p class="text-red-500 text-xs italic">{{ $message }}</p>
                         @enderror
@@ -153,7 +139,7 @@
                             End Date
                         </label>
                         <input type="date" name="endDate" id="endDate" value="{{ $business->end_date }}" readonly
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed leading-tight focus:outline-none focus:shadow-outline">
                         @error('endDate')
                             <p class="text-red-500 text-xs italic">{{ $message }}</p>
                         @enderror
@@ -165,7 +151,7 @@
                         Nominal
                     </label>
                     <input type="number" name="nominal" id="nominal" value="{{ $business->nominal }}" readonly
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed leading-tight focus:outline-none focus:shadow-outline">
                     @error('nominal')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -177,8 +163,8 @@
                 </div>
 
                 <div class="flex justify-center">
-                    <button type="submit"
-                        class="w-full bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <button type="submit" id="save-button"
+                        class="w-full py-2 px-4 rounded bg-gray-200 text-black font-bold cursor-not-allowed opacity-50" disabled>
                         Save Changes
                     </button>
                 </div>
@@ -214,6 +200,8 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function(){
         const addMeetingBtn = document.getElementById('addMeetingBtn');
@@ -270,5 +258,89 @@
                 }
             });
         });
+
+        $('#manage-business').validate({
+            rules: {
+                description: {
+                    required: true,
+                    maxlength: 255,
+                },
+                image: {
+                    extension: "png|jpg|jpeg|gif|svg",
+                    filesize: 2048 * 1024,
+                },
+                'file.*': {
+                    extension: "jpeg|png|jpg|gif|svg",
+                    filesize: 2048 * 1024,
+                },
+            },
+            messages: {
+                description: {
+                    required: "Description is required.",
+                    maxlength: "Description must not exceed 255 characters.",
+                },
+                image: {
+                    extension: "Invalid file type. Only PNG, JPG, JPEG, GIF, SVG are allowed.",
+                    filesize: "File size must not exceed 2MB.",
+                },
+                'file.*': {
+                    extension: "Invalid file type. Only JPEG, PNG, JPG, GIF, SVG are allowed.",
+                    filesize: "File size must not exceed 2MB.",
+                },
+            },
+            onfocusout: false,
+            onkeyup: false,
+            onclick: false,
+
+            submitHandler: function(form) {
+                Swal.fire({
+                    title: 'Do you want to save changes?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire('Success!','Your changes has been saved','success').then((result)=>{
+                            form.submit();
+                        });
+                    }
+                });
+            },
+
+            invalidHandler: function(event, validator) {
+                const errors = validator.errorList;
+                if (errors.length > 0) {
+                const message = errors[0].message;
+                    Swal.fire({
+                        title: 'Error!',
+                        text: message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+             },
+             errorPlacement: function(error, element) {
+                 return false;
+             }
+        });
+
+        function validateForm() {
+        const form = document.getElementById('manage-business');
+        const inputs = form.querySelectorAll('input[required],textarea[required]');
+        const button = document.getElementById('save-button');
+        const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+        if(!allFilled){
+            button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
+            button.classList.add('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
+            button.disabled = true;
+        }else{
+            button.classList.remove('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
+            button.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
+            button.disabled = false;
+        }
+        }
     </script>
 @endsection

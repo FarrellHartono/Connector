@@ -12,7 +12,6 @@
                 <a href="{{ route("home") }}" class="text-gray-400 hover:text-white transition">Home</a>
                 <a href="{{ route("listBusiness") }}" class="text-gray-400 hover:text-white transition">My Business</a>
                 <a href="{{ route("profile") }}" class="text-gray-400 hover:text-white transition">Profile</a>
-                <a href="#" class="text-gray-400 hover:text-white transition">Approval</a>
             </div>
             @endif
 

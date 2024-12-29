@@ -9,20 +9,21 @@
 @extends('layout.navbar')
 
 <div class="relative flex items-center">
-    <button class="absolute left-4 flex items-center bg-white border rounded-full p-1">
+    <a href="{{ route('listBusiness') }}" class="absolute left-4 flex items-center bg-white border rounded-full p-1">
         <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" class="">
             <rect width="24" height="24" fill="none" />
-            <path fill="currentColor" d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1" />
+            <path fill="currentColor"
+                d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1" />
         </svg>
-    </button>
-    <h1 class="mx-auto text-5xl font-bold">Create Business</h1>
+    </a>
+    <h1 class="text-3xl mx-auto font-bold lg:text-5xl">Create Business</h1>
 </div>
 
 
 
 <div class="flex justify-center mt-10">
     <div class="w-full">
-        <form action="{{ route('business.upload') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('business.upload') }}" method="POST" enctype="multipart/form-data" id="create-business" oninput="validateForm()">
             @csrf
 
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -30,28 +31,7 @@
                     Title
                 </label>
                 <input type="text" name="title" id="title" value="{{ old('title') }}" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                @error('title')
-                <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                @enderror
             </div>
-
-            {{-- <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="file">
-                    Business Image
-                </label>
-                <div class="appearance-none border border-dashed border-black rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline flex flex-col items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 512 512" class="">
-                        <rect width="512" height="512" fill="none" />
-                        <rect width="416" height="352" x="48" y="80" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="23" rx="48" ry="48" />
-                        <circle cx="336" cy="176" r="32" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="23" />
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="23" d="m304 335.79l-90.66-90.49a32 32 0 0 0-43.87-1.3L48 352m176 80l123.34-123.34a32 32 0 0 1 43.11-2L464 368" />
-                    </svg>
-                    <input type="file" name="file" id="file" class="text-center" required>
-                </div>
-                @error('file')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                @enderror
-            </div> --}}
 
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
                 <p class="block text-gray-700 text-sm font-bold mb-2">Business Profile Picture</p>
@@ -64,7 +44,7 @@
                         <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPEG, JPG or GIF (MAX. 800x400px)</p>
                     </div>
-                    <input id="image" type="file" class="hidden" name="image" required/>
+                    <input id="image" type="file" class="hidden" name="image" required accept="image/*"/>
                 </label>
                 @error('image')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
@@ -82,7 +62,7 @@
                         <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPEG, JPG or GIF (MAX. 800x400px)</p>
                     </div>
-                    <input id="file" type="file" class="hidden" name="file[]" multiple/>
+                    <input id="file" type="file" class="hidden" name="file[]" multiple required accept="image/*"/>
                 </label>
                 @error('file')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
@@ -125,7 +105,7 @@
                 @enderror
             </div>
 
-            <div class="flex gap-4">
+            <div class="flex gap-4 max-lg:flex-col">
                 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex-grow">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="startDate">
                         Start Date
@@ -157,7 +137,7 @@
             </div>
 
             <div class="flex justify-center">
-                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <button id="create-button" type="submit" class="w-full py-2 px-4 rounded bg-gray-200 text-black font-bold cursor-not-allowed opacity-50" disabled>
                     Create Business
                 </button>
             </div>
@@ -168,6 +148,8 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script>
         $(document).ready(function (e){
             $('#image').change(function(){
@@ -201,5 +183,161 @@
                 }
             });
         });
+
+        function validateForm() {
+        const form = document.getElementById('create-business');
+        const inputs = form.querySelectorAll('input[required],textarea[required]');
+        const button = document.getElementById('create-button');
+        const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+        if(!allFilled){
+            button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
+            button.classList.add('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
+            button.disabled = true;
+        }else{
+            button.classList.remove('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
+            button.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
+            button.disabled = false;
+        }
+        }
+
+        $('#create-business').validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 50,
+                    remote: {
+                        url: '/check-title',
+                        type: 'GET',
+                        data: {
+                            title: function() {
+                                return $('#title').val();
+                            }
+                        },
+                        message: "This title has already been taken.",
+                        dataFilter: function(response) {
+                            return response === 'true' ? 'true' : 'false';
+                        }
+                    }
+                },
+                description: {
+                    required: true,
+                    maxlength: 255,
+                },
+                image: {
+                    required: true,
+                    extension: "png|jpg|jpeg|gif|svg",
+                    filesize: 2048 * 1024,
+                },
+                file: {
+                    required: true,
+                },
+                'file.*': {
+                    extension: "jpeg|png|jpg|gif|svg",
+                    filesize: 2048 * 1024,
+                },
+                startDate: {
+                    required: true,
+                },
+                endDate: {
+                    required: true,
+                    greaterThanOrEqual: '#startDate',
+                },
+                nominal: {
+                    required: true,
+                },
+                address: {
+                    required: true,
+                },
+                phone: {
+                    required: true,
+                },
+            },
+            messages: {
+                title: {
+                    required: "Title is required.",
+                    maxlength: "Title must not exceed 50 characters.",
+                    remote: "This title has already been taken."
+                },
+                description: {
+                    required: "Description is required.",
+                    maxlength: "Description must not exceed 255 characters.",
+                },
+                image: {
+                    required: "An image is required.",
+                    extension: "Invalid file type. Only PNG, JPG, JPEG, GIF, SVG are allowed.",
+                    filesize: "File size must not exceed 2MB.",
+                },
+                file: {
+                    required: "A file is required.",
+                },
+                'file.*': {
+                    extension: "Invalid file type. Only JPEG, PNG, JPG, GIF, SVG are allowed.",
+                    filesize: "File size must not exceed 2MB.",
+                },
+                startDate: {
+                    required: "Start date is required.",
+                },
+                endDate: {
+                    required: "End date is required.",
+                    greaterThanOrEqual: "End date must be the same or later than the start date.",
+                },
+                nominal: {
+                    required: "Nominal value is required.",
+                },
+                address: {
+                    required: "Address is required.",
+                },
+                phone: {
+                    required: "Phone number is required.",
+                },
+            },
+            onfocusout: false,
+            onkeyup: false,
+            onclick: false,
+
+            submitHandler: function(form) {
+                Swal.fire({
+                    title: 'Do you want to create business?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire('Success!','Your business has been submitted','success').then((result)=>{
+                            form.submit();
+                        });
+                    }
+                });
+            },
+
+            invalidHandler: function(event, validator) {
+                const errors = validator.errorList;
+                if (errors.length > 0) {
+                const message = errors[0].message;
+                    Swal.fire({
+                        title: 'Error!',
+                        text: message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+             },
+             errorPlacement: function(error, element) {
+                 return false;
+             }
+        });
+
+
+        $.validator.addMethod('greaterThanOrEqual', function(value, element, param) {
+            var startDate = $(param).val();
+            if (startDate) {
+                return new Date(value) >= new Date(startDate);
+            }
+            return true;
+        }, 'The end date must be the same or later than the start date.');
+
     </script>
 @endsection

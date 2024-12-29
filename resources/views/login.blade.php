@@ -11,7 +11,7 @@
 
   <div class="justify-self-center bg-gray-300 w-[400px] h-[400px] p-6 rounded-lg">
     <h2 class="text-2xl font-bold text-center mb-6">Sign In</h2>
-    <form action="{{ route('loginProcess') }}" method="Post" class="max-w-sm mx-auto">
+    <form action="{{ route('loginProcess') }}" method="Post" class="max-w-sm mx-auto" id="loginForm">
       @csrf
       <div  class="grid">
         <div class="mb-5">
@@ -35,14 +35,51 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
   <script>
       document.addEventListener("DOMContentLoaded", function() {
         console.log("Page is ready!");
       });
+
+        $('#loginForm').validate({
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                },
+                password: {
+                    required: true,
+                    minlength: 6
+                }
+            },
+            messages: {
+                email: {
+                    required: "Please enter your email.",
+                    email: "Please enter a valid email address."
+                },
+                password: {
+                    required: "Please enter your password.",
+                    minlength: "Your password must be at least 6 characters long."
+                }
+            },
+            onfocusout: false,
+            onkeyup: false,
+            onclick: false,
+            errorPlacement: function (error, element) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: error.text()
+                });
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
   </script>
 
   @if(session('show_register_confirmation'))
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <script>
           var email = "{{ session('email')}}";
           console.log(email);

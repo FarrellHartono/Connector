@@ -70,7 +70,7 @@
                         <span class="sr-only">Next</span>
                     </span>
                 </button>
-                
+
             </div>
 
             <!-- Investor List and Sorting Section (other half of the screen) -->
@@ -106,14 +106,14 @@
                     // Calculate the progress percentage
                     $progressPercentage = ($business->current_investment / $business->nominal) * 100;
                     @endphp
-                    
+
                     <span class="text-base font-medium text-blue-700 dark:text-white">Current Investment</span>
                     <span class="text-sm font-medium text-blue-700 dark:text-white">{{ number_format($progressPercentage, 2) }}%</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                     <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
                 </div>
-                
+
                 <!-- Investor List -->
                 <h2 class="text-xl font-semibold text-gray-700 mt-4">Investors</h2>
                 <div class="overflow-y-scroll max-h-48 rounded-lg shadow border border-gray-200">
@@ -150,7 +150,7 @@
                     <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
                     <div class="flex flex-col">
                         <input type="number" name="amount" id="amount" step="1" required
-                            class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 
+                            class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300
                                 @error('amount') @enderror">
 
                         <div class="flex justify-between">
@@ -335,7 +335,7 @@
             // Buat nge get dari dropdown
             const sortOption = document.getElementById('sort').value;
 
-            // Ini nge splitnya 
+            // Ini nge splitnya
             const [order, sort] = sortOption.split('_');
 
             // Buat nge set URLnya
@@ -450,7 +450,7 @@
                 buttonElement.style.display = 'flex';
             }
         }
-        // Buat delete reply button 
+        // Buat delete reply button
         function confirmDelete(commentId) {
             Swal.fire({
                 title: 'Are you sure?',
