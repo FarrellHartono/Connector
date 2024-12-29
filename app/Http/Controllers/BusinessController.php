@@ -124,11 +124,12 @@ class BusinessController extends Controller
     {
 
         $business = Business::findOrFail($id);
-
+        error_log("asd");
+        error_log($business);
         $investmentsQuery = Investment::join('users', 'investments.user_id', '=', 'users.id')
             ->join('businesses', 'investments.business_id', '=', 'businesses.id')
             ->where('businesses.id', $id); // Filter by business ID
-
+        
 
         $investments = $this->applySortingInvestors($investmentsQuery, $request)
             ->select('investments.*', 'users.name as investor_name')
@@ -194,23 +195,69 @@ class BusinessController extends Controller
 
         // Return an error response
         return response()->json(['success' => false, 'message' => 'Error adding meeting'], 500);
+        }
     }
-}
 
-public function listBusiness(Request $request){
-    $businesses = Business::query();
-    $user = 1;
+    public function listBusiness(Request $request){
+        $businesses = Business::query();
+        $user = 1;
 
-            $businesses->where(function ($query) use($user): void  {
-                $query->where('user_id', 'like', $user);
-            });
+                $businesses->where(function ($query) use($user): void  {
+                    $query->where('user_id', 'like', $user);
+                });
 
-        $businesses = $this->applySorting($businesses, $request);
+            $businesses = $this->applySorting($businesses, $request);
 
-    return view('listBusiness',['businesses' => $businesses->get()] );
-}
+        return view('listBusiness',['businesses' => $businesses->get()] );
+    }
 
-    public function detailProfile(){
-        return view("profileDetail");
+    public function getRegisteredMeetings(Request $request) {
+        error_log("tes");
+
+        error_log(Auth::user()->id);
+        // $email = $request->input('email');
+        // $registeredMeetings = RegisteredMeetings::with(['user', 'business', 'meetings'])
+        //                                 ->select('user_id')
+        //                                 ->groupBy('user_id')
+        //                                 ->having('user_id', Auth::user()->id)
+        //                                 ->get();
+
+        $upcomingMeetings = Meeting::with('business')
+                ->whereHas('business', function ($query) {
+                    $query->where('user_id', Auth::id()); // Filter businesses owned by the logged-in user
+                })
+                ->where('date', '>=', now()) // Filter for upcoming meetings
+                ->orderBy('date', 'asc') // Order meetings by date
+                ->get()
+                ->map(function ($meeting) {
+                    return [
+                        'title' => $meeting->title,
+                        'description' => $meeting->description,
+                        'start' => $meeting->date, // Rename 'date' to 'start'
+                        'business' => $meeting->business, // Include related business if needed
+                    ];
+                });
+                
+        error_log($upcomingMeetings);
+
+        return response()->json(['registered' => $upcomingMeetings]);
+    }
+
+    public function registerMeeting(Request $request) {
+        // $email = $request->input('email');
+        $idMeeting = $request->idMeeting;
+        $idBusiness = $request->idBusiness;
+        
+        error_log("tes");
+        error_log($idMeeting);
+        error_log($idBusiness);
+
+        $registerMeeting = RegisteredMeetings::create([
+            "user_id" => Auth::user()->id,
+            "business_id" => $idBusiness,
+            "meeting_id" => $idBusiness,
+        ]);
+        error_log($registerMeeting);
+        return response()->json(['exists' => $registerMeeting]);
     }
 }

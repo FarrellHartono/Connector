@@ -92,6 +92,7 @@
 
             <!-- Investor List and Sorting Section (other half of the screen) -->
             <div class="w-full md:w-1/2 pl-4">
+                
 
                 {{-- <<!-- Sorting Form --> --}}
                 <label for="sort" class="block text-sm font-medium text-gray-700">Sort Investors:</label>
@@ -189,11 +190,17 @@
             <div id="meeting-box" style="display: none;">
                 <div class="calendar-container">
                     <div id="calendar"></div>
-                    <ul>
-                        @foreach ($business->meetings as $meeting)
-                            <li>{{ $meeting->title }} on {{ $meeting->date }} - {{ $meeting->description }}</li>
-                        @endforeach
-                    </ul>
+                    
+                    <div id="calendarDescription"  class="flex-col content-around w-full bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-4">
+                        <div id="idMeeting" class="hidden"></div>
+                        <div id="titleMeeting" class="justify-self-center font-bold text-xl "></div>
+                        <div id="dateMeeting" class="justify-self-center mb-6"></div>
+                        <div id="descriptionMeeting" ></div>
+                        <div id="buttonMeetings" class="flex justify-end pr-2 pb-2 hidden">
+                            <button id="registerMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Register</button>
+                            <button id="editMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Edit</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -262,7 +269,20 @@
             </div>
 
             <a href="{{ route('manageBusiness', ['id' => $business->id]) }}" class="btn btn-primary">Manage Business</a>
+            
+            @php
+                $meetings = $business->meetings->map(function($meeting) {
+                            return [
+                                    'title' => $meeting->title,
+                                    'start' => $meeting->date,
+                                    'description' => $meeting->description,
+                                    'idMeeting' => $meeting->id
+                                ];
+                            });
+            @endphp
 
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+          
             <script>
                 // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
                 function submitSortForm() {
@@ -291,6 +311,13 @@
                     const descriptionBox = document.getElementById('description-box');
                     const meetingBox = document.getElementById('meeting-box');
                     const forumBox = document.getElementById('forum-box');
+                    
+                    // Meeting Elements
+                    const idMeeting = document.getElementById('idMeeting');
+                    const titleMeeting = document.getElementById('titleMeeting');
+                    const dateMeeting = document.getElementById('dateMeeting');
+                    const descriptionMeeting = document.getElementById('descriptionMeeting');
+                    const registerMeeting = document.getElementById('registerMeeting');
 
                     // Retrieve the last active tab from localStorage
                     const lastActiveTab = localStorage.getItem('activeTab') || 'description';
@@ -313,14 +340,21 @@
                                         'title' => $meeting->title,
                                         'start' => $meeting->date,
                                         'description' => $meeting->description
+                                        
                                     ];
                                 }));
+                            var meetings = @json($meetings);
+                            console.log(meetings);
 
                             var calendar = new FullCalendar.Calendar(calendarEl, {
                                     initialView: 'dayGridMonth',
                                     events: meetings,
                                     eventClick: function(info) {
-                                        alert('Meeting: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
+                                        idMeeting.textContent = info.event.extendedProps.idMeeting;
+                                        titleMeeting.textContent = info.event.title;
+                                        dateMeeting.textContent = new Date(info.event.start).toLocaleString('id-ID', { year: "numeric",month: "long",day: "numeric" });
+                                        description.textContent = info.event.extendedProps.description;
+                                        document.getElementById('buttonMeetings').classList.remove("hidden");
                                     }
                                 }); 
 
@@ -347,6 +381,44 @@
                     });
                     forumBtn.addEventListener('click', function() {
                         setActiveTab('forum');
+                    });
+                    registerMeeting.addEventListener('click', function() {
+                        console.log(idMeeting.textContent);
+                        
+                        Swal.fire({
+                            title:'Confirmation Meeting',
+                            text: 'Do you want to register meeting - '+ titleMeeting.textContent + ' on ' + dateMeeting.textContent,
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: '#DD6B55',
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: "No",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.ajax({
+                                    url: "{{ route('registerMeeting') }}",
+                                    method: "GET",
+                                    data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
+                                    success: function(response) {
+                                        if (response.exists) {
+                                            Swal.fire({
+                                                title: 'Success!',
+                                                text: 'Register Meeting successful!',
+                                                icon: 'success',
+                                                confirmButtonText: 'OK'
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: 'Failed!',
+                                                text: 'Registration failed!',
+                                                icon: 'error',
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     });
                 });
             </script>

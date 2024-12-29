@@ -42,3 +42,8 @@ Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('li
 Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 
 Route::get('/investments', [BusinessController::class, 'detailProfile'])->name('investments');
+
+
+Route::get('/getRegisteredMeetings', [BusinessController::class, "getRegisteredMeetings"])->name('getRegisteredMeetings');
+
+Route::get('/registerMeeting', [BusinessController::class, "registerMeeting"])->name('registerMeeting');
