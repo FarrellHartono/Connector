@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // custom middleware
+        $middleware->alias([
+            'user.access' => \App\Http\Middleware\UserAccessMiddleware::class,
+            'admin.access'=> \App\Http\Middleware\AdminMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

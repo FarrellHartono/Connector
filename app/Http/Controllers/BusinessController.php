@@ -12,13 +12,12 @@ use App\Models\RegisteredMeetings;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class BusinessController extends Controller
 {
     public function upload(Request $request)
     {
-
-
         $request->validate([
             'title' => 'required|max:50|unique:businesses',
             'description' => 'required|max:255',
@@ -26,7 +25,12 @@ class BusinessController extends Controller
             'file' => 'required',
             'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'startDate' => 'required',
-            'endDate' => 'required',
+            'endDate' => 'required|after_or_equal:startDate',
+            'nominal' => 'required',
+            'address'=>'required',
+            'phone'=>'required',
+        ],[
+            'endDate.after_or_equal' => 'The end date must be a date after or equal to the start date.',
         ]
         );
 
@@ -52,7 +56,7 @@ class BusinessController extends Controller
         // $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
         // $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
         // $userID = $request->Auth::user()->id();
-
+        $userId = auth()->id();
 
         $businesses = Business::create([
             'title' => $request->title,
@@ -60,7 +64,12 @@ class BusinessController extends Controller
             'image_path' => '/public/assets/business/'.$request->title,
             'start_date' => $request -> startDate,
             'end_date' => $request-> endDate,
-            'user_id' => 2
+            'nominal' => $request-> nominal,
+            'address' => $request-> address,
+            'phone_number' => $request -> phone,
+            'user_id' => $userId,
+            'status'=> $status = 0,
+
         ]);
 
         return redirect()->route('home')->with('success', 'Business created successfully!');
@@ -89,7 +98,9 @@ class BusinessController extends Controller
         }
 
         $businesses = $this->applySorting($businesses, $request);
-        return view('home', ['businesses' => $businesses->get()]);
+
+        $businesses = Business::where('status', 1)->get();
+        return view('home', compact('businesses'));
 
 
     }
@@ -116,8 +127,65 @@ class BusinessController extends Controller
 
     public function manage($id)
     {
-        $business = Business::findOrFail($id); // Find the business by id
+        $business = Business::findOrFail($id);
         return view('manageBusiness', compact('business'));
+    }
+
+    public function updateBusiness(Request $request, $id){
+        $request->validate([
+            'description' => 'required|max:255',
+            'image' => 'image|mimes:png,jpg,jpeg,gif,svg|max:2048',
+            'file.*'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'startDate' => 'required',
+            'endDate' => 'required',
+            'nominal' => 'required',
+        ]
+        );
+
+
+        $filePath = 'public/assets/business/'.'/'.$request->title;
+        Storage::makeDirectory($filePath);
+
+        if($request->file('image')){
+            $files = Storage::disk('public')->files(str_replace('public/', '', $filePath));
+            foreach ($files as $file) {
+                if (pathinfo($file, PATHINFO_FILENAME) === 'main') {
+                    Storage::disk('public')->delete($file);
+                }
+            }
+            $imageName = 'main'.'.'. $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->storeAs('/public/assets/business/'.$request->title,$imageName);
+        }
+
+        if($request->file('file')){
+            $files = Storage::disk('public')->files(str_replace('public/', '', $filePath));
+            foreach ($files as $file) {
+                if (pathinfo($file, PATHINFO_FILENAME) !== 'main') {
+                    Storage::disk('public')->delete($file);
+                }
+            }
+            $count = 1;
+            if($files = $request->file('file')){
+                foreach($files as $file){
+                    $image_name = (string)$count;
+                    $ext = strtolower($file->getClientOriginalExtension());
+                    $image_full_name = $image_name.'.'.$ext;
+                    $file->storeAs('/public/assets/business/'.$request->title,$image_full_name);
+                    $count++;
+
+                }
+            }
+        }
+
+        // $fileName = $request->title . '.' . $request->file('file')->getClientOriginalExtension();
+        // $filePath = $request->file('file')->storeAs('/public/assets/business', $fileName);
+        // $userID = $request->Auth::user()->id();
+
+        $business = Business::findOrFail($id);
+
+        $business->description = $request->description;
+
+        return redirect()->route('listBusiness')->with('success', 'Business updated successfully!');
     }
 
     public function viewBusinessDetail(Request $request, $id)
@@ -133,39 +201,110 @@ class BusinessController extends Controller
 
         $investments = $this->applySortingInvestors($investmentsQuery, $request)
             ->select('investments.*', 'users.name as investor_name')
+            ->where('investments.status', 1)
             ->get();
+
         // Buat Nge test
             // dd($investmentsQuery->toSql(), $investmentsQuery->getBindings());
 
-        return view('businessDetail', compact('business', 'investments'));
+        $imageFolderPath = storage_path('app' . $business->image_path);
+
+        $imageFiles = [];
+        if (File::exists($imageFolderPath)) {
+            $allFiles = File::files($imageFolderPath); // Returns array of file paths
+
+            $mainFile = null;
+            $otherFiles = [];
+            // Separasi main dari file lain
+            foreach ($allFiles as $file) {
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                if (strtolower($filename) === 'main') {
+                    $mainFile = $file;
+                } else {
+                    $otherFiles[] = $file;
+                }
+            }
+            // main dlu
+            if ($mainFile) {
+                $imageFiles[] = $mainFile;
+            }
+            // baru masukin yg laen
+            $imageFiles = array_merge($imageFiles, $otherFiles);
+        }
+
+
+        return view('businessDetail', compact('business', 'investments', 'imageFiles'));
     }
 
-    public function buy(Request $request, $businessId)
+    public function transaction(Request $request, $businessId)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'amount' => 'required|numeric|min:0.01',
         ]);
 
         $business = Business::findOrFail($businessId);
         $userId = auth()->id();
+        $action = $request->input('action');
 
         // Buat nyari apakah user sudah pernah invest di bisnis ini.
         $investment = Investment::where('user_id', $userId)
             ->where('business_id', $businessId)
             ->first();
-        if ($investment) {
-            $investment->amount += $request->input('amount');
-            $investment->save();
-        } else {
-            Investment::create([
-                'user_id' => auth()->id(),
-                'business_id' => $businessId,
-                'amount' => $request->input('amount'),
-            ]);
 
-        }
-        return redirect()->route('business.show', $businessId)
-            ->with('success', 'Investment successful!');
+            if ($action === 'invest') {
+                $investmentAmount = $validatedData['amount'];
+                $remainingNominal = $business->nominal - $business->current_investment;
+                
+                if($investmentAmount > $remainingNominal){
+                    return redirect()->back()->with('error', 'Investment exceeds the target amount.');
+                }
+
+                Investment::create([
+                    'user_id' => $userId,
+                    'business_id' => $businessId,
+                    'amount' => $investmentAmount,
+                    'status' => 0, // Status untuk accept atau deny.
+                ]);
+
+                $message = 'Investment submitted for approval!';
+            
+            } elseif ($action === 'withdraw') {
+                // Check dlu statusnya biar gk withdraw langsung
+                $investment = Investment::where('user_id', $userId)
+                ->where('business_id', $businessId)
+                ->where('status', 1) // Only approved investments
+                ->first();
+
+                if (!$investment) {
+                    return redirect()->back()->with('error', 'No approved investment found for withdrawal.');
+                }
+
+                $withdrawalAmount = $validatedData['amount'];
+                if ($withdrawalAmount > $investment->amount) {
+                    return redirect()->back()->with('error', 'Withdrawal amount exceeds your investment.');
+                }
+
+                $investment->amount -= $withdrawalAmount;
+
+                $business->current_investment -= $withdrawalAmount;
+                $business->save();
+
+                // Kalau misalnya amountnya udah 0 delete
+                if ($investment->amount == 0) {
+                        $investment->delete();
+                    } else {
+                        $investment->save();
+                    }
+
+                $message = 'Withdrawal successful!';
+            } else {
+                return redirect()->back()->with('error', 'Invalid transaction type.');
+            }
+
+            return redirect()->route('business.show', $businessId)
+                ->with([
+                    'success' => $message
+                ]);
     }
 
     public function addMeeting(Request $request)
@@ -198,66 +337,35 @@ class BusinessController extends Controller
         }
     }
 
-    public function listBusiness(Request $request){
-        $businesses = Business::query();
-        $user = 1;
+public function listBusiness(Request $request){
+    $businesses = Business::query();
+    $user = auth()->id();
 
-                $businesses->where(function ($query) use($user): void  {
-                    $query->where('user_id', 'like', $user);
-                });
 
-            $businesses = $this->applySorting($businesses, $request);
+    $businesses->where(function ($query) use ($user) {
+        $query->where('user_id', 'like', $user);
+    });
 
-        return view('listBusiness',['businesses' => $businesses->get()] );
+
+    $businesses = $this->applySorting($businesses, $request);
+
+
+    $acc = Business::where('user_id', $user)->where('status', '1')->count();
+    $pend = Business::where('user_id', $user)->where('status', '0')->count();
+    $rej = Business::where('user_id', $user)->where('status', '2')->count();
+    $tot = Business::where('user_id', $user)->count();
+
+    return view('listBusiness', ['businesses' => $businesses->get(), 'acc' => $acc,'pend' => $pend, 'rej' => $rej,'tot'=>$tot]);
+}
+
+    public function detailProfile(){
+        return view("profileDetail");
     }
+    public function welcome(Request $request){
+        $businesses = Business::whereIn('id', [1, 2, 3])->get();
 
-    public function getRegisteredMeetings(Request $request) {
-        error_log("tes");
-
-        error_log(Auth::user()->id);
-        // $email = $request->input('email');
-        // $registeredMeetings = RegisteredMeetings::with(['user', 'business', 'meetings'])
-        //                                 ->select('user_id')
-        //                                 ->groupBy('user_id')
-        //                                 ->having('user_id', Auth::user()->id)
-        //                                 ->get();
-
-        $upcomingMeetings = Meeting::with('business')
-                ->whereHas('business', function ($query) {
-                    $query->where('user_id', Auth::id()); // Filter businesses owned by the logged-in user
-                })
-                ->where('date', '>=', now()) // Filter for upcoming meetings
-                ->orderBy('date', 'asc') // Order meetings by date
-                ->get()
-                ->map(function ($meeting) {
-                    return [
-                        'title' => $meeting->title,
-                        'description' => $meeting->description,
-                        'start' => $meeting->date, // Rename 'date' to 'start'
-                        'business' => $meeting->business, // Include related business if needed
-                    ];
-                });
-                
-        error_log($upcomingMeetings);
-
-        return response()->json(['registered' => $upcomingMeetings]);
-    }
-
-    public function registerMeeting(Request $request) {
-        // $email = $request->input('email');
-        $idMeeting = $request->idMeeting;
-        $idBusiness = $request->idBusiness;
-        
-        error_log("tes");
-        error_log($idMeeting);
-        error_log($idBusiness);
-
-        $registerMeeting = RegisteredMeetings::create([
-            "user_id" => Auth::user()->id,
-            "business_id" => $idBusiness,
-            "meeting_id" => $idBusiness,
-        ]);
-        error_log($registerMeeting);
-        return response()->json(['exists' => $registerMeeting]);
+            // Return the welcome view and pass the businesses to it
+            return view('welcome', compact('businesses'));
     }
 }
+

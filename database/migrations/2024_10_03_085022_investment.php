@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('business_id');
             $table->integer('amount');
+            $table->integer('status')->default(0);
             $table->timestamp('deposit_date')->now();
             $table->timestamp('withdrawal_date')->nullable();
 

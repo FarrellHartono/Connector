@@ -105,12 +105,32 @@
                 @enderror
             </div>
 
+            <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="address">
+                    Address
+                </label>
+                <textarea name="address" id="address" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ old('address') }}</textarea>
+                @error('address')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
+                    Phone Number
+                </label>
+                <input type="tel" id="phone" name="phone" pattern="08\d{8,}" title="The number must start with 08 and have at least 10 digits" value="{{ old('phone') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                @error('phone')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                @enderror
+            </div>
+
             <div class="flex gap-4">
                 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex-grow">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="startDate">
                         Start Date
                     </label>
-                    <input type="date" name="startDate" id="startDate" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <input type="date" name="startDate" id="startDate" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old ('startDate') }}">
                     @error('startDate')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -119,7 +139,7 @@
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="endDate">
                         End Date
                     </label>
-                    <input type="date" name="endDate" id="endDate" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <input type="date" name="endDate" id="endDate" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old ('endDate') }}">
                     @error('endDate')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -130,7 +150,7 @@
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="nominal">
                     Nominal
                 </label>
-                <input type="number" name="nominal" id="nominal" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="number" name="nominal" id="nominal" required value="{{ old ('nominal') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 @error('nominal')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                 @enderror

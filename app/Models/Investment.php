@@ -16,6 +16,7 @@ class Investment extends Model
         'user_id',
         'business_id',
         'amount',  
+        'status',
     ];
 
     public function user(): BelongsTo
