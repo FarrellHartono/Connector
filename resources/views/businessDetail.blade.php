@@ -23,7 +23,7 @@
 
         <div class="flex flex-col md:flex-row items-start mt-6">
             <!-- Carousel occupying half the screen -->
-            <div id="default-carousel" class="relative w-full md:w-1/2" data-carousel="static">
+            <div id="default-carousel" class="bg-white relative w-full md:w-1/2" data-carousel="static">
                 <!-- Carousel wrapper -->
                 <div class="relative h-[28rem] overflow-hidden rounded-lg">
 
@@ -70,7 +70,7 @@
                         <span class="sr-only">Next</span>
                     </span>
                 </button>
-                
+
             </div>
 
             <!-- Investor List and Sorting Section (other half of the screen) -->
@@ -103,17 +103,17 @@
 
                 <div class="flex justify-between mb-1">
                     @php
-                    // Calculate the progress percentage
-                    $progressPercentage = ($business->current_investment / $business->nominal) * 100;
+                        // Calculate the progress percentage
+                        $progressPercentage = ($business->current_investment / $business->nominal) * 100;
                     @endphp
-                    
-                    <span class="text-base font-medium text-blue-700 dark:text-white">Current Investment</span>
-                    <span class="text-sm font-medium text-blue-700 dark:text-white">{{ number_format($progressPercentage, 2) }}%</span>
+
+                    <span class="text-base font-medium text-black">Current Investment</span>
+                    <span class="text-sm font-medium text-black">{{ number_format($progressPercentage, 2) }}%</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
+                    <div class="bg-green-500 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
                 </div>
-                
+
                 <!-- Investor List -->
                 <h2 class="text-xl font-semibold text-gray-700 mt-4">Investors</h2>
                 <div class="overflow-y-scroll max-h-48 rounded-lg shadow border border-gray-200">
@@ -327,6 +327,18 @@
         </div>
     </div>
 
+    @php
+        $meetings = $business->meetings
+            ->map(function ($meeting) {
+                return [
+                    'title' => $meeting->title,
+                    'start' => $meeting->date,
+                    'description' => $meeting->description,
+                    'idMeeting' => $meeting->id,
+                ];
+            })
+            ->toArray();
+    @endphp
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -374,20 +386,15 @@
                     var calendarEl = document.getElementById('calendar-detail');
 
                     // Create the event data directly in Blade
-                    var meetings = @json($business->meetings->map(function($meeting) {
-                                return [
-                                    'title' => $meeting->title,
-                                    'start' => $meeting->date,
-                                        'description' => $meeting->description
-                                    ];
-                                }));
+                    var meetings = @json($meetings);
 
                     var calendar = new FullCalendar.Calendar(calendarEl, {
                         initialView: 'dayGridMonth',
                         events: meetings,
                         eventClick: function(info) {
-                            alert('Meeting: ' + info.event.title + '\nDescription: ' + info.event
-                                .extendedProps.description);
+                            alert('Meeting: ' + info.event.id + '\nDescription: ' + info.event
+                                .extendedProps.description + '\nMeeting ID: ' + info.event
+                                .extendedProps.idMeeting);
                         }
                     });
 

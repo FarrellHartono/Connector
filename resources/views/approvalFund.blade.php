@@ -9,11 +9,12 @@
     @extends('layout.navbar')
 
     <div class="container mx-auto p-6">
-        <h1>Pending Transactions for {{ $business->title }}</h1>
 
         @if ($pendingTransactions->isEmpty())
-            <p>No pending transactions to approve or decline.</p>
+            <h1 class="text-2xl font-bold mb-4">No pending transactions to approve or decline.</h1>
         @else
+            <h1 class="text-2xl font-bold mb-4">Pending Transactions for {{ $business->title }}</h1>
+
             <div class="p-4 mb-4 bg-white shadow rounded-lg">
                 <table class="table-auto">
                     <thead>
