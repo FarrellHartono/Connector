@@ -7,6 +7,10 @@ use App\Models\Business;
 use App\Traits\Sortable;
 use App\Models\Investment;
 use App\Models\Meeting;
+use App\Models\RegisteredMeetings;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class BusinessController extends Controller
@@ -88,6 +92,26 @@ class BusinessController extends Controller
         return view('home', ['businesses' => $businesses->get()]);
 
 
+    }
+
+    public function detailProfile(Request $request)
+    {
+        // $investmentsQuery = Investment::join('users', 'investments.user_id', '=', 'users.id')
+        //     ->join('businesses', 'investments.business_id', '=', 'businesses.id')
+        //     ->groupBy('investments.user_id', 'investments.business_id'); // Filter by business ID
+
+
+        // $investments = $this->applySortingInvestors($investmentsQuery, $request)
+        //     ->select(DB::raw('SUM(investments.amount) as total_investment'), 'investments.*', 'businesses.*', 'users.*', 'users.name as investor_name')
+        //     ->get();
+
+        $investments = Investment::with(['user', 'business'])
+                                        ->select('user_id', 'business_id', DB::raw('SUM(amount) as total_amount'))
+                                        ->groupBy('user_id', 'business_id')
+                                        ->having('user_id', Auth::user()->id)
+                                        ->get();
+        // dd("investments: ", $investments);
+        return view('profileDetail', compact('investments'));
     }
 
     public function manage($id)
