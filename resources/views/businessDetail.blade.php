@@ -213,12 +213,12 @@
                     class="block max-w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <div class="flex items-center space-x-4">
                         <div>
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Noteworthy
-                                technology
-                                acquisitions 2021</h5>
-                            <p class="font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise
-                                technology
-                                acquisitions of 2021 so far, in reverse chronological order.</p>
+                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">This is a Forum
+                                for {{ $business->title }}</h5>
+                            <p class="font-normal text-gray-700 dark:text-gray-400">This tab is designed as a space for
+                                users to engage in discussions, share information, or seek answers to general questions.
+                                Whether you're looking to provide insights or learn more about additional topics, this is
+                                the place to connect and collaborate with others.</p>
                         </div>
                     </div>
 

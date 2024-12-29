@@ -25,10 +25,9 @@
                     @csrf
                     <button class="bg-green-500 text-white px-4 py-2 rounded">Approve</button>
                 </form>
-                <form action="{{ route('admin.businesses.delete', $business->id) }}" method="POST" class="inline">
+                <form action="{{ route('admin.businesses.decline', $business->id) }}" method="POST" class="inline">
                     @csrf
-                    @method('DELETE')
-                    <button class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded">Decline</button>
                 </form>
             </div>
         </div>
