@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('investments', function (Blueprint $table) {
+        Schema::create('registered_meetings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('business_id');
-            $table->integer('amount');
-            $table->integer('status')->default(0);
-            $table->timestamp('deposit_date')->now();
-            $table->timestamp('withdrawal_date')->nullable();
+            $table->unsignedBigInteger('meeting_id');
+
+            $table->timestamps();
 
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade');
+            $table->foreign('meeting_id')->references('id')->on('meetings')->onDelete('cascade');
         });
     }
 
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('investments');
+        Schema::dropIfExists('registered_meetings');
     }
 };
