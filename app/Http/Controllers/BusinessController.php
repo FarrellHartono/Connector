@@ -307,35 +307,7 @@ class BusinessController extends Controller
                 ]);
     }
 
-    public function addMeeting(Request $request)
-    {
-        try {
-            $data = $request->validate([
-                'date' => 'required|date',
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'business_id' => 'required'
-            ]);
-
-            // Save the meeting to the database
-            Meeting::create([
-                'date' => $data['date'],
-                'title' => $data['title'],
-                'description' => $data['description'],
-                'business_id' => $data['business_id']
-            ]);
-
-            // Return a JSON response indicating success
-            return response()->json(['success' => true], 200);
-
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error($e->getMessage());
-
-        // Return an error response
-        return response()->json(['success' => false, 'message' => 'Error adding meeting'], 500);
-        }
-    }
+    
 
 public function listBusiness(Request $request){
     $businesses = Business::query();
@@ -364,5 +336,7 @@ public function listBusiness(Request $request){
             // Return the welcome view and pass the businesses to it
             return view('welcome', compact('businesses'));
     }
+
+    
 }
 

@@ -205,10 +205,12 @@
                         <div id="idMeeting" class="hidden"></div>
                         <div id="titleMeeting" class="justify-self-center font-bold text-xl "></div>
                         <div id="dateMeeting" class="justify-self-center mb-6"></div>
+                        <div id="dateMeetingHidden" class="hidden"></div>
                         <div id="descriptionMeeting" ></div>
                         <div id="buttonMeetings" class="flex justify-end pr-2 pb-2 hidden">
                             <button id="registerMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Register</button>
                             <button id="editMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Edit</button>
+                            <button id="deleteMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -331,6 +333,32 @@
                     Manage Business
                 </a>
             @endif
+
+            {{-- Hidden add Meeting Form --}}
+            <div id="editMeetingModal" class="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                <div class="bg-gray-300 w-[400px] h-auto p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold text-center mb-6">Edit Meeting</h2>
+                    <div class="grid">
+                        <div class="mb-5">
+                            <label for="editMeetingDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                            <input type="date" name="editMeetingDate" id="editMeetingDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                        </div>
+                        <div class="mb-5">
+                            <label for="editMeetingTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                            <input type="text" name="editMeetingTitle" id="editMeetingTitle" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                        </div>
+                        <div class="mb-5">
+                            <label for="editMeetingDescription" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                            <textarea name="editMeetingDescription" id="editMeetingDescription" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
+                        </div>
+                        <input type="hidden" name="business_id" value="{{ $business->id }}" />
+                        <button id="editMeetingSubmit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
+                    </div>
+                    <div class="flex justify-center">
+                        <button type="button" id="closeModalBtn" class="mt-4 text-red-500">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -362,6 +390,8 @@
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
           
     <script>
+        var calendar;
+
         // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
         function submitSortForm() {
             // Buat nge get dari dropdown
@@ -394,8 +424,14 @@
             const idMeeting = document.getElementById('idMeeting');
             const titleMeeting = document.getElementById('titleMeeting');
             const dateMeeting = document.getElementById('dateMeeting');
+            const dateMeetingHidden = document.getElementById('dateMeetingHidden');
             const descriptionMeeting = document.getElementById('descriptionMeeting');
             const registerMeeting = document.getElementById('registerMeeting');
+            const editMeeting = document.getElementById('editMeeting');
+            const editMeetingSubmit = document.getElementById('editMeetingSubmit');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const deleteMeeting = document.getElementById('deleteMeeting');
+
 
             // Retrieve the last active tab from localStorage
             const lastActiveTab = localStorage.getItem('activeTab') || 'description';
@@ -410,22 +446,24 @@
                     descriptionBox.style.display = 'block';
                 } else if (tab === 'meeting') {
                     meetingBox.style.display = 'block';
-                    var calendarEl = document.getElementById('calendar-detail');
+                    var calendarEl = document.getElementById('calendar');
 
                     // Create the event data directly in Blade
                     var meetings = @json($meetings);
 
-                            var calendar = new FullCalendar.Calendar(calendarEl, {
-                                    initialView: 'dayGridMonth',
-                                    events: meetings,
-                                    eventClick: function(info) {
-                                        idMeeting.textContent = info.event.extendedProps.idMeeting;
-                                        titleMeeting.textContent = info.event.title;
-                                        dateMeeting.textContent = new Date(info.event.start).toLocaleString('id-ID', { year: "numeric",month: "long",day: "numeric" });
-                                        description.textContent = info.event.extendedProps.description;
-                                        document.getElementById('buttonMeetings').classList.remove("hidden");
-                                    }
-                                }); 
+                    calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        events: meetings,
+                        eventClick: function(info) {
+                            document.getElementById('calendarDescription').classList.remove("hidden");
+                            idMeeting.textContent = info.event.extendedProps.idMeeting;
+                            titleMeeting.textContent = info.event.title;
+                            dateMeeting.textContent = new Date(info.event.start).toLocaleString('id-ID', { year: "numeric",month: "long",day: "numeric" });
+                            dateMeetingHidden.textContent = info.event.start;
+                            descriptionMeeting.textContent = info.event.extendedProps.description;
+                            document.getElementById('buttonMeetings').classList.remove("hidden");
+                        }
+                    }); 
 
                     calendar.render();
 
@@ -451,44 +489,127 @@
             forumBtn.addEventListener('click', function() {
                 setActiveTab('forum');
             });
-                    registerMeeting.addEventListener('click', function() {
-                        console.log(idMeeting.textContent);
-                        
-                        Swal.fire({
-                            title:'Confirmation Meeting',
-                            text: 'Do you want to register meeting - '+ titleMeeting.textContent + ' on ' + dateMeeting.textContent,
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: '#DD6B55',
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: "No",
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                $.ajax({
-                                    url: "{{ route('registerMeeting') }}",
-                                    method: "GET",
-                                    data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
-                                    success: function(response) {
-                                        if (response.exists) {
-                                            Swal.fire({
-                                                title: 'Success!',
-                                                text: 'Register Meeting successful!',
-                                                icon: 'success',
-                                                confirmButtonText: 'OK'
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                title: 'Failed!',
-                                                text: 'Registration failed!',
-                                                icon: 'error',
-                                                confirmButtonText: 'OK'
-                                            });
-                                        }
-                                    }
-                                });
+            registerMeeting.addEventListener('click', function() {
+                Swal.fire({
+                    title:'Register Meeting - '+ titleMeeting.textContent,
+                    text: 'Do you want to register this meeting',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#DD6B55',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: "No",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('registerMeeting') }}",
+                            method: "GET",
+                            data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
+                            success: function(response) {
+                                if (response.exists) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Register Meeting successful!',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Failed!',
+                                        text: 'Register Meeting failed!',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
                             }
                         });
+                    }
+                });
+            }); 
+            editMeeting.addEventListener('click', function() {
+                
+                editMeetingModal.classList.remove("hidden");
+                document.getElementById('editMeetingDate').value = formatDate(dateMeetingHidden.textContent);
+                document.getElementById('editMeetingTitle').value = titleMeeting.textContent;
+                document.getElementById('editMeetingDescription').value = descriptionMeeting.textContent;
+            });
+            editMeetingSubmit.addEventListener('click', function() {
+                
+                $.ajax({
+                    url: "{{ route('editMeeting') }}",
+                    method: "GET",
+                    data: { idMeeting: idMeeting.textContent, 
+                            idBusiness: {{ $business->id }},
+                            dateMeeting: document.getElementById('editMeetingDate').value,
+                            titleMeeting: document.getElementById('editMeetingTitle').value, 
+                            descriptionMeeting: document.getElementById('editMeetingDescription').value,
+                        },
+                    success: function(response) {
+                        if (response.success == '1') {
+                            refreshCalendarData();
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Edit Meeting successful!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    editMeetingModal.classList.add("hidden");
+                                }
+                            });
+                                
+                        } else {
+                            Swal.fire({
+                                title: 'Failed!',
+                                text: 'Edit Meeting failed!',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+                });
+            });
+
+            closeModalBtn.addEventListener('click', function() {
+                editMeetingModal.classList.add("hidden");
+            });
+
+        });
+        deleteMeeting.addEventListener('click', function() {
+            Swal.fire({
+                title:'Delete Meeting - '+ titleMeeting.textContent,
+                text: 'Are you sure you want to delete this meeting',
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#DD6B55',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('deleteMeeting') }}",
+                        method: "GET",
+                        data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
+                        success: function(response) {
+                            if (response.success == '1') {
+                                refreshCalendarData();
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Delete Meeting successful!',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Failed!',
+                                    text: 'Delete Meeting failed!',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        }
                     });
+                }
+            }); 
         });
         //  Ini buat confirmation di buy button dan withdraw button
         @if (session('success'))
@@ -554,6 +675,41 @@
                 repliesElement.style.display = 'none';
                 button.textContent = 'View more replies';
             }
+        }
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            console.log(Date.parse(date));
+            if (month.length < 2) 
+                month = '0' + month;
+            if (day.length < 2) 
+                day = '0' + day;
+            
+            return [year, month, day].join('-');
+        }
+
+        function refreshCalendarData() {
+            console.log("ASDASDASD");
+            
+            $.ajax({
+                url: '{{ route('getMeetingData') }}', // Replace with your backend endpoint
+                type: 'GET',
+                data: { idBusiness: {{ $business->id }}},
+                success: function(meetingsData) {
+                    console.log(meetingsData.meetings);
+                    // Clear existing events
+                    calendar.removeAllEvents();
+                    // Add the new events
+                    calendar.addEventSource(meetingsData.meetings);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching meetings:', error);
+                    alert('Failed to refresh calendar events.');
+                }
+            });
         }
     </script>
 @endsection

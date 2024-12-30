@@ -190,36 +190,37 @@
     <div id="addMeetingModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-gray-300 w-[400px] h-auto p-6 rounded-lg">
             <h2 class="text-2xl font-bold text-center mb-6">Add Meeting</h2>
-            <form action="{{ route('addMeeting') }}" method="POST" class="max-w-sm mx-auto">
-                @csrf
-                <div class="grid">
-                    <div class="mb-5">
-                        <label for="date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                        <input type="date" name="date" id="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
-                    </div>
-                    <div class="mb-5">
-                        <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
-                        <input type="text" name="title" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
-                    </div>
-                    <div class="mb-5">
-                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                        <textarea name="description" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
-                    </div>
-                    <input type="hidden" name="business_id" value="{{ $business->id }}" />
-                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
+            
+            <div class="grid">
+                <div class="mb-5">
+                    <label for="dateMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                    <input type="date" name="dateMeeting" id="dateMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                 </div>
-            </form>
+                <div class="mb-5">
+                    <label for="titleMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                    <input type="text" name="titleMeeting" id="titleMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                </div>
+                <div class="mb-5">
+                    <label for="descriptionMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                    <textarea name="descriptionMeeting" id="descriptionMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
+                </div>
+                <input type="hidden" name="business_id" value="{{ $business->id }}" />
+                <button id="submitMeetingButton" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
+            </div>
             <div class="flex justify-center">
                 <button type="button" id="closeModalBtn" class="mt-4 text-red-500">Close</button>
             </div>
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function(){
         const addMeetingBtn = document.getElementById('addMeetingBtn');
         const addMeetingModal = document.getElementById('addMeetingModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
-
+        const submitMeetingButton = document.getElementById('submitMeetingButton');
+        
+        
             // Buat nge show pop up add meeting
             addMeetingBtn.addEventListener('click', function() {
                 addMeetingModal.classList.remove('hidden');
@@ -228,7 +229,36 @@
             // Buat nge close pop up add meeting
             closeModalBtn.addEventListener('click', function() {
                 addMeetingModal.classList.add('hidden');
-            })
+            });
+
+            submitMeetingButton.addEventListener('click', function() {
+                $.ajax({
+                    url: "{{ route('addMeeting') }}",
+                    method: "GET",
+                    data: { business_id: {{ $business->id }},
+                            date: document.getElementById('dateMeeting').value,
+                            title: document.getElementById('titleMeeting').value,
+                            description: document.getElementById('descriptionMeeting').value
+                        },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Add Meeting successful!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Failed!',
+                                text: 'Add Meeting failed!',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+                });
+            });
 
             // Misal kalau user gk click close, click diluar pop up
             window.addEventListener('click', function(event) {

@@ -112,22 +112,18 @@
 
 </nav>
 
-<div id="calendarContainer" class="fixed left-[15%] top-8 w-11/12  hidden z-50">
-    <div id="navCalendar" class="flex justify-end bg-[#0370A3] w-3/4 rounded-t-md pt-4 pr-4">
+<div id="calendarContainer" class="fixed left-[15%] top-8 w-8/12  hidden z-50">
+    <div id="navCalendar" class="flex justify-end bg-[#0370A3] w-full rounded-t-md pt-4 pr-4">
         <button type="button" id="closeCalendar"
             class="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 hover:text-white transition-colors">
             <span class="text-3xl pl-[0.05rem] pb-[0.35rem] text-black leading-none hover:text-white">&times;</span>
         </button>
     </div>
-    <div id="calendarContent"
-        class="justify-self-center bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] w-full h-full p-4 rounded-b-md shadow-lg">
+  
+  <div class="flex w-full">
+    <div id="calendarContent"  class="justify-self-center w-3/4 bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] p-4 rounded-b-md shadow-lg" >
     </div>
-    <button type="button" id="closeCalendar" class="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 hover:text-white transition-colors">
-        <span class="text-3xl pl-[0.05rem] pb-[0.35rem] text-black leading-none hover:text-white">&times;</span>
-    </button>
-  </div>
-  <div class="flex">
-    <div id="calendarContent"  class="justify-self-center w-2/4 bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] p-4 rounded-b-md shadow-lg" ></div>
+    
     <div id="calendarDescription"  class="flex-col content-around w-1/4 bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-3">
         <div id="title" class="justify-self-center font-bold text-2xl"></div>
         <div id="business" class="text-center font-semibold text-lg mb-10" ></div>
@@ -135,6 +131,8 @@
     </div>
   </div>
 </div>
+
+
 
 
 <style>
@@ -212,15 +210,15 @@
         });
     });
 
-      $('#closeCalendar').on('click', function(e) {
-          $("#calendarContainer").css("display", "none");
-          $("#modal").css("display", "none");
-      });
-
-      $('#modal').on('click', function(e){
+    $('#closeCalendar').on('click', function(e) {
         $("#calendarContainer").css("display", "none");
         $("#modal").css("display", "none");
-      });
+    });
+
+    $('#modal').on('click', function(e) {
+        $("#calendarContainer").css("display", "none");
+        $("#modal").css("display", "none");
+    });
 
     document.addEventListener('DOMContentLoaded', function() {
 
