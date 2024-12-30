@@ -24,10 +24,17 @@ Route::middleware(['user.access'])->group(function () {
     Route::post('/businesses/{business}/comments/{comment}/reply', [CommentController::class, 'reply'])->name('business.reply');
     Route::put('/businesses/comments/reply/{reply}', [CommentController::class, 'updateReply'])->name('business.updateReply');
     Route::delete('/businesses/comments/reply/{reply}', [CommentController::class, 'deleteReply'])->name('business.deleteReply');
-    Route::post('/add-meeting', [BusinessController::class, 'addMeeting'])->name('addMeeting');
+    
     Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('listBusiness');
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::get('/investments', [BusinessController::class, 'detailProfile'])->name('investments');
+    
+    Route::get('/add-meeting', [MeetingController::class, 'addMeeting'])->name('addMeeting');
+    Route::get('/getRegisteredMeetings', [MeetingController::class, "getRegisteredMeetings"])->name('getRegisteredMeetings');
+    Route::get('/registerMeeting', [MeetingController::class, "registerMeeting"])->name('registerMeeting');
+    Route::get('/editMeeting', [MeetingController::class, "editMeeting"])->name('editMeeting');
+    Route::get('/getMeetingData', [MeetingController::class, "getMeetingData"])->name('getMeetingData');
+    Route::get('/deleteMeeting', [MeetingController::class, "deleteMeeting"])->name('deleteMeeting');
     Route::get('/check-title',[BusinessController::class,'checkTitle']);
 });
 
@@ -53,3 +60,6 @@ Route::middleware(['admin.access'])->group(function () {
     Route::post('/admin/businesses/{id}/decline', [AdminController::class, 'decline'])->name('admin.businesses.decline');
     Route::delete('/admin/businesses/{id}/delete', [AdminController::class, 'delete'])->name('admin.businesses.delete');
 });
+
+
+

@@ -18,9 +18,9 @@
                 <table class="w-full table-fixed border-collapse">
                     <thead>
                         <tr class="bg-gray-200">
-                            <th class="text-left p-2 border">Business</th>
-                            <th class="text-left p-2 border">Investment (IDR)</th>
-                            <th class="text-left p-2 border">Contribution</th>
+                            <th class="text-left p-2 border w-3/6">Business</th>
+                            <th class="text-left p-2 border w-2/6">Investment (IDR)</th>
+                            <th class="text-left p-2 border w-1/6">Contribution</th>
                         </tr>
                     </thead>
                     <tbody id="barsTable"></tbody>
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Investor History -->
-        <div>
+        <!-- <div>
             <h2 class="text-xl font-semibold text-gray-800 mb-4">List of Contributed Businesses</h2>
             <div class="overflow-y-auto max-h-60">
                 <table class="w-full table-fixed border-collapse">
@@ -44,6 +44,38 @@
                     <tbody id="businessTable"></tbody>
                 </table>
             </div>
+        </div> -->
+
+        <div class="mb-10">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">List of Businesses</h2>
+            <div class="overflow-y-auto max-h-80 bg-gray-100 p-4 rounded-lg shadow-lg">
+                @foreach ($investments as $invest)
+                    @php
+                        $folderPath = $invest->business->image_path;
+                        $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+                        $filePath = null;
+                        foreach ($extensions as $extension) {
+                            $fullFilePath = $folderPath . '/' . 'main' . '.' . $extension;
+
+                            if (Storage::disk('public')->exists(str_replace('public/','',$fullFilePath))) {
+                                $filePath = $fullFilePath;
+                                break;
+                            }
+                        }
+                    @endphp
+                    <div onclick="window.location.href='{{ route('business.show', $invest->business_id) }}'" 
+                        class="flex items-center mb-4 cursor-pointer bg-white p-4 rounded-lg shadow-md hover:bg-gray-200">
+                        <div class="w-16 h-16 bg-black rounded-lg mr-4"></div>
+                        <div>
+                            <h3 class="text-lg font-semibold">{{ $invest->business->title }}</h3>
+                            <p class="text-gray-600">Total Investment: Rp {{ number_format($invest->total_amount, 0, ',', '.') }}</p>
+                            <p class="text-gray-500 text-sm">
+                                Period: {{ $invest->start_date }} - {{ $invest->end_date }}
+                            </p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
 
@@ -51,45 +83,21 @@
 
 @section('scripts')
 <script>
-        // data dummy
-        const businesses = [
-            { name: "Business A", investment: 1500000, startDate: "2024-01-01", endDate: "2024-06-01" },
-            { name: "Business B", investment: 2000000, startDate: "2024-02-15", endDate: "2024-07-30" },
-            { name: "Business C", investment: 1000000, startDate: "2024-03-10", endDate: "2024-08-20" },
-            { name: "Business D", investment: 500000, startDate: "2024-04-01", endDate: "2024-09-15" },
-            { name: "Business E", investment: 250000, startDate: "2024-05-01", endDate: "2024-10-15" },
-            { name: "Business F", investment: 300000, startDate: "2024-06-01", endDate: "2024-11-01" },
-        ];
-
-        
+        const investments = @json($investments);
+        console.log(investments);
         const barsTable = document.getElementById('barsTable');
-        const businessTable = document.getElementById('businessTable');
+        const totalInvestment = investments.reduce((sum, invest) => sum + Number(invest.total_amount), 0);
 
-        // bikin setiap row utk 2 tabel diatas (ini fungsinya disatuin karena sementara pake data yang sama)
-        // (kalau datanya real nanti harusnya pake 2 data berbeda jadi fungsinya dipisah)
-        businesses.forEach((business) => {
+        investments.forEach((invest) => {
+            console.log(invest.total_amount);
             // Convert data ke dalam tabel alokasi investasi yang sedang berjalan
             const barRow = document.createElement('tr');
             barRow.innerHTML = `
-                <td class="p-2 border">${business.name}</td>
-                <td class="p-2 border">Rp ${business.investment.toLocaleString()}</td>
-                <td class="p-2 border">${((business.investment / businesses.reduce((sum, b) => sum + b.investment, 0)) * 100).toFixed(2)}%</td>
+                <td class="p-2 border">${invest.business.title}</td>
+                <td class="p-2 border">Rp ${invest.total_amount.toLocaleString()}</td>
+                <td class="p-2 border">${((Number(invest.total_amount) / totalInvestment) * 100).toFixed(2)}%</td>
             `;
             barsTable.appendChild(barRow);
-
-            // Convert data ke dalam tabel investor history
-            console.log(`${business.startDate}`);
-            const startDate = new Date(`${business.startDate}`).toLocaleString('id-ID', { year: "numeric",month: "long",day: "numeric", });
-            const endDate = new Date(`${business.endDate}`).toLocaleString('id-ID', { year: "numeric",month: "long",day: "numeric", });
-
-            const businessRow = document.createElement('tr');
-            businessRow.innerHTML = `
-                <td class="p-2 border">${business.name}</td>
-                <td class="p-2 border">Rp ${business.investment.toLocaleString()}</td>
-                <td class="p-2 border">`+startDate+`</td>
-                <td class="p-2 border">`+endDate+`</td>
-            `;
-            businessTable.appendChild(businessRow);
         });
     </script>
 @endsection

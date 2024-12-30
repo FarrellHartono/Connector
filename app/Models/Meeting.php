@@ -10,7 +10,7 @@ use App\Models\Business;
 class Meeting extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'date', 'business_id'];
+    protected $fillable = ['id', 'title', 'description', 'date', 'business_id'];
 
     public function business(): BelongsTo
     {

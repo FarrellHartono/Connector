@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Comment;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Access\Response;
 
 class CommentPolicy
@@ -45,7 +46,12 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        return $user->id === $comment->user_id || $user->is_admin;
+        if (Auth::check() && Auth::user()->isAdmin === 1) {
+            return true;
+        }
+    
+        // Allow the comment creator to delete their comment
+        return $user->id === $comment->user_id;
     }
 
     /**

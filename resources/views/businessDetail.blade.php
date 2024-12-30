@@ -23,7 +23,7 @@
 
         <div class="flex flex-col md:flex-row items-start mt-6">
             <!-- Carousel occupying half the screen -->
-            <div id="default-carousel" class="relative w-full md:w-1/2" data-carousel="static">
+            <div id="default-carousel" class="bg-white relative w-full md:w-1/2" data-carousel="static">
                 <!-- Carousel wrapper -->
                 <div class="relative h-[28rem] overflow-hidden rounded-lg">
 
@@ -71,10 +71,12 @@
                     </span>
                 </button>
 
+
             </div>
 
             <!-- Investor List and Sorting Section (other half of the screen) -->
             <div class="w-full md:w-1/2 pl-4">
+                
 
                 {{-- <<!-- Sorting Form --> --}}
                 <label for="sort" class="block text-sm font-medium text-gray-700">Sort Investors:</label>
@@ -103,15 +105,15 @@
 
                 <div class="flex justify-between mb-1">
                     @php
-                    // Calculate the progress percentage
-                    $progressPercentage = ($business->current_investment / $business->nominal) * 100;
+                        // Calculate the progress percentage
+                        $progressPercentage = ($business->current_investment / $business->nominal) * 100;
                     @endphp
 
-                    <span class="text-base font-medium text-blue-700 dark:text-white">Current Investment</span>
-                    <span class="text-sm font-medium text-blue-700 dark:text-white">{{ number_format($progressPercentage, 2) }}%</span>
+                    <span class="text-base font-medium text-black">Current Investment</span>
+                    <span class="text-sm font-medium text-black">{{ number_format($progressPercentage, 2) }}%</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
+                    <div class="bg-green-500 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
                 </div>
 
                 <!-- Investor List -->
@@ -198,12 +200,20 @@
             {{-- Calendar --}}
             <div id="meeting-box" style="display: none;">
                 <div class="calendar-container">
-                    <div id="calendar-detail"></div>
-                    <ul>
-                        @foreach ($business->meetings as $meeting)
-                            <li>{{ $meeting->title }} on {{ $meeting->date }} - {{ $meeting->description }}</li>
-                        @endforeach
-                    </ul>
+                    <div id="calendar"></div>
+                    
+                    <div id="calendarDescription"  class="flex-col content-around w-full bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-4">
+                        <div id="idMeeting" class="hidden"></div>
+                        <div id="titleMeeting" class="justify-self-center font-bold text-xl "></div>
+                        <div id="dateMeeting" class="justify-self-center mb-6"></div>
+                        <div id="dateMeetingHidden" class="hidden"></div>
+                        <div id="descriptionMeeting" ></div>
+                        <div id="buttonMeetings" class="flex justify-end pr-2 pb-2 hidden">
+                            <button id="registerMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Register</button>
+                            <button id="editMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Edit</button>
+                            <button id="deleteMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Delete</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -213,12 +223,12 @@
                     class="block max-w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <div class="flex items-center space-x-4">
                         <div>
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Noteworthy
-                                technology
-                                acquisitions 2021</h5>
-                            <p class="font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise
-                                technology
-                                acquisitions of 2021 so far, in reverse chronological order.</p>
+                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">This is a Forum
+                                for {{ $business->title }}</h5>
+                            <p class="font-normal text-gray-700 dark:text-gray-400">This tab is designed as a space for
+                                users to engage in discussions, share information, or seek answers to general questions.
+                                Whether you're looking to provide insights or learn more about additional topics, this is
+                                the place to connect and collaborate with others.</p>
                         </div>
                     </div>
 
@@ -244,20 +254,32 @@
                                     </h6>
                                     <div class="flex justify-between items-start">
                                         <p id="comment-content-{{ $comment->id }}"
-                                            class="text-gray-700 dark:text-gray-400 text-sm">
+                                            class="text-gray-700 dark:text-gray-400 text-sm pr-2">
                                             {{ $comment->content }}
                                         </p>
                                         {{-- Edit and Delete Options --}}
-                                        @if (Auth::id() === $comment->user_id || Auth::user()->is_admin)
+                                        @if (Auth::check())
                                             <div class="flex space-x-2 edit-delete-buttons">
-                                                {{-- Edit button --}}
-                                                <button type="button" onclick="toggleEdit({{ $comment->id }}, true)">
-                                                    <x-svg-icon name="edit-comment" />
-                                                </button>
-                                                <!-- Delete Button -->
-                                                <button type="button" onclick="confirmDelete({{ $comment->id }})">
-                                                    <x-svg-icon name="delete-comment" />
-                                                </button>
+                                                {{-- Show Delete Icon for Admins --}}
+                                                @if (Auth::user()->isAdmin === 1)
+                                                    <!-- Delete Button -->
+                                                    <button type="button" class="px-4" onclick="confirmDelete({{ $comment->id }})">
+                                                        <x-svg-icon name="delete-comment" />
+                                                    </button>
+                                                @endif
+
+                                                {{-- Show Edit and Delete Icons for Comment Owner --}}
+                                                @if (Auth::id() === $comment->user_id)
+                                                    <!-- Edit Button -->
+                                                    <button type="button"
+                                                        onclick="toggleEdit({{ $comment->id }}, true)">
+                                                        <x-svg-icon name="edit-comment" />
+                                                    </button>
+                                                    <!-- Delete Button -->
+                                                    <button type="button" onclick="confirmDelete({{ $comment->id }})">
+                                                        <x-svg-icon name="delete-comment" />
+                                                    </button>
+                                                @endif
                                             </div>
                                         @endif
 
@@ -324,12 +346,65 @@
                     Manage Business
                 </a>
             @endif
+
+            {{-- Hidden add Meeting Form --}}
+            <div id="editMeetingModal" class="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                <div class="bg-gray-300 w-[400px] h-auto p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold text-center mb-6">Edit Meeting</h2>
+                    <div class="grid">
+                        <div class="mb-5">
+                            <label for="editMeetingDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                            <input type="date" name="editMeetingDate" id="editMeetingDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                        </div>
+                        <div class="mb-5">
+                            <label for="editMeetingTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                            <input type="text" name="editMeetingTitle" id="editMeetingTitle" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                        </div>
+                        <div class="mb-5">
+                            <label for="editMeetingDescription" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                            <textarea name="editMeetingDescription" id="editMeetingDescription" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
+                        </div>
+                        <input type="hidden" name="business_id" value="{{ $business->id }}" />
+                        <button id="editMeetingSubmit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
+                    </div>
+                    <div class="flex justify-center">
+                        <button type="button" id="closeModalBtn" class="mt-4 text-red-500">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    @php
+        $meetings = $business->meetings
+            ->map(function ($meeting) {
+                return [
+                    'title' => $meeting->title,
+                    'start' => $meeting->date,
+                    'description' => $meeting->description,
+                    'idMeeting' => $meeting->id,
+                ];
+            })
+            ->toArray();
+    @endphp
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>            
+            @php
+                $meetings = $business->meetings->map(function($meeting) {
+                            return [
+                                    'title' => $meeting->title,
+                                    'start' => $meeting->date,
+                                    'description' => $meeting->description,
+                                    'idMeeting' => $meeting->id
+                                ];
+                            });
+            @endphp
+
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+          
     <script>
+        var calendar;
+
         // ini biar nge split awalnya yg disubmit asc_name, kan gabisa, jadi split asc & name
         function submitSortForm() {
             // Buat nge get dari dropdown
@@ -357,6 +432,19 @@
             const descriptionBox = document.getElementById('description-box');
             const meetingBox = document.getElementById('meeting-box');
             const forumBox = document.getElementById('forum-box');
+                    
+            // Meeting Elements
+            const idMeeting = document.getElementById('idMeeting');
+            const titleMeeting = document.getElementById('titleMeeting');
+            const dateMeeting = document.getElementById('dateMeeting');
+            const dateMeetingHidden = document.getElementById('dateMeetingHidden');
+            const descriptionMeeting = document.getElementById('descriptionMeeting');
+            const registerMeeting = document.getElementById('registerMeeting');
+            const editMeeting = document.getElementById('editMeeting');
+            const editMeetingSubmit = document.getElementById('editMeetingSubmit');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const deleteMeeting = document.getElementById('deleteMeeting');
+
 
             // Retrieve the last active tab from localStorage
             const lastActiveTab = localStorage.getItem('activeTab') || 'description';
@@ -371,25 +459,24 @@
                     descriptionBox.style.display = 'block';
                 } else if (tab === 'meeting') {
                     meetingBox.style.display = 'block';
-                    var calendarEl = document.getElementById('calendar-detail');
+                    var calendarEl = document.getElementById('calendar');
 
                     // Create the event data directly in Blade
-                    var meetings = @json($business->meetings->map(function($meeting) {
-                                return [
-                                    'title' => $meeting->title,
-                                    'start' => $meeting->date,
-                                        'description' => $meeting->description
-                                    ];
-                                }));
+                    var meetings = @json($meetings);
 
-                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                    calendar = new FullCalendar.Calendar(calendarEl, {
                         initialView: 'dayGridMonth',
                         events: meetings,
                         eventClick: function(info) {
-                            alert('Meeting: ' + info.event.title + '\nDescription: ' + info.event
-                                .extendedProps.description);
+                            document.getElementById('calendarDescription').classList.remove("hidden");
+                            idMeeting.textContent = info.event.extendedProps.idMeeting;
+                            titleMeeting.textContent = info.event.title;
+                            dateMeeting.textContent = new Date(info.event.start).toLocaleString('id-ID', { year: "numeric",month: "long",day: "numeric" });
+                            dateMeetingHidden.textContent = info.event.start;
+                            descriptionMeeting.textContent = info.event.extendedProps.description;
+                            document.getElementById('buttonMeetings').classList.remove("hidden");
                         }
-                    });
+                    }); 
 
                     calendar.render();
 
@@ -415,6 +502,127 @@
             forumBtn.addEventListener('click', function() {
                 setActiveTab('forum');
             });
+            registerMeeting.addEventListener('click', function() {
+                Swal.fire({
+                    title:'Register Meeting - '+ titleMeeting.textContent,
+                    text: 'Do you want to register this meeting',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#DD6B55',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: "No",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('registerMeeting') }}",
+                            method: "GET",
+                            data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
+                            success: function(response) {
+                                if (response.exists) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Register Meeting successful!',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Failed!',
+                                        text: 'Register Meeting failed!',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            }); 
+            editMeeting.addEventListener('click', function() {
+                
+                editMeetingModal.classList.remove("hidden");
+                document.getElementById('editMeetingDate').value = formatDate(dateMeetingHidden.textContent);
+                document.getElementById('editMeetingTitle').value = titleMeeting.textContent;
+                document.getElementById('editMeetingDescription').value = descriptionMeeting.textContent;
+            });
+            editMeetingSubmit.addEventListener('click', function() {
+                
+                $.ajax({
+                    url: "{{ route('editMeeting') }}",
+                    method: "GET",
+                    data: { idMeeting: idMeeting.textContent, 
+                            idBusiness: {{ $business->id }},
+                            dateMeeting: document.getElementById('editMeetingDate').value,
+                            titleMeeting: document.getElementById('editMeetingTitle').value, 
+                            descriptionMeeting: document.getElementById('editMeetingDescription').value,
+                        },
+                    success: function(response) {
+                        if (response.success == '1') {
+                            refreshCalendarData();
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Edit Meeting successful!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    editMeetingModal.classList.add("hidden");
+                                }
+                            });
+                                
+                        } else {
+                            Swal.fire({
+                                title: 'Failed!',
+                                text: 'Edit Meeting failed!',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+                });
+            });
+
+            closeModalBtn.addEventListener('click', function() {
+                editMeetingModal.classList.add("hidden");
+            });
+
+        });
+        deleteMeeting.addEventListener('click', function() {
+            Swal.fire({
+                title:'Delete Meeting - '+ titleMeeting.textContent,
+                text: 'Are you sure you want to delete this meeting',
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#DD6B55',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('deleteMeeting') }}",
+                        method: "GET",
+                        data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
+                        success: function(response) {
+                            if (response.success == '1') {
+                                refreshCalendarData();
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Delete Meeting successful!',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Failed!',
+                                    text: 'Delete Meeting failed!',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        }
+                    });
+                }
+            }); 
         });
         //  Ini buat confirmation di buy button dan withdraw button
         @if (session('success'))
@@ -480,6 +688,41 @@
                 repliesElement.style.display = 'none';
                 button.textContent = 'View more replies';
             }
+        }
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            console.log(Date.parse(date));
+            if (month.length < 2) 
+                month = '0' + month;
+            if (day.length < 2) 
+                day = '0' + day;
+            
+            return [year, month, day].join('-');
+        }
+
+        function refreshCalendarData() {
+            console.log("ASDASDASD");
+            
+            $.ajax({
+                url: '{{ route('getMeetingData') }}', // Replace with your backend endpoint
+                type: 'GET',
+                data: { idBusiness: {{ $business->id }}},
+                success: function(meetingsData) {
+                    console.log(meetingsData.meetings);
+                    // Clear existing events
+                    calendar.removeAllEvents();
+                    // Add the new events
+                    calendar.addEventSource(meetingsData.meetings);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching meetings:', error);
+                    alert('Failed to refresh calendar events.');
+                }
+            });
         }
     </script>
 @endsection

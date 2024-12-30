@@ -7,6 +7,10 @@ use App\Models\Business;
 use App\Traits\Sortable;
 use App\Models\Investment;
 use App\Models\Meeting;
+use App\Models\RegisteredMeetings;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
@@ -90,6 +94,26 @@ class BusinessController extends Controller
         return view('home', compact('businesses'));
     }
 
+    public function detailProfile(Request $request)
+    {
+        // $investmentsQuery = Investment::join('users', 'investments.user_id', '=', 'users.id')
+        //     ->join('businesses', 'investments.business_id', '=', 'businesses.id')
+        //     ->groupBy('investments.user_id', 'investments.business_id'); // Filter by business ID
+
+
+        // $investments = $this->applySortingInvestors($investmentsQuery, $request)
+        //     ->select(DB::raw('SUM(investments.amount) as total_investment'), 'investments.*', 'businesses.*', 'users.*', 'users.name as investor_name')
+        //     ->get();
+
+        $investments = Investment::with(['user', 'business'])
+                                        ->select('user_id', 'business_id', DB::raw('SUM(amount) as total_amount'))
+                                        ->groupBy('user_id', 'business_id')
+                                        ->having('user_id', Auth::user()->id)
+                                        ->get();
+        // dd("investments: ", $investments);
+        return view('profileDetail', compact('investments'));
+    }
+
     public function manage($id)
     {
         $business = Business::findOrFail($id);
@@ -142,11 +166,12 @@ class BusinessController extends Controller
     {
 
         $business = Business::findOrFail($id);
-
+        error_log("asd");
+        error_log($business);
         $investmentsQuery = Investment::join('users', 'investments.user_id', '=', 'users.id')
             ->join('businesses', 'investments.business_id', '=', 'businesses.id')
             ->where('businesses.id', $id); // Filter by business ID
-
+        
 
         $investments = $this->applySortingInvestors($investmentsQuery, $request)
             ->select('investments.*', 'users.name as investor_name')
@@ -256,35 +281,7 @@ class BusinessController extends Controller
                 ]);
     }
 
-    public function addMeeting(Request $request)
-    {
-        try {
-            $data = $request->validate([
-                'date' => 'required|date',
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'business_id' => 'required'
-            ]);
-
-            // Save the meeting to the database
-            Meeting::create([
-                'date' => $data['date'],
-                'title' => $data['title'],
-                'description' => $data['description'],
-                'business_id' => $data['business_id']
-            ]);
-
-            // Return a JSON response indicating success
-            return response()->json(['success' => true], 200);
-
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error($e->getMessage());
-
-        // Return an error response
-        return response()->json(['success' => false, 'message' => 'Error adding meeting'], 500);
-    }
-}
+    
 
 public function listBusiness(Request $request){
     $businesses = Business::query();
@@ -307,14 +304,13 @@ public function listBusiness(Request $request){
     return view('listBusiness', ['businesses' => $businesses->get(), 'acc' => $acc,'pend' => $pend, 'rej' => $rej,'tot'=>$tot]);
 }
 
-    public function detailProfile(){
-        return view("profileDetail");
-    }
     public function welcome(Request $request){
         $businesses = Business::whereIn('id', [1, 2, 3])->get();
 
             // Return the welcome view and pass the businesses to it
             return view('welcome', compact('businesses'));
     }
+
+    
 }
 

@@ -1,3 +1,9 @@
+<style>
+
+.fc-event {
+    cursor: pointer; /* Add pointer cursor to all events */
+}
+</style>
 <div id="modal" class="fixed w-screen h-full bg-black opacity-50 z-50 hidden">
 </div>
 <nav class="bg-white dark:bg-gray-900 w-full px-1 z-20 top-0 border-b border-gray-200 dark:border-gray-600 flex justify-evenly">
@@ -166,20 +172,27 @@
 
 </nav>
 
-<div id="calendar" class="fixed left-1/3 top-32 w-4/12 h-5/12 hidden z-50">
-    <div id="navCalendar" class="flex justify-end justify-self-center bg-[#0370A3] w-full rounded-t-md pt-4 pr-4">
-        <!-- <button type="button" id="closeCalendar" class="flex justify-center items-center w-5 h-5 bg-red-800 rounded-full">
-      <span class="left-1 bottom-1 text-white text-sm leading-none">&#x2715;</span>
-    </button> -->
+<div id="calendarContainer" class="fixed left-[15%] top-8 w-8/12  hidden z-50">
+    <div id="navCalendar" class="flex justify-end bg-[#0370A3] w-full rounded-t-md pt-4 pr-4">
         <button type="button" id="closeCalendar"
             class="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 hover:text-white transition-colors">
             <span class="text-3xl pl-[0.05rem] pb-[0.35rem] text-black leading-none hover:text-white">&times;</span>
         </button>
     </div>
-    <div id="calendarContent"
-        class="justify-self-center bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] w-full h-full p-4 rounded-b-md shadow-lg">
+  
+  <div class="flex w-full">
+    <div id="calendarContent"  class="justify-self-center w-3/4 bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] p-4 rounded-b-md shadow-lg" >
     </div>
+    
+    <div id="calendarDescription"  class="flex-col content-around w-1/4 bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-3">
+        <div id="title" class="justify-self-center font-bold text-2xl"></div>
+        <div id="business" class="text-center font-semibold text-lg mb-10" ></div>
+        <div id="description" class="justify-self-center "></div>
+    </div>
+  </div>
 </div>
+
+
 
 
 <style>
@@ -223,18 +236,30 @@
         // Tampilkan dan sembunyikan pop-up kalender
         $('#calendar-button').on('click', function(e) {
             // e.stopPropagation(); // Mencegah klik pada tombol menutup popup
-            $("#calendar").css("display", "block");
+            $("#calendarContainer").css("display", "block");
             $("#modal").css("display", "block");
             var calendarEl = document.getElementById('calendarContent');
 
-
-
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-
-                fixedWeekCount: false
+            var meetings = null;
+            $.ajax({
+                url: "{{ route('getRegisteredMeetings') }}",
+                method: "GET",
+                success: function(response) {
+                  console.log(response.registered);
+                  var calendar = new FullCalendar.Calendar(calendarEl, {
+                      initialView: 'dayGridMonth',
+                      events: response.registered,
+                      fixedWeekCount: false,
+                      eventClick: function(info) {
+                          $("#title").html(info.event.title);
+                          $("#business").html(info.event.extendedProps.business.title);
+                          $("#description").html(info.event.extendedProps.description);
+                      }
+                  });
+                  calendar.render();
+                  console.log("meetings: ", meetings);
+                }
             });
-            calendar.render();
         });
 
         // Menutup pop-up jika klik di luar
@@ -246,7 +271,12 @@
     });
 
     $('#closeCalendar').on('click', function(e) {
-        $("#calendar").css("display", "none");
+        $("#calendarContainer").css("display", "none");
+        $("#modal").css("display", "none");
+    });
+
+    $('#modal').on('click', function(e) {
+        $("#calendarContainer").css("display", "none");
         $("#modal").css("display", "none");
     });
 
