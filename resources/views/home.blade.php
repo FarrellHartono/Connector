@@ -9,7 +9,7 @@
 @extends('layout.navbar')
 
 <div class="flex flex-col items-end px-9">
-    <form action="{{ route('home') }}" method="GET">
+    <form action="{{ route('home') }}" method="GET" class="flex items-center gap-3">
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search businesses..." class="border p-2 rounded">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
     </form>
@@ -27,7 +27,7 @@
 </div>
 
 
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4  gap-3">
+<div class="grid grid-cols-1 justify-items-center md:grid-cols-2 xl:grid-cols-4  gap-3">
     @foreach($businesses as $business)
     @php
         $folderPath = $business->image_path;

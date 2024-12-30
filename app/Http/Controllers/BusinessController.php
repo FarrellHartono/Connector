@@ -58,6 +58,7 @@ class BusinessController extends Controller
 
         $exists = Business::where('title','LIKE', $title)->exists();
 
+        error_log($title);
         return response($exists ? 'false' : 'true');
     }
 
