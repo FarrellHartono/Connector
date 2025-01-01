@@ -43,7 +43,7 @@ class MeetingController extends Controller
         $registerMeeting = RegisteredMeetings::create([
             "user_id" => Auth::user()->id,
             "business_id" => $idBusiness,
-            "meeting_id" => $idBusiness,
+            "meeting_id" => $idMeeting,
         ]);
         error_log($registerMeeting);
         return response()->json(['exists' => $registerMeeting]);

@@ -258,13 +258,13 @@ class BusinessController extends Controller
                 if($investmentAmount > $remainingNominal){
                     return redirect()->back()->with('error', 'Investment exceeds the target amount.');
                 }
-
-                Investment::create([
+                error_log("create investment");
+                error_log(Investment::create([
                     'user_id' => $userId,
                     'business_id' => $businessId,
                     'amount' => $investmentAmount,
                     'status' => 0, // Status untuk accept atau deny.
-                ]);
+                ]));
 
                 $message = 'Investment submitted for approval!';
             

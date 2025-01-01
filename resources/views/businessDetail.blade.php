@@ -201,7 +201,7 @@
                 <div class="calendar-container">
                     <div id="calendar"></div>
                     
-                    <div id="calendarDescription"  class="flex-col content-around w-full bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-4">
+                    <div id="calendarDescription"  class="flex-col content-around w-full bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-4 ">
                         <div id="idMeeting" class="hidden"></div>
                         <div id="titleMeeting" class="justify-self-center font-bold text-xl "></div>
                         <div id="dateMeeting" class="justify-self-center mb-6"></div>
@@ -375,19 +375,7 @@
             ->toArray();
     @endphp
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>            
-            @php
-                $meetings = $business->meetings->map(function($meeting) {
-                            return [
-                                    'title' => $meeting->title,
-                                    'start' => $meeting->date,
-                                    'description' => $meeting->description,
-                                    'idMeeting' => $meeting->id
-                                ];
-                            });
-            @endphp
-
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
           
     <script>
         var calendar;
@@ -412,6 +400,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            var bisnis = @json($business);
+            console.log("tes bisnis: ", bisnis);
+            console.log();
             // Tab elements
             const descriptionBtn = document.getElementById('description-btn');
             const meetingBtn = document.getElementById('meeting-btn');
@@ -432,6 +423,10 @@
             const closeModalBtn = document.getElementById('closeModalBtn');
             const deleteMeeting = document.getElementById('deleteMeeting');
 
+            // Edit Meeting Elements
+            const editMeetingDate = document.getElementById('editMeetingDate');
+            const editMeetingTitle = document.getElementById('editMeetingTitle');
+            const editMeetingDescription = document.getElementById('editMeetingDescription');
 
             // Retrieve the last active tab from localStorage
             const lastActiveTab = localStorage.getItem('activeTab') || 'description';
@@ -455,13 +450,29 @@
                         initialView: 'dayGridMonth',
                         events: meetings,
                         eventClick: function(info) {
-                            document.getElementById('calendarDescription').classList.remove("hidden");
                             idMeeting.textContent = info.event.extendedProps.idMeeting;
                             titleMeeting.textContent = info.event.title;
                             dateMeeting.textContent = new Date(info.event.start).toLocaleString('id-ID', { year: "numeric",month: "long",day: "numeric" });
                             dateMeetingHidden.textContent = info.event.start;
                             descriptionMeeting.textContent = info.event.extendedProps.description;
+                            titleMeeting.classList.remove("hidden");
+                            dateMeeting.classList.remove("hidden");
+                            descriptionMeeting.classList.remove("hidden");
                             document.getElementById('buttonMeetings').classList.remove("hidden");
+                            if (new Date(info.event.start) < Date.now())
+                            {
+                                document.getElementById('registerMeeting').classList.add("hidden");
+                                   
+                            }
+
+                            if ({{ auth()->id() }} == {{ $business->user_id }}) 
+                            {
+                                document.getElementById('registerMeeting').classList.add("hidden");
+                            }else
+                            {
+                                document.getElementById('editMeeting').classList.add("hidden");
+                                document.getElementById('deleteMeeting').classList.add("hidden");
+                            }
                         }
                     }); 
 
@@ -499,6 +510,10 @@
                     confirmButtonText: 'Yes',
                     cancelButtonText: "No",
                 }).then((result) => {
+                    titleMeeting.classList.add("hidden");
+                    dateMeeting.classList.add("hidden");
+                    descriptionMeeting.classList.add("hidden");
+                    document.getElementById('buttonMeetings').classList.add("hidden");
                     if (result.isConfirmed) {
                         $.ajax({
                             url: "{{ route('registerMeeting') }}",
@@ -533,15 +548,51 @@
                 document.getElementById('editMeetingDescription').value = descriptionMeeting.textContent;
             });
             editMeetingSubmit.addEventListener('click', function() {
-                
+                if (!editMeetingDate.value)
+                {
+                    Swal.fire({
+                        text: 'Meeting date must be filled!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }else if (new Date(editMeetingDate.value) < Date.now())
+                {
+                    Swal.fire({
+                        text: 'Meeting date must be later than today or today!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }else if (!editMeetingTitle.value)
+                {
+                    Swal.fire({
+                        text: 'Meeting title must be filled!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }else if (!editMeetingDescription.value)
+                {
+                    Swal.fire({
+                        text: 'Meeting description must be filled!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+                titleMeeting.classList.add("hidden");
+                dateMeeting.classList.add("hidden");
+                descriptionMeeting.classList.add("hidden");
+                document.getElementById('buttonMeetings').classList.add("hidden");
                 $.ajax({
                     url: "{{ route('editMeeting') }}",
                     method: "GET",
                     data: { idMeeting: idMeeting.textContent, 
                             idBusiness: {{ $business->id }},
-                            dateMeeting: document.getElementById('editMeetingDate').value,
-                            titleMeeting: document.getElementById('editMeetingTitle').value, 
-                            descriptionMeeting: document.getElementById('editMeetingDescription').value,
+                            dateMeeting: editMeetingDate.value,
+                            titleMeeting: editMeetingTitle.value, 
+                            descriptionMeeting: editMeetingDescription.value,
                         },
                     success: function(response) {
                         if (response.success == '1') {
@@ -573,44 +624,49 @@
                 editMeetingModal.classList.add("hidden");
             });
 
-        });
-        deleteMeeting.addEventListener('click', function() {
-            Swal.fire({
-                title:'Delete Meeting - '+ titleMeeting.textContent,
-                text: 'Are you sure you want to delete this meeting',
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: '#DD6B55',
-                confirmButtonText: 'Yes',
-                cancelButtonText: "No",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('deleteMeeting') }}",
-                        method: "GET",
-                        data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
-                        success: function(response) {
-                            if (response.success == '1') {
-                                refreshCalendarData();
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: 'Delete Meeting successful!',
-                                    icon: 'success',
-                                    confirmButtonText: 'OK'
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Failed!',
-                                    text: 'Delete Meeting failed!',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
+            deleteMeeting.addEventListener('click', function() {
+                Swal.fire({
+                    title:'Delete Meeting - '+ titleMeeting.textContent,
+                    text: 'Are you sure you want to delete this meeting',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#DD6B55',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: "No",
+                }).then((result) => {
+                    titleMeeting.classList.add("hidden");
+                    dateMeeting.classList.add("hidden");
+                    descriptionMeeting.classList.add("hidden");
+                    document.getElementById('buttonMeetings').classList.add("hidden");
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('deleteMeeting') }}",
+                            method: "GET",
+                            data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
+                            success: function(response) {
+                                if (response.success == '1') {
+                                    refreshCalendarData();
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Delete Meeting successful!',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Failed!',
+                                        text: 'Delete Meeting failed!',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
                             }
-                        }
-                    });
-                }
-            }); 
+                        });
+                    }
+                }); 
+            });
         });
+        
         //  Ini buat confirmation di buy button dan withdraw button
         @if (session('success'))
             Swal.fire({
