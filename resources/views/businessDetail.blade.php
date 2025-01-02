@@ -341,7 +341,7 @@
                     <div class="grid">
                         <div class="mb-5">
                             <label for="editMeetingDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                            <input type="date" name="editMeetingDate" id="editMeetingDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                            <input type="datetime-local" name="editMeetingDate" id="editMeetingDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                         </div>
                         <div class="mb-5">
                             <label for="editMeetingTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
@@ -363,6 +363,8 @@
     </div>
 
     @php
+        use Carbon\Carbon;
+
         $meetings = $business->meetings
             ->map(function ($meeting) {
                 return [
@@ -445,14 +447,15 @@
 
                     // Create the event data directly in Blade
                     var meetings = @json($meetings);
-
+                    console.log("meetings: ", meetings);
                     calendar = new FullCalendar.Calendar(calendarEl, {
                         initialView: 'dayGridMonth',
                         events: meetings,
                         eventClick: function(info) {
                             idMeeting.textContent = info.event.extendedProps.idMeeting;
                             titleMeeting.textContent = info.event.title;
-                            dateMeeting.textContent = new Date(info.event.start).toLocaleString('id-ID', { year: "numeric",month: "long",day: "numeric" });
+                            dateMeeting.textContent = new Date(info.event.start).toLocaleString([], { year: "numeric",month: "long",day: "numeric", hour: '2-digit', minute: '2-digit', hour12: true });
+                            console.log("meeting date: ", info.event.start);
                             dateMeetingHidden.textContent = info.event.start;
                             descriptionMeeting.textContent = info.event.extendedProps.description;
                             titleMeeting.classList.remove("hidden");
@@ -541,8 +544,8 @@
                 });
             }); 
             editMeeting.addEventListener('click', function() {
-                
                 editMeetingModal.classList.remove("hidden");
+                console.log("asdasd: ", dateMeetingHidden.textContent);
                 document.getElementById('editMeetingDate').value = formatDate(dateMeetingHidden.textContent);
                 document.getElementById('editMeetingTitle').value = titleMeeting.textContent;
                 document.getElementById('editMeetingDescription').value = descriptionMeeting.textContent;
@@ -733,18 +736,18 @@
             }
         }
 
-        function formatDate(date) {
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-            console.log(Date.parse(date));
-            if (month.length < 2) 
-                month = '0' + month;
-            if (day.length < 2) 
-                day = '0' + day;
-            
-            return [year, month, day].join('-');
+        function formatDate(inputDate) {
+            const date = new Date(inputDate); // Convert the input to a Date object
+
+            // Extract date components
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+
+            // Format as YYYY-MM-DDTHH:MM
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
         }
 
         function refreshCalendarData() {

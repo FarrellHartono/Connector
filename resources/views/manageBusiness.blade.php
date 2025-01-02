@@ -194,7 +194,7 @@
             <div class="grid">
                 <div class="mb-5">
                     <label for="dateMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                    <input type="date" name="dateMeeting" id="dateMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                    <input type="datetime-local" name="dateMeeting" id="dateMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                 </div>
                 <div class="mb-5">
                     <label for="titleMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
