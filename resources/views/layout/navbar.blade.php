@@ -112,7 +112,7 @@
 
 </nav>
 
-<div id="calendarContainer" class="fixed left-[15%] top-8 w-8/12  hidden z-50">
+<div id="calendarContainer" class="fixed left-[15%] top-24 w-8/12  hidden z-50">
     <div id="navCalendar" class="flex justify-end bg-[#0370A3] w-full rounded-t-md pt-4 pr-4">
         <button type="button" id="closeCalendar"
             class="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 hover:text-white transition-colors">
@@ -124,9 +124,10 @@
     <div id="calendarContent"  class="justify-self-center w-3/4 bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] p-4 rounded-b-md shadow-lg" >
     </div>
     
-    <div id="calendarDescription"  class="flex-col content-around w-1/4 bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-3">
-        <div id="title" class="justify-self-center font-bold text-2xl"></div>
-        <div id="business" class="text-center font-semibold text-lg mb-10" ></div>
+    <div id="calendarDescription"  class="flex-col content-around w-2/4 bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-3">
+        <div id="title" class="text-center font-bold text-xl"></div>
+        <div id="business" class="text-center font-semibold" ></div>
+        <div id="dateTime" class="text-center mb-10" ></div>
         <div id="description" class="justify-self-center "></div>
     </div>
   </div>
@@ -192,6 +193,7 @@
                       fixedWeekCount: false,
                       eventClick: function(info) {
                           $("#title").html(info.event.title);
+                          $("#dateTime").html(new Date(info.event.start).toLocaleString([], { year: "numeric",month: "long",day: "numeric", hour: '2-digit', minute: '2-digit', hour12: true }));
                           $("#business").html(info.event.extendedProps.business.title);
                           $("#description").html(info.event.extendedProps.description);
                       }
