@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('status')->default(0);
             $table->timestamp('deposit_date')->now();
             $table->timestamp('withdrawal_date')->nullable();
+            $table->timestamps();
 
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -44,8 +44,6 @@ class BusinessController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'image_path' => '/public/assets/business/'.$request->title,
-            'start_date' => $request -> startDate,
-            'end_date' => $request-> endDate,
             'nominal' => $request-> nominal,
             'address' => $request-> address,
             'phone_number' => $request -> phone,
@@ -61,6 +59,9 @@ class BusinessController extends Controller
         $title = $request->query('title');
 
         $exists = Business::where('title','LIKE', $title)->exists();
+
+        error_log($title);
+        error_log($exists);
 
         return response($exists ? 'false' : 'true');
     }
@@ -156,6 +157,8 @@ class BusinessController extends Controller
 
         $business = Business::findOrFail($id);
         $business->description = $request->description;
+        $business->address = $request->address;
+        $business->phone_number = $request->phone;
         $business->save();
 
         return redirect()->route('listBusiness')->with('success', 'Business updated successfully!');
@@ -237,6 +240,7 @@ class BusinessController extends Controller
                     'business_id' => $businessId,
                     'amount' => $investmentAmount,
                     'status' => 0, // Status untuk accept atau deny.
+                    'deposit_date'=> now(),
                 ]);
 
                 $message = 'Investment submitted for approval!';

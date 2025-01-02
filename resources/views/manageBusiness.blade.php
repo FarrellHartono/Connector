@@ -5,21 +5,23 @@
 @endsection
 
 @section('content')
-@extends('layout.navbar')
-<div class="relative flex items-center">
-    <a href="{{ url()->previous() }}" class="absolute left-4 flex items-center bg-white border rounded-full p-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" class="">
-            <rect width="24" height="24" fill="none" />
-            <path fill="currentColor" d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1" />
-        </svg>
-    </a>
-    <h1 class="mx-auto text-5xl font-bold">Manage Business</h1>
-</div>
+    @extends('layout.navbar')
+    <div class="relative flex items-center">
+        <a href="{{ url()->previous() }}" class="absolute left-4 flex items-center bg-white border rounded-full p-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" class="">
+                <rect width="24" height="24" fill="none" />
+                <path fill="currentColor"
+                    d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42a.996.996 0 0 0-1.41 0l-6.59 6.59a.996.996 0 0 0 0 1.41l6.59 6.59a.996.996 0 1 0 1.41-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1" />
+            </svg>
+        </a>
+        <h1 class="mx-auto text-5xl font-bold">Manage Business</h1>
+    </div>
 
 
     <div class="flex justify-center mt-10">
         <div class="w-full">
-            <form action="{{ route('business.update', $business->id) }}" method="POST" enctype="multipart/form-data" oninput="validateForm()" id="manage-business">
+            <form action="{{ route('business.update', $business->id) }}" method="POST" enctype="multipart/form-data"
+                oninput="validateForm()" id="manage-business">
                 @csrf
                 @method('PUT')
                 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -122,28 +124,28 @@
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
+                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="address">
+                        Address
+                    </label>
+                    <textarea name="address" id="address" required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ $business->address }}</textarea>
+                    @error('address')
+                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <div class="flex gap-4 max-lg:flex-col">
-                    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex-grow">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="startDate">
-                            Start Date
-                        </label>
-                        <input type="date" name="startDate" id="startDate" value="{{ $business->start_date }}" readonly
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed leading-tight focus:outline-none focus:shadow-outline">
-                        @error('startDate')
-                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex-grow">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="endDate">
-                            End Date
-                        </label>
-                        <input type="date" name="endDate" id="endDate" value="{{ $business->end_date }}" readonly
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed leading-tight focus:outline-none focus:shadow-outline">
-                        @error('endDate')
-                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
+                        Phone Number
+                    </label>
+                    <input type="tel" id="phone" name="phone" pattern="08\d{8,}"
+                        title="The number must start with 08 and have at least 10 digits" value="{{ $business->phone_number }}"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        required>
+                    @error('phone')
+                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -164,7 +166,8 @@
 
                 <div class="flex justify-center">
                     <button type="submit" id="save-button"
-                        class="w-full py-2 px-4 rounded bg-gray-200 text-black font-bold cursor-not-allowed opacity-50" disabled>
+                        class="w-full py-2 px-4 rounded bg-gray-200 text-black font-bold cursor-not-allowed opacity-50"
+                        disabled>
                         Save Changes
                     </button>
                 </div>
@@ -176,38 +179,46 @@
     <div id="addMeetingModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-gray-300 w-[400px] h-auto p-6 rounded-lg">
             <h2 class="text-2xl font-bold text-center mb-6">Add Meeting</h2>
-            
+
             <div class="grid">
                 <div class="mb-5">
-                    <label for="dateMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                    <input type="date" name="dateMeeting" id="dateMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                    <label for="dateMeeting"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                    <input type="date" name="dateMeeting" id="dateMeeting"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                 </div>
                 <div class="mb-5">
-                    <label for="titleMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
-                    <input type="text" name="titleMeeting" id="titleMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                    <label for="titleMeeting"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                    <input type="text" name="titleMeeting" id="titleMeeting"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                 </div>
                 <div class="mb-5">
-                    <label for="descriptionMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                    <textarea name="descriptionMeeting" id="descriptionMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
+                    <label for="descriptionMeeting"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                    <textarea name="descriptionMeeting" id="descriptionMeeting"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
                 </div>
                 <input type="hidden" name="business_id" value="{{ $business->id }}" />
-                <button id="submitMeetingButton" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
+                <button id="submitMeetingButton"
+                    class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
             </div>
             <div class="flex justify-center">
                 <button type="button" id="closeModalBtn" class="mt-4 text-red-500">Close</button>
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function(){
-        const addMeetingBtn = document.getElementById('addMeetingBtn');
-        const addMeetingModal = document.getElementById('addMeetingModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const submitMeetingButton = document.getElementById('submitMeetingButton');
-        
-        
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addMeetingBtn = document.getElementById('addMeetingBtn');
+            const addMeetingModal = document.getElementById('addMeetingModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const submitMeetingButton = document.getElementById('submitMeetingButton');
+
+
             // Buat nge show pop up add meeting
             addMeetingBtn.addEventListener('click', function() {
                 addMeetingModal.classList.remove('hidden');
@@ -222,11 +233,12 @@
                 $.ajax({
                     url: "{{ route('addMeeting') }}",
                     method: "GET",
-                    data: { business_id: {{ $business->id }},
-                            date: document.getElementById('dateMeeting').value,
-                            title: document.getElementById('titleMeeting').value,
-                            description: document.getElementById('descriptionMeeting').value
-                        },
+                    data: {
+                        business_id: {{ $business->id }},
+                        date: document.getElementById('dateMeeting').value,
+                        title: document.getElementById('titleMeeting').value,
+                        description: document.getElementById('descriptionMeeting').value
+                    },
                     success: function(response) {
                         if (response.success) {
                             Swal.fire({
@@ -302,6 +314,12 @@
                     extension: "jpeg|png|jpg|gif|svg",
                     filesize: 2048 * 1024,
                 },
+                address: {
+                    required: true,
+                },
+                phone: {
+                    required: true,
+                },
             },
             messages: {
                 description: {
@@ -315,6 +333,12 @@
                 'file.*': {
                     extension: "Invalid file type. Only JPEG, PNG, JPG, GIF, SVG are allowed.",
                     filesize: "File size must not exceed 2MB.",
+                },
+                address: {
+                    required: "Address is required.",
+                },
+                phone: {
+                    required: "Phone number is required.",
                 },
             },
             onfocusout: false,
@@ -332,7 +356,8 @@
                     cancelButtonText: 'No'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Swal.fire('Success!','Your changes has been saved','success').then((result)=>{
+                        Swal.fire('Success!', 'Your changes has been saved', 'success').then((
+                        result) => {
                             form.submit();
                         });
                     }
@@ -342,7 +367,7 @@
             invalidHandler: function(event, validator) {
                 const errors = validator.errorList;
                 if (errors.length > 0) {
-                const message = errors[0].message;
+                    const message = errors[0].message;
                     Swal.fire({
                         title: 'Error!',
                         text: message,
@@ -350,26 +375,28 @@
                         confirmButtonText: 'OK'
                     });
                 }
-             },
-             errorPlacement: function(error, element) {
-                 return false;
-             }
+            },
+            errorPlacement: function(error, element) {
+                return false;
+            }
         });
 
         function validateForm() {
-        const form = document.getElementById('manage-business');
-        const inputs = form.querySelectorAll('input[required],textarea[required]');
-        const button = document.getElementById('save-button');
-        const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
-        if(!allFilled){
-            button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
-            button.classList.add('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
-            button.disabled = true;
-        }else{
-            button.classList.remove('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
-            button.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
-            button.disabled = false;
-        }
+            const form = document.getElementById('manage-business');
+            const inputs = form.querySelectorAll('input[required],textarea[required]');
+            const button = document.getElementById('save-button');
+            const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+            if (!allFilled) {
+                button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded',
+                    'focus:outline-none', 'focus:shadow-outline');
+                button.classList.add('bg-gray-200', 'text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
+                button.disabled = true;
+            } else {
+                button.classList.remove('bg-gray-200', 'text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
+                button.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded',
+                    'focus:outline-none', 'focus:shadow-outline');
+                button.disabled = false;
+            }
         }
     </script>
 @endsection

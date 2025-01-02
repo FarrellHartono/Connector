@@ -30,7 +30,7 @@
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
                     Title
                 </label>
-                <input type="text" name="title" id="title" value="{{ old('title') }}" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="text" name="title" id="titles" value="{{ old('title') }}" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             </div>
 
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
@@ -104,28 +104,6 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                 @enderror
             </div>
-
-            <div class="flex gap-4 max-lg:flex-col">
-                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex-grow">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="startDate">
-                        Start Date
-                    </label>
-                    <input type="date" name="startDate" id="startDate" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old ('startDate') }}">
-                    @error('startDate')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex-grow">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="endDate">
-                        End Date
-                    </label>
-                    <input type="date" name="endDate" id="endDate" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old ('endDate') }}">
-                    @error('endDate')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="nominal">
                     Nominal
@@ -210,7 +188,7 @@
                         type: 'GET',
                         data: {
                             title: function() {
-                                return $('#title').val();
+                                return $('#titles').val();
                             }
                         },
                         message: "This title has already been taken.",
@@ -234,13 +212,6 @@
                 'file.*': {
                     extension: "jpeg|png|jpg|gif|svg",
                     filesize: 2048 * 1024,
-                },
-                startDate: {
-                    required: true,
-                },
-                endDate: {
-                    required: true,
-                    greaterThanOrEqual: '#startDate',
                 },
                 nominal: {
                     required: true,
@@ -273,13 +244,6 @@
                 'file.*': {
                     extension: "Invalid file type. Only JPEG, PNG, JPG, GIF, SVG are allowed.",
                     filesize: "File size must not exceed 2MB.",
-                },
-                startDate: {
-                    required: "Start date is required.",
-                },
-                endDate: {
-                    required: "End date is required.",
-                    greaterThanOrEqual: "End date must be the same or later than the start date.",
                 },
                 nominal: {
                     required: "Nominal value is required.",
@@ -329,15 +293,6 @@
                  return false;
              }
         });
-
-
-        $.validator.addMethod('greaterThanOrEqual', function(value, element, param) {
-            var startDate = $(param).val();
-            if (startDate) {
-                return new Date(value) >= new Date(startDate);
-            }
-            return true;
-        }, 'The end date must be the same or later than the start date.');
 
     </script>
 @endsection
