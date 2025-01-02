@@ -182,10 +182,8 @@
 
             <div class="grid">
                 <div class="mb-5">
-                    <label for="dateMeeting"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                    <input type="date" name="dateMeeting" id="dateMeeting"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                    <label for="dateMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                    <input type="datetime-local" name="dateMeeting" id="dateMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                 </div>
                 <div class="mb-5">
                     <label for="titleMeeting"
@@ -218,6 +216,10 @@
             const closeModalBtn = document.getElementById('closeModalBtn');
             const submitMeetingButton = document.getElementById('submitMeetingButton');
 
+        // Meeting Elements
+        const dateMeeting = document.getElementById('dateMeeting');
+        const titleMeeting = document.getElementById('titleMeeting');
+        const descriptionMeeting = document.getElementById('descriptionMeeting');
 
             // Buat nge show pop up add meeting
             addMeetingBtn.addEventListener('click', function() {
@@ -230,15 +232,47 @@
             });
 
             submitMeetingButton.addEventListener('click', function() {
+                if (!dateMeeting.value)
+                {
+                    Swal.fire({
+                        text: 'Meeting date must be filled!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }else if (new Date(dateMeeting.value) < Date.now())
+                {
+                    Swal.fire({
+                        text: 'Meeting date must be later than today or today!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }else if (!titleMeeting.value)
+                {
+                    Swal.fire({
+                        text: 'Meeting title must be filled!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }else if (!descriptionMeeting.value)
+                {
+                    Swal.fire({
+                        text: 'Meeting description must be filled!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
                 $.ajax({
                     url: "{{ route('addMeeting') }}",
                     method: "GET",
-                    data: {
-                        business_id: {{ $business->id }},
-                        date: document.getElementById('dateMeeting').value,
-                        title: document.getElementById('titleMeeting').value,
-                        description: document.getElementById('descriptionMeeting').value
-                    },
+                    data: { business_id: {{ $business->id }},
+                            date: dateMeeting.value,
+                            title: titleMeeting.value,
+                            description: descriptionMeeting.value
+                        },
                     success: function(response) {
                         if (response.success) {
                             Swal.fire({
