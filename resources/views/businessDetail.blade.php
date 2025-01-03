@@ -71,11 +71,12 @@
                     </span>
                 </button>
 
+
             </div>
 
             <!-- Investor List and Sorting Section (other half of the screen) -->
             <div class="w-full md:w-1/2 pl-4">
-                
+
 
                 {{-- <<!-- Sorting Form --> --}}
                 <label for="sort" class="block text-sm font-medium text-gray-700">Sort Investors:</label>
@@ -114,6 +115,11 @@
                 <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                     <div class="bg-green-500 h-2.5 rounded-full" style="width: {{ $progressPercentage }}%"></div>
                 </div>
+                <div class="flex justify-center">
+                    <span class="text-sm text-black">
+                        {{ $business->nominal - $business->current_investment }} needed to reach the goal
+                    </span>
+                </div>
 
                 <!-- Investor List -->
                 <h2 class="text-xl font-semibold text-gray-700 mt-4">Investors</h2>
@@ -144,14 +150,14 @@
                     </table>
                 </div>
 
-
+                @if(Auth::user()->isAdmin === 0)
                 <!-- Investment Amount -->
                 <form action="{{ route('business.transaction', $business->id) }}" method="POST" class="mt-6">
                     @csrf
                     <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
                     <div class="flex flex-col">
                         <input type="number" name="amount" id="amount" step="1" required
-                            class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 
+                            class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300
                                 @error('amount') @enderror">
 
                         <div class="flex justify-between">
@@ -170,6 +176,7 @@
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </form>
+                @endif
             </div>
         </div>
 
@@ -206,11 +213,14 @@
                         <div id="titleMeeting" class="justify-self-center font-bold text-xl "></div>
                         <div id="dateMeeting" class="justify-self-center mb-6"></div>
                         <div id="dateMeetingHidden" class="hidden"></div>
-                        <div id="descriptionMeeting" ></div>
+                        <div id="descriptionMeeting"></div>
                         <div id="buttonMeetings" class="flex justify-end pr-2 pb-2 hidden">
-                            <button id="registerMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Register</button>
-                            <button id="editMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Edit</button>
-                            <button id="deleteMeeting" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Delete</button>
+                            <button id="registerMeeting"
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Register</button>
+                            <button id="editMeeting"
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Edit</button>
+                            <button id="deleteMeeting"
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mx-2">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -222,12 +232,12 @@
                     class="block max-w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <div class="flex items-center space-x-4">
                         <div>
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Noteworthy
-                                technology
-                                acquisitions 2021</h5>
-                            <p class="font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise
-                                technology
-                                acquisitions of 2021 so far, in reverse chronological order.</p>
+                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">This is a Forum
+                                for {{ $business->title }}</h5>
+                            <p class="font-normal text-gray-700 dark:text-gray-400">This tab is designed as a space for
+                                users to engage in discussions, share information, or seek answers to general questions.
+                                Whether you're looking to provide insights or learn more about additional topics, this is
+                                the place to connect and collaborate with others.</p>
                         </div>
                     </div>
 
@@ -253,20 +263,28 @@
                                     </h6>
                                     <div class="flex justify-between items-start">
                                         <p id="comment-content-{{ $comment->id }}"
-                                            class="text-gray-700 dark:text-gray-400 text-sm">
+                                            class="text-gray-700 dark:text-gray-400 text-sm pr-2">
                                             {{ $comment->content }}
                                         </p>
                                         {{-- Edit and Delete Options --}}
-                                        @if (Auth::id() === $comment->user_id || Auth::user()->is_admin)
+                                        @if (Auth::check())
                                             <div class="flex space-x-2 edit-delete-buttons">
-                                                {{-- Edit button --}}
-                                                <button type="button" onclick="toggleEdit({{ $comment->id }}, true)">
-                                                    <x-svg-icon name="edit-comment" />
-                                                </button>
-                                                <!-- Delete Button -->
-                                                <button type="button" onclick="confirmDelete({{ $comment->id }})">
-                                                    <x-svg-icon name="delete-comment" />
-                                                </button>
+                                                {{-- Show Delete Icon for Admins --}}
+                                                @if (Auth::id() === $comment->user_id)
+                                                    <!-- Edit Button -->
+                                                    <button type="button"
+                                                        onclick="toggleEdit({{ $comment->id }}, true)">
+                                                        <x-svg-icon name="edit-comment" />
+                                                    </button>
+                                                @endif
+
+                                                {{-- Show Edit and Delete Icons for Comment Owner --}}
+                                                @if (Auth::id() === $comment->user_id || Auth::user()->isAdmin === 1)
+                                                    <!-- Delete Button -->
+                                                    <button type="button" onclick="confirmDelete({{ $comment->id }})">
+                                                        <x-svg-icon name="delete-comment" />
+                                                    </button>
+                                                @endif
                                             </div>
                                         @endif
 
@@ -335,7 +353,8 @@
             @endif
 
             {{-- Hidden add Meeting Form --}}
-            <div id="editMeetingModal" class="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div id="editMeetingModal"
+                class="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 hidden">
                 <div class="bg-gray-300 w-[400px] h-auto p-6 rounded-lg">
                     <h2 class="text-2xl font-bold text-center mb-6">Edit Meeting</h2>
                     <div class="grid">
@@ -344,15 +363,21 @@
                             <input type="datetime-local" name="editMeetingDate" id="editMeetingDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                         </div>
                         <div class="mb-5">
-                            <label for="editMeetingTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
-                            <input type="text" name="editMeetingTitle" id="editMeetingTitle" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                            <label for="editMeetingTitle"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                            <input type="text" name="editMeetingTitle" id="editMeetingTitle"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                required />
                         </div>
                         <div class="mb-5">
-                            <label for="editMeetingDescription" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                            <textarea name="editMeetingDescription" id="editMeetingDescription" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
+                            <label for="editMeetingDescription"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                            <textarea name="editMeetingDescription" id="editMeetingDescription"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
                         </div>
                         <input type="hidden" name="business_id" value="{{ $business->id }}" />
-                        <button id="editMeetingSubmit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
+                        <button id="editMeetingSubmit"
+                            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
                     </div>
                     <div class="flex justify-center">
                         <button type="button" id="closeModalBtn" class="mt-4 text-red-500">Close</button>
@@ -363,8 +388,6 @@
     </div>
 
     @php
-        use Carbon\Carbon;
-
         $meetings = $business->meetings
             ->map(function ($meeting) {
                 return [
@@ -376,9 +399,8 @@
             })
             ->toArray();
     @endphp
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-          
+
     <script>
         var calendar;
 
@@ -387,7 +409,7 @@
             // Buat nge get dari dropdown
             const sortOption = document.getElementById('sort').value;
 
-            // Ini nge splitnya 
+            // Ini nge splitnya
             const [order, sort] = sortOption.split('_');
 
             // Buat nge set URLnya
@@ -412,7 +434,7 @@
             const descriptionBox = document.getElementById('description-box');
             const meetingBox = document.getElementById('meeting-box');
             const forumBox = document.getElementById('forum-box');
-                    
+
             // Meeting Elements
             const idMeeting = document.getElementById('idMeeting');
             const titleMeeting = document.getElementById('titleMeeting');
@@ -455,7 +477,6 @@
                             idMeeting.textContent = info.event.extendedProps.idMeeting;
                             titleMeeting.textContent = info.event.title;
                             dateMeeting.textContent = new Date(info.event.start).toLocaleString([], { year: "numeric",month: "long",day: "numeric", hour: '2-digit', minute: '2-digit', hour12: true });
-                            console.log("meeting date: ", info.event.start);
                             dateMeetingHidden.textContent = info.event.start;
                             descriptionMeeting.textContent = info.event.extendedProps.description;
                             titleMeeting.classList.remove("hidden");
@@ -477,7 +498,7 @@
                                 document.getElementById('deleteMeeting').classList.add("hidden");
                             }
                         }
-                    }); 
+                    });
 
                     calendar.render();
 
@@ -505,7 +526,7 @@
             });
             registerMeeting.addEventListener('click', function() {
                 Swal.fire({
-                    title:'Register Meeting - '+ titleMeeting.textContent,
+                    title: 'Register Meeting - ' + titleMeeting.textContent,
                     text: 'Do you want to register this meeting',
                     type: "warning",
                     showCancelButton: true,
@@ -521,7 +542,10 @@
                         $.ajax({
                             url: "{{ route('registerMeeting') }}",
                             method: "GET",
-                            data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
+                            data: {
+                                idMeeting: idMeeting.textContent,
+                                idBusiness: {{ $business->id }}
+                            },
                             success: function(response) {
                                 if (response.exists) {
                                     Swal.fire({
@@ -542,11 +566,12 @@
                         });
                     }
                 });
-            }); 
+            });
             editMeeting.addEventListener('click', function() {
+
                 editMeetingModal.classList.remove("hidden");
-                console.log("asdasd: ", dateMeetingHidden.textContent);
-                document.getElementById('editMeetingDate').value = formatDate(dateMeetingHidden.textContent);
+                document.getElementById('editMeetingDate').value = formatDate(dateMeetingHidden
+                    .textContent);
                 document.getElementById('editMeetingTitle').value = titleMeeting.textContent;
                 document.getElementById('editMeetingDescription').value = descriptionMeeting.textContent;
             });
@@ -610,7 +635,7 @@
                                     editMeetingModal.classList.add("hidden");
                                 }
                             });
-                                
+
                         } else {
                             Swal.fire({
                                 title: 'Failed!',
@@ -704,7 +729,7 @@
                 buttonElement.style.display = 'flex';
             }
         }
-        // Buat delete reply button 
+        // Buat delete reply button
         function confirmDelete(commentId) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -752,11 +777,13 @@
 
         function refreshCalendarData() {
             console.log("ASDASDASD");
-            
+
             $.ajax({
                 url: '{{ route('getMeetingData') }}', // Replace with your backend endpoint
                 type: 'GET',
-                data: { idBusiness: {{ $business->id }}},
+                data: {
+                    idBusiness: {{ $business->id }}
+                },
                 success: function(meetingsData) {
                     console.log(meetingsData.meetings);
                     // Clear existing events

@@ -35,6 +35,7 @@ Route::middleware(['user.access'])->group(function () {
     Route::get('/editMeeting', [MeetingController::class, "editMeeting"])->name('editMeeting');
     Route::get('/getMeetingData', [MeetingController::class, "getMeetingData"])->name('getMeetingData');
     Route::get('/deleteMeeting', [MeetingController::class, "deleteMeeting"])->name('deleteMeeting');
+    Route::get('/check-title',[BusinessController::class,'checkTitle']);
 });
 
 

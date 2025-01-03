@@ -64,7 +64,7 @@ class ApprovalFundController extends Controller
         $message = 'Transaction Approved Successfully!';
 
         return redirect()->back()
-        ->with(['success'=> $message,]);
+        ->with(['success'=> $message]);
     }
 
     public function declineTransaction($investmentId)
@@ -79,6 +79,6 @@ class ApprovalFundController extends Controller
 
         $investment->delete();
 
-        return redirect()->back()->with('message', 'Transaction declined successfully!');
+        return redirect()->back()->with('success', 'Transaction declined successfully!');
     }
 }

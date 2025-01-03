@@ -17,10 +17,34 @@ class AdminSeeder extends Seeder
         User::create([
             'name'=> 'Admin User',
             'email' => 'admin@gmail.com',
-            'password' => Hash::make('12345'),
-            'phone_number' => '12345',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '12345678',
             'dob' => '2000/01/01',
             'isAdmin' => true,
+        ]);
+        User::create([
+            'name'=> 'Farrell',
+            'email' => 'farrell@gmail.com',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '081223555823',
+            'dob' => '2003/05/08',
+            'isAdmin' => false,
+        ]);
+        User::create([
+            'name'=> 'Chris',
+            'email' => 'chris@gmail.com',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '081223555823',
+            'dob' => '2003/05/08',
+            'isAdmin' => false,
+        ]);
+        User::create([
+            'name'=> 'Ricky',
+            'email' => 'ricky@gmail.com',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '081223555823',
+            'dob' => '2003/05/08',
+            'isAdmin' => false,
         ]);
     }
 }
