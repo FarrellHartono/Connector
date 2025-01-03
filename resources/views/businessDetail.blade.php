@@ -150,7 +150,7 @@
                     </table>
                 </div>
 
-
+                @if(Auth::user()->isAdmin === 0)
                 <!-- Investment Amount -->
                 <form action="{{ route('business.transaction', $business->id) }}" method="POST" class="mt-6">
                     @csrf
@@ -176,6 +176,7 @@
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </form>
+                @endif
             </div>
         </div>
 
