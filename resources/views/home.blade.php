@@ -9,17 +9,19 @@
 @extends('layout.navbar')
 
 <div class="flex flex-col items-end px-9">
-    <form action="{{ route('home') }}" method="GET">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search businesses..." class="border p-2 rounded">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+    <form action="{{ route('home') }}" method="GET" class="flex items-center space-x-2 bg-white p-1 rounded-full">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search businesses..." id="search-bar" class="bg-transparent outline-none focus:outline-none focus:ring-0 focus:border-transparent border-0">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center justify-center">
+            <x-svg-icon name="search" />
+        </button>
     </form>
 
     <form action="{{ route('home') }}" method="GET">
-        <select name="sort_by" onchange="this.form.submit()">
+        <select name="sort_by" onchange="this.form.submit()" class="rounded-full outline-none">
             <option value="title" {{ request('sort_by') == 'title' ? 'selected' : '' }}>Sort by Name</option>
             <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Sort by Date</option>
         </select>
-        <select name="order" onchange="this.form.submit()">
+        <select name="order" onchange="this.form.submit()" class="rounded-full outline-none">
             <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
             <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
         </select>
@@ -27,7 +29,7 @@
 </div>
 
 
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4  gap-3">
+<div class="grid grid-cols-1 justify-items-center md:grid-cols-2 xl:grid-cols-4 gap-3">
     @foreach($businesses as $business)
     @php
         $folderPath = $business->image_path;
@@ -73,4 +75,17 @@
           });
       </script>
   @endif
+  <script>
+    let typingTimer;               // Timer variable
+    const doneTypingInterval = 800; // Time in ms (500ms or 0.5 seconds)
+
+    const searchInput = document.getElementById('search-bar');
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(typingTimer); // Clear the previous timer
+        typingTimer = setTimeout(() => {
+            this.form.submit();     // Submit the form after the delay
+        }, doneTypingInterval);
+    });
+  </script>
 @endsection
