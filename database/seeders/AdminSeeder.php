@@ -46,5 +46,50 @@ class AdminSeeder extends Seeder
             'dob' => '2003/05/08',
             'isAdmin' => false,
         ]);
+        
+        User::create([
+            'name' => 'Alice Johnson',
+            'email' => 'alice@gmail.com',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '081234567890',
+            'dob' => '2002/03/15',
+            'isAdmin' => false,
+        ]);
+
+        User::create([
+            'name' => 'Bob Smith',
+            'email' => 'bob@gmail.com',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '081234567891',
+            'dob' => '2001/07/22',
+            'isAdmin' => false,
+        ]);
+
+        User::create([
+            'name' => 'Clara Davis',
+            'email' => 'clara@gmail.com',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '081234567892',
+            'dob' => '2000/11/30',
+            'isAdmin' => false,
+        ]);
+
+        User::create([
+            'name' => 'David Brown',
+            'email' => 'david@gmail.com',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '081234567893',
+            'dob' => '2001/06/14',
+            'isAdmin' => false,
+        ]);
+
+        User::create([
+            'name' => 'Emma Wilson',
+            'email' => 'emma@gmail.com',
+            'password' => Hash::make('12345678'),
+            'phone_number' => '081234567894',
+            'dob' => '2002/01/10',
+            'isAdmin' => false,
+        ]);
     }
 }

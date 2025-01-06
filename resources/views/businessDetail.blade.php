@@ -200,7 +200,13 @@
 
             <!-- Box Sections -->
             <div id="description-box" style="display: none;">
-                <p>{{ $business->description }}</p>
+                <div class="border-4 border-black bg-white p-3 rounded-xl mb-4">
+                <ul class="list-disc list-inside">
+                    <li>{{ $business->description }}</li>
+                    <li>{{ $business->title }} is located at {{ $business->address }}</li>
+                    <li>Feel free to contact {{ $business->title }} with this phone number {{ $business->phone_number }}</li>
+                </ul>
+                </div>
             </div>
 
             {{-- Calendar --}}
@@ -229,7 +235,7 @@
             {{-- Forum --}}
             <div class="flex justify-center w-full" id="forum-box" style="display: none;">
                 <div
-                    class="block max-w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    class="block max-w-full p-6 border-4 border-black bg-white rounded-xl mb-4">
                     <div class="flex items-center space-x-4">
                         <div>
                             <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">This is a Forum
