@@ -526,7 +526,6 @@
                     });
 
                     calendar.render();
-
                 } else if (tab === 'forum') {
                     forumBox.style.display = '';
                 }
