@@ -75,7 +75,7 @@
 <script>
         var investments = @json($investments);
 
-        if (investments == null)
+        if (investments == null || investments.length <= 0)
         {
             $("#emptyDataContainer").removeClass('hidden');
             $("#investmentContainer").addClass('hidden');
