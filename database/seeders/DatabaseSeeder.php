@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\AdminSeeder;
 use Database\Seeders\BusinessSeeder;
+use Database\Seeders\commentSeeder;
+use Database\Seeders\InvestementSeeder;
 use Database\Seeders\CategoriesTableSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,5 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminSeeder::class);
         $this->call(BusinessSeeder::class);
+        $this->call(commentSeeder::class);
+        $this->call(InvestmentSeeder::class);
     }
 }
