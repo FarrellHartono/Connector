@@ -61,12 +61,5 @@ class commentSeeder extends Seeder
             'business_id' => '2',
             'parent_id' => NULL,
         ]);
-
-        // Comment::create([
-        //     'content' => 'Setuju! Harga pas di kantong, rasanya premium.',
-        //     'user_id' => '10',
-        //     'business_id' => '2',
-        //     'parent_id' => '7',
-        // ]);
     }
 }

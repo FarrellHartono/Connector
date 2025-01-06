@@ -23,14 +23,14 @@
 
         <div class="flex flex-col md:flex-row items-start mt-6">
             <!-- Carousel occupying half the screen -->
-            <div id="default-carousel" class="bg-white relative w-full md:w-1/2" data-carousel="static">
+            <div id="default-carousel" class="bg-white relative w-full md:w-1/2 rounded-xl" data-carousel="static">
                 <!-- Carousel wrapper -->
                 <div class="relative h-[28rem] overflow-hidden rounded-lg">
 
                     @foreach ($imageFiles as $file)
                         <div class="hidden duration-700 ease-in-out" data-carousel-item>
                             <img src="{{ Storage::url(ltrim($business->image_path, '/') . '/' . $file->getFilename()) }}"
-                                class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-xl"
                                 alt="Business Image">
                         </div>
                     @endforeach
@@ -180,7 +180,7 @@
             </div>
         </div>
 
-        <div class="container mx-auto my-8 p-6 rounded-lg">
+        <div class="container my-8 rounded-lg">
             <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl mb-4">
                 <div class="flex flex-wrap items-center justify-between space-x-4">
                     <button id="description-btn"
@@ -201,20 +201,29 @@
             <!-- Box Sections -->
             <div id="description-box" style="display: none;">
                 <div class="border-4 border-black bg-white p-3 rounded-xl mb-4">
-                    <ul class="list-disc list-inside">
-                        <li>{{ $business->description }}</li>
-                        <li>{{ $business->title }} is located at {{ $business->address }}</li>
-                        <li>Feel free to contact {{ $business->title }} with this phone number
-                            {{ $business->phone_number }}</li>
-                    </ul>
+
+                    <div class="flex justify-between mb-4">
+                        <div class="w-2/5 p-4 rounded-lg">
+                            <div class="text-2xl font-bold mb-2 text-center">Address</div>
+                            <p class="text-sm md:text-lg lg:text-2xl text-center"> {{ $business->address }}</p>
+                        </div>
+                        <div class="w-2/5 p-4 rounded-lg">
+                            <div class="text-2xl font-bold mb-2 text-center">Phone Number</div>
+                            <p class="text-sm md:text-lg lg:text-2xl text-center"> {{ $business->phone_number }}</p>
+                        </div>
+                    </div>
+                    <div class="w-full p-4 rounded-lg">
+                        <div class="text-2xl font-bold mb-2 text-center">Description</div>
+                        <p class="text-sm md:text-lg lg:text-xl text-center"> {{ $business->description }}</p>
+                    </div>
+
                 </div>
             </div>
 
             {{-- Calendar --}}
             <div id="meeting-box" style="display: none;">
-                <div class="w-full bg-white p-4 rounded-lg">
+                <div class="w-full border-4 bg-white  border-black p-4 rounded-xl">
                     <div id="calendar"></div>
-
                     <div id="calendarDescription"
                         class="flex-col content-around w-full bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-4 ">
                         <div id="idMeeting" class="hidden"></div>
