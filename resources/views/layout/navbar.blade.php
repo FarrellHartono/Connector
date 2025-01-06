@@ -5,11 +5,37 @@
 }
 </style>
 
-<nav class="bg-white border-gray-200 dark:bg-gray-900">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-    <a href="{{ route('home') }}" class="text-lg font-bold flex items-center space-x-3 rtl:space-x-reverse">
-        Connector<span class="text-blue-500">App</span>
-    </a>
+<nav class="bg-white border-gray-200 dark:bg-gray-900 w-full">
+    <div class="flex flex-wrap items-center justify-between mx-auto w-full p-4">
+    <div class="flex gap-2">
+        <a href="{{ route('home') }}" class="text-lg font-bold flex items-center space-x-3 rtl:space-x-reverse">
+            Connector<span class="text-blue-500">App</span>
+        </a>
+
+        <div class="relative z-0">
+            <!-- Icon Tanggal -->
+            <button id="calendar-button"
+                class="group relative flex items-center justify-center w-12 h-12 bg-gray-200 rounded-md hover:bg-[#0370A3]">
+                <div class="group absolute inset-0 text-center w-full h-full z-30 rounded-md ">
+                    <div class="text-xs font-semibold bg-[#aa5f5f] rounded-t-md text-white " id="month"></div>
+                    <div class="text-lg font-bold group-hover:text-white" id="day"></div>
+                </div>
+
+                <div
+                    class="absolute top-0.5 left-12 z-20 transform -translate-x-6 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
+                    <span id="day-name"
+                        class=" block bg-transparent text-black rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap"></span>
+                </div>
+            </button>
+
+            <!-- Pop-up Kalender -->
+            <div id="calendar-popup" class="hidden absolute top-20 left-20 z-10 bg-white rounded-md shadow-lg">
+                <!-- <iframe src="{{ route('home') }}" class="absolute w-60 h-60"></iframe> -->
+            </div>
+
+        </div>
+    </div>
+
     <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
         @if (Auth::check())
         <div class="flex items-center justify-center h-full">
