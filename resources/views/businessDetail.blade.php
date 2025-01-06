@@ -212,7 +212,7 @@
 
             {{-- Calendar --}}
             <div id="meeting-box" style="display: none;">
-                <div class="calendar-container">
+                <div class="w-full bg-white p-4 rounded-lg">
                     <div id="calendar"></div>
 
                     <div id="calendarDescription"
@@ -517,7 +517,6 @@
                     });
 
                     calendar.render();
-
                 } else if (tab === 'forum') {
                     forumBox.style.display = '';
                 }

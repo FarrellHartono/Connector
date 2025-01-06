@@ -9,6 +9,7 @@
 @extends('layout.navbar')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <div class="justify-self-center bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
+    
     <!-- User Info -->
     <div class="flex items-center justify-around space-x-6">
         <div class="flex flex-col justify-around space-y-2">
