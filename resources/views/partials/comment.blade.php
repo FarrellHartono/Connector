@@ -8,23 +8,22 @@
                     {{ $reply->content }}</p>
 
                 @if (Auth::check())
-                    @if (Auth::id() === $comment->user_id)
-                        <!-- Admin: Delete button only -->
-                        <div class="flex">
+                    <div class="flex">
+                        @if (Auth::id() === $reply->user_id)
                             <div class="flex space-x-2 edit-delete-buttons mr-2">
                                 <button type="button" onclick="toggleEditReply({{ $reply->id }}, true)">
                                     <x-svg-icon name="edit-comment" />
                                 </button>
                             </div>
                         @endif
-                        @if (Auth::id() === $comment->user_id || Auth::user()->isAdmin === 1)
+                        @if (Auth::id() === $reply->user_id || Auth::user()->isAdmin === 1)
                             <div class="flex space-x-2 edit-delete-buttons">
                                 <button type="button" onclick="confirmDeleteReply({{ $reply->id }})">
                                     <x-svg-icon name="delete-comment" />
                                 </button>
                             </div>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 @endif
 
                 <!-- Hidden Edit Form -->

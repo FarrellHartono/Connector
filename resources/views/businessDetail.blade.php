@@ -23,14 +23,14 @@
 
         <div class="flex flex-col md:flex-row items-start mt-6">
             <!-- Carousel occupying half the screen -->
-            <div id="default-carousel" class="bg-white relative w-full md:w-1/2" data-carousel="static">
+            <div id="default-carousel" class="bg-white relative w-full md:w-1/2 rounded-xl" data-carousel="static">
                 <!-- Carousel wrapper -->
                 <div class="relative h-[28rem] overflow-hidden rounded-lg">
 
                     @foreach ($imageFiles as $file)
                         <div class="hidden duration-700 ease-in-out" data-carousel-item>
                             <img src="{{ Storage::url(ltrim($business->image_path, '/') . '/' . $file->getFilename()) }}"
-                                class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                class="absolute block w-full h-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-xl"
                                 alt="Business Image">
                         </div>
                     @endforeach
@@ -150,37 +150,37 @@
                     </table>
                 </div>
 
-                @if(Auth::user()->isAdmin === 0)
-                <!-- Investment Amount -->
-                <form action="{{ route('business.transaction', $business->id) }}" method="POST" class="mt-6">
-                    @csrf
-                    <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
-                    <div class="flex flex-col">
-                        <input type="number" name="amount" id="amount" step="1" required
-                            class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300
+                @if (Auth::user()->isAdmin === 0)
+                    <!-- Investment Amount -->
+                    <form action="{{ route('business.transaction', $business->id) }}" method="POST" class="mt-6">
+                        @csrf
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
+                        <div class="flex flex-col">
+                            <input type="number" name="amount" id="amount" step="1" required
+                                class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300
                                 @error('amount') @enderror">
 
-                        <div class="flex justify-between">
-                            <button type="submit" name="action" value="invest"
-                                class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
-                                Buy/Invest
-                            </button>
+                            <div class="flex justify-between">
+                                <button type="submit" name="action" value="invest"
+                                    class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
+                                    Buy/Invest
+                                </button>
 
-                            <button type="submit" name="action" value="withdraw"
-                                class="bg-red-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-red-700">
-                                Withdraw
-                            </button>
+                                <button type="submit" name="action" value="withdraw"
+                                    class="bg-red-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-red-700">
+                                    Withdraw
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    @error('amount')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </form>
+                        @error('amount')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </form>
                 @endif
             </div>
         </div>
 
-        <div class="container mx-auto my-8 p-6 rounded-lg">
+        <div class="container my-8 rounded-lg">
             <div class="border-4 border-black border-opacity-50 bg-gray-100 p-3 rounded-xl mb-4">
                 <div class="flex flex-wrap items-center justify-between space-x-4">
                     <button id="description-btn"
@@ -200,15 +200,32 @@
 
             <!-- Box Sections -->
             <div id="description-box" style="display: none;">
-                <p>{{ $business->description }}</p>
+                <div class="border-4 border-black bg-white p-3 rounded-xl mb-4">
+
+                    <div class="flex justify-between mb-4">
+                        <div class="w-2/5 p-4 rounded-lg">
+                            <div class="text-2xl font-bold mb-2 text-center">Address</div>
+                            <p class="text-sm md:text-lg lg:text-2xl text-center"> {{ $business->address }}</p>
+                        </div>
+                        <div class="w-2/5 p-4 rounded-lg">
+                            <div class="text-2xl font-bold mb-2 text-center">Phone Number</div>
+                            <p class="text-sm md:text-lg lg:text-2xl text-center"> {{ $business->phone_number }}</p>
+                        </div>
+                    </div>
+                    <div class="w-full p-4 rounded-lg">
+                        <div class="text-2xl font-bold mb-2 text-center">Description</div>
+                        <p class="text-sm md:text-lg lg:text-xl text-center"> {{ $business->description }}</p>
+                    </div>
+
+                </div>
             </div>
 
             {{-- Calendar --}}
             <div id="meeting-box" style="display: none;">
-                <div class="calendar-container">
+                <div class="w-full border-4 bg-white  border-black p-4 rounded-xl">
                     <div id="calendar"></div>
-                    
-                    <div id="calendarDescription"  class="flex-col content-around w-full bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-4 ">
+                    <div id="calendarDescription"
+                        class="flex-col content-around w-full bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-4 ">
                         <div id="idMeeting" class="hidden"></div>
                         <div id="titleMeeting" class="justify-self-center font-bold text-xl "></div>
                         <div id="dateMeeting" class="justify-self-center mb-6"></div>
@@ -228,8 +245,7 @@
 
             {{-- Forum --}}
             <div class="flex justify-center w-full" id="forum-box" style="display: none;">
-                <div
-                    class="block max-w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                <div class="block max-w-full p-6 border-4 border-black bg-white rounded-xl mb-4">
                     <div class="flex items-center space-x-4">
                         <div>
                             <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">This is a Forum
@@ -266,6 +282,7 @@
                                             class="text-gray-700 dark:text-gray-400 text-sm pr-2">
                                             {{ $comment->content }}
                                         </p>
+
                                         {{-- Edit and Delete Options --}}
                                         @if (Auth::check())
                                             <div class="flex space-x-2 edit-delete-buttons">
@@ -287,6 +304,7 @@
                                                 @endif
                                             </div>
                                         @endif
+
 
                                         {{-- Hidden edit --}}
                                         <form id="edit-form-{{ $comment->id }}"
@@ -359,8 +377,11 @@
                     <h2 class="text-2xl font-bold text-center mb-6">Edit Meeting</h2>
                     <div class="grid">
                         <div class="mb-5">
-                            <label for="editMeetingDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                            <input type="datetime-local" name="editMeetingDate" id="editMeetingDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                            <label for="editMeetingDate"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                            <input type="datetime-local" name="editMeetingDate" id="editMeetingDate"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+                                required />
                         </div>
                         <div class="mb-5">
                             <label for="editMeetingTitle"
@@ -476,24 +497,28 @@
                         eventClick: function(info) {
                             idMeeting.textContent = info.event.extendedProps.idMeeting;
                             titleMeeting.textContent = info.event.title;
-                            dateMeeting.textContent = new Date(info.event.start).toLocaleString([], { year: "numeric",month: "long",day: "numeric", hour: '2-digit', minute: '2-digit', hour12: true });
+                            dateMeeting.textContent = new Date(info.event.start).toLocaleString([], {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            });
                             dateMeetingHidden.textContent = info.event.start;
                             descriptionMeeting.textContent = info.event.extendedProps.description;
                             titleMeeting.classList.remove("hidden");
                             dateMeeting.classList.remove("hidden");
                             descriptionMeeting.classList.remove("hidden");
                             document.getElementById('buttonMeetings').classList.remove("hidden");
-                            if (new Date(info.event.start) < Date.now())
-                            {
+                            if (new Date(info.event.start) < Date.now()) {
                                 document.getElementById('registerMeeting').classList.add("hidden");
-                                   
+
                             }
 
-                            if ({{ auth()->id() }} == {{ $business->user_id }}) 
-                            {
+                            if ({{ auth()->id() }} == {{ $business->user_id }}) {
                                 document.getElementById('registerMeeting').classList.add("hidden");
-                            }else
-                            {
+                            } else {
                                 document.getElementById('editMeeting').classList.add("hidden");
                                 document.getElementById('deleteMeeting').classList.add("hidden");
                             }
@@ -501,7 +526,6 @@
                     });
 
                     calendar.render();
-
                 } else if (tab === 'forum') {
                     forumBox.style.display = '';
                 }
@@ -576,32 +600,28 @@
                 document.getElementById('editMeetingDescription').value = descriptionMeeting.textContent;
             });
             editMeetingSubmit.addEventListener('click', function() {
-                if (!editMeetingDate.value)
-                {
+                if (!editMeetingDate.value) {
                     Swal.fire({
                         text: 'Meeting date must be filled!',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                     return false;
-                }else if (new Date(editMeetingDate.value) < Date.now())
-                {
+                } else if (new Date(editMeetingDate.value) < Date.now()) {
                     Swal.fire({
                         text: 'Meeting date must be later than today or today!',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                     return false;
-                }else if (!editMeetingTitle.value)
-                {
+                } else if (!editMeetingTitle.value) {
                     Swal.fire({
                         text: 'Meeting title must be filled!',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                     return false;
-                }else if (!editMeetingDescription.value)
-                {
+                } else if (!editMeetingDescription.value) {
                     Swal.fire({
                         text: 'Meeting description must be filled!',
                         icon: 'error',
@@ -616,12 +636,13 @@
                 $.ajax({
                     url: "{{ route('editMeeting') }}",
                     method: "GET",
-                    data: { idMeeting: idMeeting.textContent, 
-                            idBusiness: {{ $business->id }},
-                            dateMeeting: editMeetingDate.value,
-                            titleMeeting: editMeetingTitle.value, 
-                            descriptionMeeting: editMeetingDescription.value,
-                        },
+                    data: {
+                        idMeeting: idMeeting.textContent,
+                        idBusiness: {{ $business->id }},
+                        dateMeeting: editMeetingDate.value,
+                        titleMeeting: editMeetingTitle.value,
+                        descriptionMeeting: editMeetingDescription.value,
+                    },
                     success: function(response) {
                         if (response.success == '1') {
                             refreshCalendarData();
@@ -654,7 +675,7 @@
 
             deleteMeeting.addEventListener('click', function() {
                 Swal.fire({
-                    title:'Delete Meeting - '+ titleMeeting.textContent,
+                    title: 'Delete Meeting - ' + titleMeeting.textContent,
                     text: 'Are you sure you want to delete this meeting',
                     type: "warning",
                     showCancelButton: true,
@@ -670,7 +691,10 @@
                         $.ajax({
                             url: "{{ route('deleteMeeting') }}",
                             method: "GET",
-                            data: { idMeeting: idMeeting.textContent, idBusiness: {{ $business->id }} },
+                            data: {
+                                idMeeting: idMeeting.textContent,
+                                idBusiness: {{ $business->id }}
+                            },
                             success: function(response) {
                                 if (response.success == '1') {
                                     refreshCalendarData();
@@ -691,10 +715,10 @@
                             }
                         });
                     }
-                }); 
+                });
             });
         });
-        
+
         //  Ini buat confirmation di buy button dan withdraw button
         @if (session('success'))
             Swal.fire({

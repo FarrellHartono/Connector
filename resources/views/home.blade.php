@@ -44,8 +44,8 @@
         }
     }
     @endphp
-        <div class="flex-1 w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <img src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" />
+        <div class="flex-1 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <img class= "w-full h-64 rounded-lg" src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" />
 
             <a href="{{ route('business.show', $business->id) }}">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $business->title }}</h5>

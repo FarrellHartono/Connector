@@ -32,7 +32,8 @@ class BusinessSeeder extends Seeder
             'phone_number' => '082134567890',
             'address' => 'Jl. Pecenongan No. 45, Jakarta',
             'user_id' => '2',
-            'status' => '1'
+            'status' => '1',
+            'current_investment' => '500000'
         ]);
         
         Business::create([

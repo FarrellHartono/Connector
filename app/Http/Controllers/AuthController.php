@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Business;
+use App\Models\Investment;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -65,6 +67,12 @@ class AuthController extends Controller
     }
 
     public function profile(){
-        return view("profile");
+        $investments = Investment::with(['user', 'business'])
+                ->select('user_id', 'business_id', DB::raw('SUM(amount) as total_amount'))
+                ->groupBy('user_id', 'business_id')
+                ->having('user_id', Auth::user()->id)
+                ->get();
+
+        return view("profile",  compact('investments'));
     }
 }

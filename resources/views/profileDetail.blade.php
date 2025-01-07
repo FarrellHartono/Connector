@@ -7,11 +7,16 @@
 @section('content')
 
 @extends('layout.navbar')
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Investment Details</h1>
+    <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Investment Details</h1>
+    <div id="emptyDataContainer" class="hidden">
+        <h1 class="text-2xl font-bold text-gray-400 mb-6 text-center">No investments have been made yet</h1>
+        <i class="fas fa-box-open text-8xl text-center w-full "></i>
+    </div>  
 
-         <!-- Alokasi Investasi yang lagi berjalan -->
+    <div id="investmentContainer">
+        <!-- Alokasi Investasi yang lagi berjalan -->
         <div class="mb-10">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Investment Alocation</h2>
             <div class="overflow-y-auto max-h-60">
@@ -27,24 +32,6 @@
                 </table>
             </div>
         </div>
-
-        <!-- Investor History -->
-        <!-- <div>
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">List of Contributed Businesses</h2>
-            <div class="overflow-y-auto max-h-60">
-                <table class="w-full table-fixed border-collapse">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="text-left p-2 border">Business</th>
-                            <th class="text-left p-2 border">Total Investment</th>
-                            <th class="text-left p-2 border">Start Period</th>
-                            <th class="text-left p-2 border">End Period</th>
-                        </tr>
-                    </thead>
-                    <tbody id="businessTable"></tbody>
-                </table>
-            </div>
-        </div> -->
 
         <div class="mb-10">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">List of Businesses</h2>
@@ -65,12 +52,12 @@
                     @endphp
                     <div onclick="window.location.href='{{ route('business.show', $invest->business_id) }}'" 
                         class="flex items-center mb-4 cursor-pointer bg-white p-4 rounded-lg shadow-md hover:bg-gray-200">
-                        <div class="w-16 h-16 bg-black rounded-lg mr-4"></div>
+                        <img src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" class="w-16 h-16 bg-black rounded-lg mr-4"/>
                         <div>
                             <h3 class="text-lg font-semibold">{{ $invest->business->title }}</h3>
                             <p class="text-gray-600">Total Investment: Rp {{ number_format($invest->total_amount, 0, ',', '.') }}</p>
                             <p class="text-gray-500 text-sm">
-                                Period: {{ $invest->start_date }} - {{ $invest->end_date }}
+                                Created Date: {{ $invest->business->created_at->format('d M Y') }}
                             </p>
                         </div>
                     </div>
@@ -78,18 +65,22 @@
             </div>
         </div>
     </div>
+</div>
 
 @endsection
 
 @section('scripts')
 <script>
-        const investments = @json($investments);
-        console.log(investments);
+        var investments = @json($investments);
+        if (investments == null )
+        {
+            $("#emptyDataContainer").removeClass('hidden');
+            $("#investmentContainer").addClass('hidden');
+        }
         const barsTable = document.getElementById('barsTable');
         const totalInvestment = investments.reduce((sum, invest) => sum + Number(invest.total_amount), 0);
 
         investments.forEach((invest) => {
-            console.log(invest.total_amount);
             // Convert data ke dalam tabel alokasi investasi yang sedang berjalan
             const barRow = document.createElement('tr');
             barRow.innerHTML = `

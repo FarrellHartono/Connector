@@ -107,7 +107,7 @@
     </div>
 </nav>
 
-<div id="calendarContainer" class="fixed left-[15%] top-8 w-8/12  hidden z-50">
+<div id="calendarContainer" class="fixed left-[15%] top-24 w-8/12  hidden z-50">
     <div id="navCalendar" class="flex justify-end bg-[#0370A3] w-full rounded-t-md pt-4 pr-4">
         <button type="button" id="closeCalendar"
             class="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 hover:text-white transition-colors">
@@ -187,6 +187,7 @@
                       fixedWeekCount: false,
                       eventClick: function(info) {
                           $("#title").html(info.event.title);
+                          $("#dateTime").html(new Date(info.event.start).toLocaleString([], { year: "numeric",month: "long",day: "numeric", hour: '2-digit', minute: '2-digit', hour12: true }));
                           $("#business").html(info.event.extendedProps.business.title);
                           $("#description").html(info.event.extendedProps.description);
                       }
