@@ -33,7 +33,7 @@ class BusinessSeeder extends Seeder
             'address' => 'Jl. Pecenongan No. 45, Jakarta',
             'user_id' => '2',
             'status' => '1',
-            'current_investment' => '500000'
+            'current_investment' => '500000',
         ]);
         
         Business::create([

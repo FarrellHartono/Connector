@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Business;
+use App\Models\PaymentMethods;
 use App\Models\User;
 
 class Investment extends Model
@@ -15,6 +16,7 @@ class Investment extends Model
     protected $fillable = [
         'user_id',
         'business_id',
+        'payment_method_id',
         'amount',  
         'status',
     ];
@@ -27,5 +29,10 @@ class Investment extends Model
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
+    }
+
+    public function paymentMethods()
+    {
+        return $this->belongsTo(PaymentMethods::class);
     }
 }

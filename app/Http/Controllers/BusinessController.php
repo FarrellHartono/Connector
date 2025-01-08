@@ -8,6 +8,7 @@ use App\Traits\Sortable;
 use App\Models\Investment;
 use App\Models\Meeting;
 use App\Models\RegisteredMeetings;
+use App\Models\PaymentMethods;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,12 @@ class BusinessController extends Controller
             }
         }
 
+        $request->validate([
+            'payment_methods'=>'required|array',
+            'payment_methods.*.type'=> 'required|string',
+            'payment_methods.*.details'=> 'required|string',
+        ]);
+
         $userId = auth()->id();
 
         $businesses = Business::create([
@@ -51,6 +58,10 @@ class BusinessController extends Controller
             'status'=> $status = 0,
 
         ]);
+
+        foreach($request->payment_methods as $method){
+            $businesses->paymentMethods()->create($method);
+        }
 
         return redirect()->route('home')->with('success', 'Business created successfully!');
     }
@@ -212,15 +223,37 @@ class BusinessController extends Controller
         return view('businessDetail', compact('business', 'investments', 'imageFiles'));
     }
 
+    public function checkout(Request $request, $businessId)
+    {
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric|min:0.01',
+        ]);
+    
+        $business = Business::findOrFail($businessId);
+
+        $paymentMethod = $business->paymentMethods;
+        // dd($paymentMethod);
+        return view('checkout', [
+            'business' => $business,
+            'amount' => $validatedData['amount'],
+            'paymentMethods' => $paymentMethod,
+        ]);
+    }
+    
+
     public function transaction(Request $request, $businessId)
     {
         $validatedData = $request->validate([
             'amount' => 'required|numeric|min:0.01',
+            'action' => 'required|in:invest,withdraw',
+            'payment_method_id' => 'required|exists:payment_methods,id',
         ]);
 
         $business = Business::findOrFail($businessId);
         $userId = auth()->id();
         $action = $request->input('action');
+        $paymentMethodId = $validatedData['payment_method_id'];
+        
 
         // Buat nyari apakah user sudah pernah invest di bisnis ini.
         $investment = Investment::where('user_id', $userId)
@@ -240,6 +273,7 @@ class BusinessController extends Controller
                     'business_id' => $businessId,
                     'amount' => $investmentAmount,
                     'status' => 0, // Status untuk accept atau deny.
+                    'payment_method_id' => $paymentMethodId,
                     'deposit_date'=> now(),
                 ]);
 
@@ -264,14 +298,15 @@ class BusinessController extends Controller
                 $investment->amount -= $withdrawalAmount;
 
                 $business->current_investment -= $withdrawalAmount;
-                $business->save();
-
+                
                 // Kalau misalnya amountnya udah 0 delete
                 if ($investment->amount == 0) {
-                        $investment->delete();
-                    } else {
-                        $investment->save();
-                    }
+                    $investment->delete();
+                } else {
+                    $investment->save();
+                }
+                
+                $business->save();
 
                 $message = 'Withdrawal successful!';
             } else {

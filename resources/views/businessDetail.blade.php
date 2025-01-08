@@ -152,7 +152,7 @@
 
                 @if (Auth::user()->isAdmin === 0)
                     <!-- Investment Amount -->
-                    <form action="{{ route('business.transaction', $business->id) }}" method="POST" class="mt-6">
+                    {{-- <form action="{{ route('business.transaction', $business->id) }}" method="POST" class="mt-6">
                         @csrf
                         <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
                         <div class="flex flex-col">
@@ -171,6 +171,23 @@
                                     Withdraw
                                 </button>
                             </div>
+                        </div>
+                        @error('amount')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </form> --}}
+
+                    <form action="{{ route('business.checkout', $business->id) }}" method="GET" class="mt-6">
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Investment Amount:</label>
+                        <div class="flex flex-col">
+                            <input type="number" name="amount" id="amount" step="1" required
+                                class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300
+                                @error('amount') @enderror">
+
+                            <button type="submit"
+                                class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
+                                Checkout
+                            </button>
                         </div>
                         @error('amount')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
