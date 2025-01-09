@@ -163,19 +163,19 @@
         });
 
         function validateForm() {
-        const form = document.getElementById('create-business');
-        const inputs = form.querySelectorAll('input[required],textarea[required]');
-        const button = document.getElementById('create-button');
-        const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
-        if(!allFilled){
-            button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
-            button.classList.add('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
-            button.disabled = true;
-        }else{
-            button.classList.remove('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
-            button.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
-            button.disabled = false;
-        }
+            const form = document.getElementById('create-business');
+            const inputs = form.querySelectorAll('input[required],textarea[required]');
+            const button = document.getElementById('create-button');
+            const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+            if(!allFilled){
+                button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
+                button.classList.add('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
+                button.disabled = true;
+            }else{
+                button.classList.remove('bg-gray-200','text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
+                button.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
+                button.disabled = false;
+            }
         }
 
         $('#create-business').validate({
