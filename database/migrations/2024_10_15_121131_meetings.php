@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('business_id');
             $table->string('title');
             $table->text('description')->nullable();
+            $table->text('meeting_link')->nullable();
             $table->datetime('date');
             $table->timestamps();
         

@@ -176,6 +176,7 @@
     </div>
 
     {{-- Hidden add Meeting Form --}}
+    
     <div id="addMeetingModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-gray-300 w-[400px] h-auto p-6 rounded-lg">
             <h2 class="text-2xl font-bold text-center mb-6">Add Meeting</h2>
@@ -197,6 +198,20 @@
                     <textarea name="descriptionMeeting" id="descriptionMeeting"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
                 </div>
+                
+                <div class="mb-5">
+                    <div class="flex justify-start w-11/12">
+                        <label for="meetingLink"
+                            class="block mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-white h-[fit-content] self-center">Meeting Link</label>
+                        <button id="generateLinkBtn"
+                            class="text-white mb-1.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-md text-sm w-full sm:w-auto px-2.5 py-1 content-center self-center">Generate Link</button>
+                    </div>
+                    <input type="hidden" id="meetingLinkData"/>
+                    <div class="flex justify-start w-12/12">
+                        <div id="meetingLink" class="bg-gray-50 mr-2 border border-gray-300 text-gray-900 text-sm rounded-lg w-11/12 h-8 px-2.5 content-center"></div>
+                        <button id="copyLink" class="w-1/12 hover:shadow-lg rounded-md text-black filter brightness-0 content-center self-center">&#128279;</button>
+                    </div>
+                </div>
                 <input type="hidden" name="business_id" value="{{ $business->id }}" />
                 <button id="submitMeetingButton"
                     class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
@@ -214,12 +229,16 @@
             const addMeetingBtn = document.getElementById('addMeetingBtn');
             const addMeetingModal = document.getElementById('addMeetingModal');
             const closeModalBtn = document.getElementById('closeModalBtn');
+            const generateLinkBtn = document.getElementById('generateLinkBtn');
             const submitMeetingButton = document.getElementById('submitMeetingButton');
 
         // Meeting Elements
         const dateMeeting = document.getElementById('dateMeeting');
         const titleMeeting = document.getElementById('titleMeeting');
         const descriptionMeeting = document.getElementById('descriptionMeeting');
+        const meetingLink = document.getElementById('meetingLink');
+        const meetingLinkData = document.getElementById('meetingLinkData');
+        const copyLink = document.getElementById('copyLink');
 
             // Buat nge show pop up add meeting
             addMeetingBtn.addEventListener('click', function() {
@@ -228,7 +247,162 @@
 
             // Buat nge close pop up add meeting
             closeModalBtn.addEventListener('click', function() {
+                meetingLinkData.value = null;
+                meetingLink.innerHTML = null;
+                dateMeeting.value = null;
+                titleMeeting.value = null;
+                descriptionMeeting.value = null;
                 addMeetingModal.classList.add('hidden');
+            });
+
+            copyLink.addEventListener('click', function() {
+                console.log("date meeting value: ", dateMeeting.value);
+                if (meetingLinkData.value == null || meetingLinkData.value == ""){
+                    Swal.fire({
+                        title: 'Link Not Found!',
+                        icon: 'error',
+                        timer: 5000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                    return false;
+                }
+
+                navigator.clipboard.writeText(meetingLinkData.value)
+                .then(() => {
+                    Swal.fire({
+                        title: 'Link Copied to Clipboard!',
+                        icon: 'success',
+                        timer: 5000, // 5 seconds
+                        showConfirmButton: false, // No button
+                        toast: true, // Toast-style popup
+                        position: 'top-end' // Position on top-right
+                    });
+                })
+                .catch(err => {
+                    Swal.fire({
+                        title: 'Failed to Copy Link, '+err+'!',
+                        icon: 'error',
+                        timer: 5000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                });
+            });
+
+            generateLinkBtn.addEventListener('click', async () =>{
+                if ( dateMeeting.value == null || dateMeeting.value == "" )
+                {
+                    Swal.fire({
+                        title: 'Please Select Meeting date first!',
+                        icon: 'error',
+                        timer: 5000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                    return false;
+                }
+
+                var startDateMeeting = new Date(dateMeeting.value);
+
+                var year = startDateMeeting.getFullYear();
+                var month = String(startDateMeeting.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+                var day = String(startDateMeeting.getDate()).padStart(2, "0");
+                var hours = String(startDateMeeting.getHours()).padStart(2, "0");
+                var minutes = String(startDateMeeting.getMinutes()).padStart(2, "0");
+                var seconds = String(startDateMeeting.getSeconds()).padStart(2, "0");
+
+                var startMeeting = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+                var endDateMeeting = new Date(dateMeeting.value);
+                endDateMeeting.setMinutes(endDateMeeting.getMinutes() + 30);
+                
+                
+                year = endDateMeeting.getFullYear();
+                month = String(endDateMeeting.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+                day = String(endDateMeeting.getDate()).padStart(2, "0");
+                hours = String(endDateMeeting.getHours()).padStart(2, "0");
+                minutes = String(endDateMeeting.getMinutes()).padStart(2, "0");
+                seconds = String(endDateMeeting.getSeconds()).padStart(2, "0");
+                
+                var endMeeting = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+                var ACCESS_TOKEN = "ya29.a0ARW5m74DMZpLu2WP_p8k3QM_7MQH_WcrcQHDoZTO67uWsa3my-w1RurhC_RzZY7pLQiOVEf3FN4dRVTL0VZWGWOelNi4ioD6fCy5xPSTnfUJjykR2nl-s5lwjc6zrNKQlY4U-gO6ozzSijlGzicIHnmQEm2CjlSlo_-2J1O3aCgYKAawSARISFQHGX2Miu0EtaK4vfa9AzPIvGiKN6g0175";
+                const refreshToken  = "1//04NB2muFhI-SWCgYIARAAGAQSNwF-L9IrGDNgrW6p56yt7HP8_gLWFw8hawnq-4TWCfHfOQysA4gVAjXtx7xF2MnzSpkTaoE4zhE";
+                const clientId = "55274203711-r618icujj491fsutlvefk6n27puogqbi.apps.googleusercontent.com";
+                const clientSecret = "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";
+
+                const response = await fetch("https://oauth2.googleapis.com/token", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({
+                        client_id: clientId,
+                        client_secret: clientSecret,
+                        refresh_token: refreshToken,
+                        grant_type: "refresh_token",
+                    }),
+                });
+
+                const data = await response.json();
+                console.log("DA: ", data);
+                ACCESS_TOKEN = data.access_token;
+                console.log("DATAAAA: ", data.access_token);
+                // Define the event details
+                const event = {
+                    summary: "Google Meet Event",
+                    description: "This is a test event with a Google Meet link.",
+                    start: {
+                    dateTime: startMeeting, // ISO 8601 format
+                    timeZone: "UTC",
+                    },
+                    end: {
+                    dateTime: endMeeting, // ISO 8601 format
+                    timeZone: "UTC",
+                    },
+                    conferenceData: {
+                        createRequest: {
+                            requestId: `${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+                            conferenceSolutionKey: {
+                                type: "hangoutsMeet",
+                            },
+                        },
+                    },
+                    anyoneCanAddSelf: true,
+                    guestsCanModify: true, 
+                    guestsCanInviteOthers: true, 
+                    guestsCanSeeOtherGuests: true, 
+                    visibility: "public", 
+                };
+
+                // Make the API request
+                try {
+                    const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${ACCESS_TOKEN}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(event),
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        
+                        console.log("data: ", data);
+                        meetingLink.innerHTML = `<a href="${data.hangoutLink}" target="_blank">${data.hangoutLink}</a>`;
+                        meetingLinkData.value = `${data.hangoutLink}`;
+                    } else {
+                        meetingLink.textContent = `Error: ${data.error.message}`;
+                    }
+                } catch (error) {
+                    console.error("Network error:", error);
+                    document.getElementById("result").textContent = "Failed to create the event.";
+                }
             });
 
             submitMeetingButton.addEventListener('click', function() {
@@ -271,7 +445,8 @@
                     data: { business_id: {{ $business->id }},
                             date: dateMeeting.value,
                             title: titleMeeting.value,
-                            description: descriptionMeeting.value
+                            description: descriptionMeeting.value,
+                            meeting_link: meetingLinkData.value
                         },
                     success: function(response) {
                         if (response.success) {
@@ -296,6 +471,11 @@
             // Misal kalau user gk click close, click diluar pop up
             window.addEventListener('click', function(event) {
                 if (event.target === addMeetingModal) {
+                    meetingLinkData.value = null;
+                    meetingLink.innerHTML = null;
+                    dateMeeting.value = null;
+                    titleMeeting.value = null;
+                    descriptionMeeting.value = null;
                     addMeetingModal.classList.add('hidden');
                 }
             });

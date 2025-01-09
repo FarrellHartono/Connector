@@ -118,11 +118,19 @@
   <div class="flex w-full">
     <div id="calendarContent"  class="justify-self-center w-3/4 bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] p-4 rounded-b-md shadow-lg" >
     </div>
+    
+    <div id="calendarDescription"  class="flex-col content-around w-2/4 bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-3">
+        <div id="title" class="text-center font-bold text-xl"></div>
+        <div id="business" class="text-center font-semibold" ></div>
+        <div id="dateTime" class="text-center mb-10" ></div>
 
-    <div id="calendarDescription"  class="flex-col content-around w-1/4 bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-3">
-        <div id="title" class="justify-self-center font-bold text-2xl"></div>
-        <div id="business" class="text-center font-semibold text-lg mb-10" ></div>
-        <div id="description" class="justify-self-center "></div>
+        <div id="linkTitle" class="flex hidden">
+            <h2 class="font-bold text-xl mr-2">Meeting Link</h2>
+            <h2 class="font-semibold text-md self-center">(Click to Open)</h2>
+        </div>
+        <div id="link" class="mb-2"></div>
+        <h2 id="descriptionTitle" class="font-bold text-xl hidden">Description</h2>
+        <div id="description"></div>
     </div>
   </div>
 </div>
@@ -189,6 +197,12 @@
                           $("#title").html(info.event.title);
                           $("#dateTime").html(new Date(info.event.start).toLocaleString([], { year: "numeric",month: "long",day: "numeric", hour: '2-digit', minute: '2-digit', hour12: true }));
                           $("#business").html(info.event.extendedProps.business.title);
+                          $("#linkTitle").removeClass("hidden");
+                          $("#link").html(`<a class="underline" href="`+info.event.extendedProps.meeting_link+`" target="_blank">`+info.event.extendedProps.meeting_link+`</a>`);
+                          if (info.event.extendedProps.meeting_link == null){
+                            $("#link").html("-");
+                          }
+                          $("#descriptionTitle").removeClass("hidden");
                           $("#description").html(info.event.extendedProps.description);
                       }
                   });
@@ -214,6 +228,9 @@
     $('#modal').on('click', function(e) {
         $("#calendarContainer").css("display", "none");
         $("#modal").css("display", "none");
+    });
+    $("#closeBurger").on('click', function(e){
+        $("#menu").classlist.add("-translate-y-full");
     });
 
     document.addEventListener('DOMContentLoaded', function() {

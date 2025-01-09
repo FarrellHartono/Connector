@@ -247,6 +247,13 @@
                         <div id="titleMeeting" class="justify-self-center font-bold text-xl "></div>
                         <div id="dateMeeting" class="justify-self-center mb-6"></div>
                         <div id="dateMeetingHidden" class="hidden"></div>
+                        <div id="linkMeetingTitle" class="flex hidden">
+                            <h2 class="font-bold text-xl mr-2">Meeting Link</h2>
+                            <h2 class="font-semibold text-md self-center">(Click to Open)</h2>
+                        </div>
+                        <div id="linkMeeting" class="mb-2 hidden"></div>
+                        <input type="hidden" id="linkMeetingHidden"/>
+                        <h2 id="descriptionMeetingTitle" class="font-bold text-xl hidden">Description</h2>
                         <div id="descriptionMeeting"></div>
                         <div id="buttonMeetings" class="flex justify-end pr-2 pb-2 hidden">
                             <button id="registerMeeting"
@@ -413,6 +420,20 @@
                             <textarea name="editMeetingDescription" id="editMeetingDescription"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
                         </div>
+                        <div class="mb-5">
+                            <div class="flex justify-start w-11/12">
+                                <label for="editMeetingLink"
+                                    class="block mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-white h-[fit-content] self-center">Meeting Link</label>
+                                <button id="generateLinkBtn"
+                                    class="text-white mb-1.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-md text-sm w-full sm:w-auto px-2.5 py-1 content-center self-center">Generate Link</button>
+                            </div>
+                            <input type="hidden" id="editMeetingLinkData"/>
+                            <div class="flex justify-start w-12/12">
+                                <div name="editMeetingLink" id="editMeetingLink" class="bg-gray-50 mr-2 border border-gray-300 text-gray-900 text-sm rounded-lg w-11/12 h-8 px-2.5 content-center"></div>
+                                <button id="copyLink" class="w-1/12 hover:shadow-lg rounded-md text-black filter brightness-0 content-center self-center">&#128279;</button>
+                            </div>
+                        </div>
+
                         <input type="hidden" name="business_id" value="{{ $business->id }}" />
                         <button id="editMeetingSubmit"
                             class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5">Submit</button>
@@ -431,6 +452,7 @@
                 return [
                     'title' => $meeting->title,
                     'start' => $meeting->date,
+                    'meeting_link' => $meeting->meeting_link,
                     'description' => $meeting->description,
                     'idMeeting' => $meeting->id,
                 ];
@@ -463,8 +485,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             var bisnis = @json($business);
-            console.log("tes bisnis: ", bisnis);
-            console.log();
+
             // Tab elements
             const descriptionBtn = document.getElementById('description-btn');
             const meetingBtn = document.getElementById('meeting-btn');
@@ -484,11 +505,19 @@
             const editMeetingSubmit = document.getElementById('editMeetingSubmit');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const deleteMeeting = document.getElementById('deleteMeeting');
+            const linkMeeting = document.getElementById('linkMeeting');
+            const linkMeetingTitle = document.getElementById('linkMeetingTitle');
+            const descriptionMeetingTitle = document.getElementById('descriptionMeetingTitle');
+            const linkMeetingHidden = document.getElementById('linkMeetingHidden');
 
             // Edit Meeting Elements
             const editMeetingDate = document.getElementById('editMeetingDate');
             const editMeetingTitle = document.getElementById('editMeetingTitle');
             const editMeetingDescription = document.getElementById('editMeetingDescription');
+            const editMeetingLink = document.getElementById('editMeetingLink');
+            const editMeetingLinkData = document.getElementById('editMeetingLinkData');
+            const generateLinkBtn = document.getElementById('generateLinkBtn');
+            const copyLink = document.getElementById('copyLink');
 
             // Retrieve the last active tab from localStorage
             const lastActiveTab = localStorage.getItem('activeTab') || 'description';
@@ -512,6 +541,8 @@
                         initialView: 'dayGridMonth',
                         events: meetings,
                         eventClick: function(info) {
+                            console.log("masih masuk");
+                            console.log(info.event.extendedProps.meeting_link);
                             idMeeting.textContent = info.event.extendedProps.idMeeting;
                             titleMeeting.textContent = info.event.title;
                             dateMeeting.textContent = new Date(info.event.start).toLocaleString([], {
@@ -523,10 +554,18 @@
                                 hour12: true
                             });
                             dateMeetingHidden.textContent = info.event.start;
+                            linkMeeting.innerHTML = `<a class="underline" href="`+info.event.extendedProps.meeting_link+`" target="_blank">`+info.event.extendedProps.meeting_link+`</a>`
+                            if (info.event.extendedProps.meeting_link == null){
+                                linkMeeting.innerHTML = '-';
+                            }
+                            linkMeetingHidden.value = info.event.extendedProps.meeting_link;
                             descriptionMeeting.textContent = info.event.extendedProps.description;
                             titleMeeting.classList.remove("hidden");
                             dateMeeting.classList.remove("hidden");
                             descriptionMeeting.classList.remove("hidden");
+                            linkMeetingTitle.classList.remove('hidden');
+                            linkMeeting.classList.remove('hidden');
+                            descriptionMeetingTitle.classList.remove('hidden');
                             document.getElementById('buttonMeetings').classList.remove("hidden");
                             if (new Date(info.event.start) < Date.now()) {
                                 document.getElementById('registerMeeting').classList.add("hidden");
@@ -578,6 +617,10 @@
                     titleMeeting.classList.add("hidden");
                     dateMeeting.classList.add("hidden");
                     descriptionMeeting.classList.add("hidden");
+                    linkMeeting.classList.add("hidden");
+                    linkMeetingTitle.classList.add("hidden");
+                    descriptionMeetingTitle.classList.add("hidden");
+
                     document.getElementById('buttonMeetings').classList.add("hidden");
                     if (result.isConfirmed) {
                         $.ajax({
@@ -611,11 +654,179 @@
             editMeeting.addEventListener('click', function() {
 
                 editMeetingModal.classList.remove("hidden");
-                document.getElementById('editMeetingDate').value = formatDate(dateMeetingHidden
-                    .textContent);
-                document.getElementById('editMeetingTitle').value = titleMeeting.textContent;
-                document.getElementById('editMeetingDescription').value = descriptionMeeting.textContent;
+                editMeetingDate.value = formatDate(dateMeetingHidden.textContent);
+                editMeetingTitle.value = titleMeeting.textContent;
+                editMeetingDescription.value = descriptionMeeting.textContent;
+                editMeetingLink.innerHTML = `<a href="`+linkMeetingHidden.value+`" target="_blank">`+linkMeetingHidden.value+`</a>`;
+                editMeetingLinkData.value = linkMeetingHidden.value;
             });
+
+            editMeetingDate.addEventListener('change', function(){
+                editMeetingLink.innerHTML = null;
+                editMeetingLinkData.value = null;
+            });
+
+            copyLink.addEventListener('click', function() {
+                if (editMeetingLinkData.value == null || editMeetingLinkData.value == ""){
+                    Swal.fire({
+                        title: 'Link Not Found!',
+                        icon: 'error',
+                        timer: 5000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                    return false;
+                }
+
+                navigator.clipboard.writeText(editMeetingLinkData.value)
+                .then(() => {
+                    Swal.fire({
+                        title: 'Link Copied to Clipboard!',
+                        icon: 'success',
+                        timer: 5000, // 5 seconds
+                        showConfirmButton: false, // No button
+                        toast: true, // Toast-style popup
+                        position: 'top-end' // Position on top-right
+                    });
+                })
+                .catch(err => {
+                    Swal.fire({
+                        title: 'Failed to Copy Link, '+err+'!',
+                        icon: 'error',
+                        timer: 5000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                });
+            });
+
+            generateLinkBtn.addEventListener('click', async () =>{
+                if ( editMeetingDate.value == null || editMeetingDate.value == "" )
+                {
+                    Swal.fire({
+                        title: 'Please Select Meeting date first!',
+                        icon: 'error',
+                        timer: 5000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                    return false;
+                }
+                if ( editMeetingDate.value == formatDate(dateMeetingHidden.textContent))
+                {
+                    var formattedDate = new Date(dateMeetingHidden.textContent).toLocaleString();
+                    Swal.fire({
+                        title: 'Meeting for '+formattedDate+' is already created!',
+                        icon: 'error',
+                        timer: 5000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                    return false;
+                }
+
+                var startDateMeeting = new Date(editMeetingDate.value);
+
+                var year = startDateMeeting.getFullYear();
+                var month = String(startDateMeeting.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+                var day = String(startDateMeeting.getDate()).padStart(2, "0");
+                var hours = String(startDateMeeting.getHours()).padStart(2, "0");
+                var minutes = String(startDateMeeting.getMinutes()).padStart(2, "0");
+                var seconds = String(startDateMeeting.getSeconds()).padStart(2, "0");
+
+                var startMeeting = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+                var endDateMeeting = new Date(editMeetingDate.value);
+                endDateMeeting.setMinutes(endDateMeeting.getMinutes() + 30);
+                
+                
+                year = endDateMeeting.getFullYear();
+                month = String(endDateMeeting.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+                day = String(endDateMeeting.getDate()).padStart(2, "0");
+                hours = String(endDateMeeting.getHours()).padStart(2, "0");
+                minutes = String(endDateMeeting.getMinutes()).padStart(2, "0");
+                seconds = String(endDateMeeting.getSeconds()).padStart(2, "0");
+                
+                var endMeeting = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+                var ACCESS_TOKEN = "ya29.a0ARW5m74DMZpLu2WP_p8k3QM_7MQH_WcrcQHDoZTO67uWsa3my-w1RurhC_RzZY7pLQiOVEf3FN4dRVTL0VZWGWOelNi4ioD6fCy5xPSTnfUJjykR2nl-s5lwjc6zrNKQlY4U-gO6ozzSijlGzicIHnmQEm2CjlSlo_-2J1O3aCgYKAawSARISFQHGX2Miu0EtaK4vfa9AzPIvGiKN6g0175";
+                const refreshToken  = "1//04NB2muFhI-SWCgYIARAAGAQSNwF-L9IrGDNgrW6p56yt7HP8_gLWFw8hawnq-4TWCfHfOQysA4gVAjXtx7xF2MnzSpkTaoE4zhE";
+                const clientId = "55274203711-r618icujj491fsutlvefk6n27puogqbi.apps.googleusercontent.com";
+                const clientSecret = "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";
+
+                const response = await fetch("https://oauth2.googleapis.com/token", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({
+                        client_id: clientId,
+                        client_secret: clientSecret,
+                        refresh_token: refreshToken,
+                        grant_type: "refresh_token",
+                    }),
+                });
+
+                const data = await response.json();
+                console.log("DA: ", data);
+                ACCESS_TOKEN = data.access_token;
+                console.log("DATAAAA: ", data.access_token);
+                // Define the event details
+                const event = {
+                    summary: "Google Meet Event",
+                    description: "This is a test event with a Google Meet link.",
+                    start: {
+                    dateTime: startMeeting, // ISO 8601 format
+                    timeZone: "UTC",
+                    },
+                    end: {
+                    dateTime: endMeeting, // ISO 8601 format
+                    timeZone: "UTC",
+                    },
+                    conferenceData: {
+                        createRequest: {
+                            requestId: `${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+                            conferenceSolutionKey: {
+                                type: "hangoutsMeet",
+                            },
+                        },
+                    },
+                    anyoneCanAddSelf: true,
+                    guestsCanModify: true, 
+                    guestsCanInviteOthers: true, 
+                    guestsCanSeeOtherGuests: true, 
+                    visibility: "public", 
+                };
+
+                // Make the API request
+                try {
+                    const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${ACCESS_TOKEN}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(event),
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        
+                        console.log("data: ", data);
+                        editMeetingLink.innerHTML = `<a href="${data.hangoutLink}" target="_blank">${data.hangoutLink}</a>`;
+                        editMeetingLinkData.value = `${data.hangoutLink}`;
+                    } else {
+                        editMeetingLink.textContent = `Error: ${data.error.message}`;
+                    }
+                } catch (error) {
+                    editMeetingLink.textContent  = "Failed to create the event.";
+                }
+            });
+
             editMeetingSubmit.addEventListener('click', function() {
                 if (!editMeetingDate.value) {
                     Swal.fire({
@@ -649,7 +860,11 @@
                 titleMeeting.classList.add("hidden");
                 dateMeeting.classList.add("hidden");
                 descriptionMeeting.classList.add("hidden");
+                linkMeeting.classList.add("hidden");
+                linkMeetingTitle.classList.add("hidden");
+                descriptionMeetingTitle.classList.add("hidden");
                 document.getElementById('buttonMeetings').classList.add("hidden");
+
                 $.ajax({
                     url: "{{ route('editMeeting') }}",
                     method: "GET",
@@ -659,6 +874,7 @@
                         dateMeeting: editMeetingDate.value,
                         titleMeeting: editMeetingTitle.value,
                         descriptionMeeting: editMeetingDescription.value,
+                        meeting_link: editMeetingLinkData.value
                     },
                     success: function(response) {
                         if (response.success == '1') {
@@ -703,6 +919,9 @@
                     titleMeeting.classList.add("hidden");
                     dateMeeting.classList.add("hidden");
                     descriptionMeeting.classList.add("hidden");
+                    linkMeeting.classList.add("hidden");
+                    linkMeetingTitle.classList.add("hidden");
+                    descriptionMeetingTitle.classList.add("hidden");
                     document.getElementById('buttonMeetings').classList.add("hidden");
                     if (result.isConfirmed) {
                         $.ajax({
@@ -820,16 +1039,13 @@
             console.log("ASDASDASD");
 
             $.ajax({
-                url: '{{ route('getMeetingData') }}', // Replace with your backend endpoint
+                url: '{{ route('getMeetingData') }}', 
                 type: 'GET',
                 data: {
                     idBusiness: {{ $business->id }}
                 },
                 success: function(meetingsData) {
-                    console.log(meetingsData.meetings);
-                    // Clear existing events
                     calendar.removeAllEvents();
-                    // Add the new events
                     calendar.addEventSource(meetingsData.meetings);
                 },
                 error: function(xhr, status, error) {
