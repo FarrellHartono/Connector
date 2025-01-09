@@ -221,9 +221,9 @@
             const form = document.getElementById('create-business');
             const inputs = form.querySelectorAll('input[required],textarea[required]');
             const button = document.getElementById('create-button');
-            const div = document.getElementById('payment-method-list');
             const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
-            if (!allFilled || div.innerHTML.trim() === '') {
+            const paymentDetails = document.getElementById('paymentDetails');
+            if (!allFilled || typeof(paymentDetails) == undefined || paymentDetails == null || paymentDetails.value == "" ) {
                 button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded',
                     'focus:outline-none', 'focus:shadow-outline');
                 button.classList.add('bg-gray-200', 'text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
@@ -398,6 +398,7 @@
         function removePaymentMethod(button) {
             // Remove the parent container of the remove button
             button.parentElement.remove();
+            validateForm();
         }
     </script>
 @endsection
