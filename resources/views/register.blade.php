@@ -80,6 +80,14 @@
          "Please enter a valid phone number starting with 08 or +62 and having 10-12 digits (excluding +)."
     );
 
+    $.validator.addMethod(
+        "passwordStrength",
+        function (value, element) {
+            return /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)/.test(value);
+        },
+        "Password must contain at least one uppercase letter, one special character (!@#$%^&*), and one number."
+    );
+
         $("#registerForm").validate({
             rules: {
                 name: {
@@ -103,6 +111,7 @@
                 password: {
                     required: true,
                     minlength: 6,
+                    passwordStrength: true,
                 },
                 confirmation_password: {
                     required: true,
@@ -132,6 +141,7 @@
                 password: {
                     required: "Password is required.",
                     minlength: "Password must be at least 6 characters long.",
+                    pattern: "Password must contain at least one uppercase letter, one special character (!@#$%^&*), and one number.",
                 },
                 confirmation_password: {
                     required: "Password confirmation is required.",
@@ -158,7 +168,7 @@
                 });
             },
             submitHandler: function (form) {
-                form.submit();
+                    form.submit();
             },
         });
 </script>

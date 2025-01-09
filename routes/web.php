@@ -7,6 +7,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\meetingController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\Request;
 
 Route::middleware(['user.access'])->group(function () {
     Route::get('/upload', [BusinessController::class, 'uploadPage'])->name('uploadpage');
@@ -27,11 +31,11 @@ Route::middleware(['user.access'])->group(function () {
     Route::post('/businesses/{business}/comments/{comment}/reply', [CommentController::class, 'reply'])->name('business.reply');
     Route::put('/businesses/comments/reply/{reply}', [CommentController::class, 'updateReply'])->name('business.updateReply');
     Route::delete('/businesses/comments/reply/{reply}', [CommentController::class, 'deleteReply'])->name('business.deleteReply');
-    
+
     Route::get('/listBusiness',[BusinessController::class,'listBusiness'])->name('listBusiness');
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::get('/investments', [BusinessController::class, 'detailProfile'])->name('investments');
-    
+
     Route::get('/add-meeting', [MeetingController::class, 'addMeeting'])->name('addMeeting');
     Route::get('/getRegisteredMeetings', [MeetingController::class, "getRegisteredMeetings"])->name('getRegisteredMeetings');
     Route::get('/registerMeeting', [MeetingController::class, "registerMeeting"])->name('registerMeeting');
@@ -64,5 +68,50 @@ Route::middleware(['admin.access'])->group(function () {
     Route::delete('/admin/businesses/{id}/delete', [AdminController::class, 'delete'])->name('admin.businesses.delete');
 });
 
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    $user = User::findOrFail($id);
+    $email = session('user_email');
+    if (!hash_equals((string) $hash, sha1($email))) {
+        return redirect('/login')->with('error', 'Invalid verification link.');
+    }
+
+    if ($user->hasVerifiedEmail()) {
+        return redirect('/login')->with('message', 'Your email is already verified. Please log in.');
+    }
+
+    $user->markEmailAsVerified();
+
+    event(new Verified($user));
+
+    return redirect('/login')->with('message', 'Your email has been verified. Please log in.');
+})->middleware(['signed'])->name('verification.verify');
 
 
+Route::post('/email/verification-notification', function (Request $request) {
+    $user = $request->user();
+
+        $email = session('user_email');
+        if ($email) {
+            $user = User::where('email', $email)->first();
+
+            if ($user) {
+                $user->sendEmailVerificationNotification();
+                return back()->with('message', 'Verification link sent!');
+            }
+            return back()->withErrors(['message' => 'User not found']);
+        }
+})->middleware(['throttle:6,1'])->name('verification.send');
+
+
+// Route::get('/test-email', function () {
+//     Mail::raw('This is a test email sent using Google App Password.', function ($message) {
+//         $message->to('christofer2002wibowo@gmail.com') // Replace with the recipient email
+//                 ->subject('Test Email');
+//     });
+
+//     return 'Email sent successfully!';
+// });
