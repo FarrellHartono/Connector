@@ -132,22 +132,35 @@
                     @enderror
                 </div>
                 <div id="payment-methods" class="bg-white shadow-md rounded p-6 mb-4">
-                    <!-- Option buat payment method -->
+                    <!-- Display Validation Errors -->
+                    @if ($errors->any())
+                        <div class="mb-4 text-red-600">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li class="text-sm">{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- Initial selection of payment type -->
                     <div>
                         <label for="payment-type" class="block text-gray-700 font-bold mb-2">Select Payment Type</label>
                         <select id="payment-type"
                             class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <option value="" disabled selected>Select a payment type</option>
                             <option value="Virtual Banking">Virtual Banking</option>
                             <option value="Bank Transfer">Bank Transfer</option>
                             <option value="Gopay">Gopay</option>
                         </select>
                     </div>
-                    <!-- Biar muncul klo di add payment -->
+
+                    <!-- Dynamically added payment method fields -->
                     <div id="payment-method-list" class="mt-4 space-y-4">
-                        <!-- awalnya empty dlu -->
+                        <!-- Initially empty -->
                     </div>
 
-                    <!-- Payment Method Button -->
+                    <!-- Add Payment Method Button -->
                     <button type="button" onclick="addPaymentMethod()"
                         class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600">
                         Add Payment Method
@@ -208,8 +221,9 @@
             const form = document.getElementById('create-business');
             const inputs = form.querySelectorAll('input[required],textarea[required]');
             const button = document.getElementById('create-button');
+            const div = document.getElementById('payment-method-list');
             const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
-            if (!allFilled) {
+            if (!allFilled || div.innerHTML.trim() === '') {
                 button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded',
                     'focus:outline-none', 'focus:shadow-outline');
                 button.classList.add('bg-gray-200', 'text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
@@ -266,6 +280,9 @@
                 phone: {
                     required: true,
                 },
+                paymentDetails:{
+                    required:true,
+                },
             },
             messages: {
                 title: {
@@ -297,6 +314,9 @@
                 },
                 phone: {
                     required: "Phone number is required.",
+                },
+                paymentDetails:{
+                    required: "You need to fill the payment details.",
                 },
             },
             onfocusout: false,
@@ -342,21 +362,24 @@
         let paymentMethodIndex = 0;
 
         function addPaymentMethod() {
+            // Get the selected payment type
             const selectedType = document.getElementById('payment-type').value;
 
-            // nge check udah nge add payment blom
+            // Check if a payment type has been selected
             if (!selectedType) {
                 alert('Please select a payment type before adding a payment method.');
                 return;
             }
-            // buat container baru
+
+            // Create a container for the new payment method
             const container = document.createElement('div');
             container.classList.add('payment-method', 'flex', 'items-center', 'border-b', 'pb-4', 'mb-4');
 
-            // ini field dan isi dari container barunya
+            // Add the selected type and input field
             container.innerHTML = `
             <span class="text-gray-600 font-semibold">${selectedType}</span>
-            <input type="text" name="payment_methods[${paymentMethodIndex}][details]" placeholder="Details"
+            <input type="hidden" name="payment_methods[${paymentMethodIndex}][type]" value="${selectedType}" />
+            <input id = "paymentDetails" type="text" name="payment_methods[${paymentMethodIndex}][details]" placeholder="Details"
                 class="ml-4 flex-1 shadow border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring focus:border-blue-300"
                 required>
             <button type="button" onclick="removePaymentMethod(this)"
@@ -365,15 +388,15 @@
             </button>
         `;
 
-            // Masukin container ini ke list
+            // Append the new container to the list
             document.getElementById('payment-method-list').appendChild(container);
 
-            // Increment next indexnya
+            // Increment the index for the next added method
             paymentMethodIndex++;
         }
 
         function removePaymentMethod(button) {
-            // remove button
+            // Remove the parent container of the remove button
             button.parentElement.remove();
         }
     </script>

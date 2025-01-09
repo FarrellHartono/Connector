@@ -20,6 +20,7 @@ class BusinessController extends Controller
 {
     public function upload(Request $request)
     {
+        try{
         $filePath = 'public/assets/business/'.'/'.$request->title;
         Storage::makeDirectory($filePath);
 
@@ -64,6 +65,9 @@ class BusinessController extends Controller
         }
 
         return redirect()->route('home')->with('success', 'Business created successfully!');
+        }catch(\Exception $e)  {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     public function checkTitle(Request $request){
