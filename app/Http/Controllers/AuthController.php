@@ -7,7 +7,7 @@ use App\Models\Investment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -23,11 +23,18 @@ class AuthController extends Controller
             'password' => $request->password,
         ];
 
-        if(Auth::attempt($data)){
+        session(['user_email' => $request->email]);
+
+        if (Auth::attempt($data)) {
+            if (!Auth::user()->hasVerifiedEmail()) {
+                $request->user()->sendEmailVerificationNotification();
+                Auth::logout();
+                return redirect('/email/verify');
+            }
+
             return redirect(route('home'));
         }else{
             return redirect()->back()->with('show_register_confirmation', true)->with('email', $request->email);
-            // return redirect(route('register'));
         }
     }
 
@@ -51,11 +58,11 @@ class AuthController extends Controller
             "phone_number" => $request->phone,
             "dob" => $request->birthDate
         ]);
-        error_log("tesssss");
-        error_log($user);
-        Auth::login($user);
+        // Auth::login($user);
+        session(['user_email' => $user->email]);
 
-        return redirect(route('home'))->with('successRegister', true);
+        event(new Registered($user));
+        return redirect()->route('verification.notice')->with('successRegister', true);
     }
 
     public function logout(Request $request){
