@@ -6,35 +6,64 @@
 
 @section('content')
     @extends('layout.navbar')
-    <div class="container mx-auto">
-        <h1 class="text-2xl font-bold mb-4">Checkout</h1>
+    <div class="container mx-auto p-5">
+        <h2 class="text-3xl font-extrabold text-gray-800 text-center lg:text-5xl">Checkout</h2>
 
-        <p class="mb-2">You are about to process a transaction for:</p>
-        <p class="font-semibold text-lg">{{ $business->name }}</p>
-        <p class="mb-4">Amount: <span class="text-green-600 font-bold">{{ number_format($amount, 2) }}</span></p>
+        <!-- Responsive Layout -->
+        <div class="flex flex-col lg:flex-row-reverse lg:space-x-reverse lg:space-x-10 bg-gray-200 mt-7 p-6 rounded-lg">
+            <!-- Transaction Summary -->
+            <div class="bg-white p-6 rounded-lg mb-5 lg:mb-0 lg:w-1/3">
+                <h3 class="text-lg font-bold text-gray-800 lg:text-3xl">Transaction Summary</h3>
+                <p class="font-semibold text-lg mt-3 lg:text-2xl">{{ $business->title }}</p>
+                <p class="mt-2 lg:text-xl">Amount: <span class="text-green-600 font-bold">{{ number_format($amount, 2) }}</span></p>
+            </div>
 
-        <form action="{{ route('business.transaction', $business->id) }}" method="POST">
-            @csrf
+            <!-- Transaction Form -->
+            <div class="bg-white p-6 rounded-lg flex-grow lg:w-2/3">
+                <form action="{{ route('business.transaction', $business->id) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="amount" value="{{ $amount }}">
 
-            <input type="hidden" name="amount" value="{{ $amount }}">
+                    <!-- Choose Transaction Type -->
+                    <div class="mb-5">
+                        <label for="action" class="text-lg font-bold text-gray-800">Choose Transaction Type:</label>
+                        <div
+                            class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="action" value="invest" required
+                                    class="text-blue-500 focus:ring focus:ring-blue-300">
+                                <span class="text-gray-700">Invest</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="action" value="withdraw" required
+                                    class="text-blue-500 focus:ring focus:ring-blue-300">
+                                <span class="text-gray-700">Withdraw</span>
+                            </label>
+                        </div>
+                    </div>
 
-            <label for="action">Choose Transaction Type:</label>
-            <select name="action" id="action" required>
-                <option value="invest">Invest</option>
-                <option value="withdraw">Withdraw</option>
-            </select>
+                    <!-- Payment Method -->
+                    <div class="mb-5">
+                        <label for="payment_method_id" class="text-lg font-bold text-gray-800">Payment Method:</label>
+                        <div id="payment_method_id" class="space-y-2 mt-2">
+                            @foreach ($business->paymentMethods as $method)
+                                <label class="flex items-center space-x-2">
+                                    <input type="radio" name="payment_method_id" value="{{ $method->id }}" required
+                                        class="text-blue-500 focus:ring focus:ring-blue-300">
+                                    <span class="text-gray-700">{{ $method->type }} ({{ $method->details }})</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
 
-            <label for="payment_method_id">Payment Method:</label>
-            <select name="payment_method_id" id="payment_method_id" required>
-                @foreach ($business->paymentMethods as $method)
-                    <option value="{{ $method->id }}">{{ $method->type }} ({{ $method->details }})</option>
-                @endforeach
-            </select>
-
-            <button type="submit">Confirm Transaction</button>
-        </form>
+                    <!-- Submit Button -->
+                    <button
+                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                        type="submit">Confirm Transaction</button>
+                </form>
+            </div>
+        </div>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -46,7 +75,6 @@
                 confirmButtonText: 'OK'
             });
         @endif
-        console.log('{{ session('error') }}')
         @if (session('error'))
             Swal.fire({
                 title: 'Error!',
