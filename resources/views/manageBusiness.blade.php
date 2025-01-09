@@ -318,7 +318,7 @@
                 var startMeeting = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
                 var endDateMeeting = new Date(dateMeeting.value);
-                endDateMeeting.setMinutes(endDateMeeting.getMinutes() + 30);
+                endDateMeeting.setMinutes(endDateMeeting.getMinutes() + 60);
                 
                 
                 year = endDateMeeting.getFullYear();

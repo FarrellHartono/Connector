@@ -684,10 +684,10 @@
                     Swal.fire({
                         title: 'Link Copied to Clipboard!',
                         icon: 'success',
-                        timer: 5000, // 5 seconds
-                        showConfirmButton: false, // No button
-                        toast: true, // Toast-style popup
-                        position: 'top-end' // Position on top-right
+                        timer: 5000, 
+                        showConfirmButton: false, 
+                        toast: true, 
+                        position: 'top-end' 
                     });
                 })
                 .catch(err => {
@@ -732,7 +732,7 @@
                 var startDateMeeting = new Date(editMeetingDate.value);
 
                 var year = startDateMeeting.getFullYear();
-                var month = String(startDateMeeting.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+                var month = String(startDateMeeting.getMonth() + 1).padStart(2, "0"); 
                 var day = String(startDateMeeting.getDate()).padStart(2, "0");
                 var hours = String(startDateMeeting.getHours()).padStart(2, "0");
                 var minutes = String(startDateMeeting.getMinutes()).padStart(2, "0");
@@ -741,11 +741,11 @@
                 var startMeeting = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
                 var endDateMeeting = new Date(editMeetingDate.value);
-                endDateMeeting.setMinutes(endDateMeeting.getMinutes() + 30);
+                endDateMeeting.setMinutes(endDateMeeting.getMinutes() + 60);
                 
                 
                 year = endDateMeeting.getFullYear();
-                month = String(endDateMeeting.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+                month = String(endDateMeeting.getMonth() + 1).padStart(2, "0"); 
                 day = String(endDateMeeting.getDate()).padStart(2, "0");
                 hours = String(endDateMeeting.getHours()).padStart(2, "0");
                 minutes = String(endDateMeeting.getMinutes()).padStart(2, "0");
