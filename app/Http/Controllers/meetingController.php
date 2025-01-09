@@ -26,6 +26,7 @@ class MeetingController extends Controller
                         'description' => $meeting->description,
                         'start' => $meeting->date, // Rename 'date' to 'start'
                         'business' => $meeting->business, // Include related business if needed
+                        'meeting_link' => $meeting->meeting_link
                     ];
                 });
         
@@ -56,7 +57,8 @@ class MeetingController extends Controller
                 'date' => 'required|date',
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
-                'business_id' => 'required'
+                'business_id' => 'required',
+                'meeting_link' => 'required'
             ]);
 
             // Save the meeting to the database
@@ -64,7 +66,8 @@ class MeetingController extends Controller
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => $data['description'],
-                'business_id' => $data['business_id']
+                'business_id' => $data['business_id'],
+                'meeting_link' => $data['meeting_link']
             ]);
 
             // Return a JSON response indicating success
@@ -85,6 +88,7 @@ class MeetingController extends Controller
             'dateMeeting' => 'required|date',
             'titleMeeting' => 'required|string|max:255',
             'descriptionMeeting' => 'nullable|string',
+            'meeting_link' => 'nullable'
         ]);
 
         $idMeeting = $request->idMeeting;
@@ -92,12 +96,14 @@ class MeetingController extends Controller
         $dateMeeting = $request->dateMeeting;
         $titleMeeting = $request->titleMeeting;
         $descriptionMeeting = $request->descriptionMeeting;
+        $meeting_link = $request->meeting_link;
         
         $updateMeeting = Meeting::where('id', $idMeeting)
                         ->update([
                             'date' => $dateMeeting,
                             'title' => $titleMeeting,
                             'description' => $descriptionMeeting,
+                            'meeting_link' => $meeting_link
                         ]);
         if ($updateMeeting) {
             return response()->json(['success' => '1']);
@@ -109,7 +115,7 @@ class MeetingController extends Controller
     public function getMeetingData(Request $request) {
         
         $meetings = Meeting::where('business_id', $request->idBusiness)
-                    ->select(['id as idMeeting', 'title', 'description', 'date as start'])
+                    ->select(['id as idMeeting', 'title', 'description', 'date as start', 'meeting_link'])
                     ->get();
         error_log($meetings);
         return response()->json(['meetings' => $meetings]);
