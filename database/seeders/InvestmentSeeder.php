@@ -16,6 +16,7 @@ class InvestmentSeeder extends Seeder
         Investment::create([
             'user_id' => '3',
             'business_id' => '2',
+            'payment_method_id' => '1',
             'amount' => '500000',
             'status' => '1', // Status untuk accept atau deny.
             'deposit_date'=> '2025-01-06 14:54:34',

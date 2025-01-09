@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Investment;
 use App\Models\Meeting;
+use App\Models\PaymentMethods;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Comment;
 
@@ -47,5 +48,10 @@ class Business extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class)->whereNull('parent_id');
+    }
+
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethods::class);
     }
 }
