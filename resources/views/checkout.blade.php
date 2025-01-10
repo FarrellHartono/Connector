@@ -13,9 +13,10 @@
         <div class="flex flex-col lg:flex-row-reverse lg:space-x-reverse lg:space-x-10 bg-gray-200 mt-7 p-6 rounded-lg">
             <!-- Transaction Summary -->
             <div class="bg-white p-6 rounded-lg mb-5 lg:mb-0 lg:w-1/3">
-                <h3 class="text-lg font-bold text-gray-800 lg:text-3xl">Transaction Summary</h3>
-                <p class="font-semibold text-lg mt-3 lg:text-2xl">{{ $business->title }}</p>
-                <p class="mt-2 lg:text-xl">Amount: <span class="text-green-600 font-bold">{{ number_format($amount, 2) }}</span></p>
+                <h3 class="text-lg font-bold text-gray-800 lg:text-2xl">Transaction Summary</h3>
+                <p class="font-semibold text-lg mt-3 lg:text-xl">{{ $business->title }}</p>
+                <p class="mt-2 lg:text-l">Amount: <span class="text-green-600 font-bold">{{ number_format($amount, 2) }}</span></p>
+                <p class="mt-2 text-sm font-thin text-teal-600">*notes please select the payment method type that you want, then transfer to the account that has been provided by the Business Owner</p>
             </div>
 
             <!-- Transaction Form -->

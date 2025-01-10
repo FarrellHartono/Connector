@@ -131,8 +131,9 @@ class BusinessController extends Controller
 
     public function manage($id)
     {
-        $business = Business::findOrFail($id);
-        return view('manageBusiness', compact('business'));
+        $business = Business::with('paymentMethods')->findOrFail($id);
+        $paymentMethods = $business->paymentMethods;
+        return view('manageBusiness', compact('business', 'paymentMethods'));
     }
 
     public function updateBusiness(Request $request, $id){
@@ -174,6 +175,51 @@ class BusinessController extends Controller
         $business->description = $request->description;
         $business->address = $request->address;
         $business->phone_number = $request->phone;
+        
+        // payment_method
+        $existingMethods = [];
+        $newMethods = [];
+
+        if ($request->has('payment_methods')) {
+            foreach ($request->payment_methods as $key => $method) {
+                // ini nge skip klo misalnya empty
+                if (empty($method['type']) && empty($method['details'])) {
+                    continue;
+                }
+    
+                if (str_starts_with($key, 'new_')) {
+                    // kalo misalnya user mo add new payment method
+                    $newMethods[] = [
+                        'type' => $method['type'],
+                        'details' => $method['details']
+                    ];
+                } else {
+                    // ini yang nge update klo user dah punya payment methodnya
+                    $existingMethods[$key] = [
+                        'type' => $method['type'],
+                        'details' => $method['details']
+                    ];
+                }
+            }
+        }
+    
+        // nge update existing payment method
+        foreach ($existingMethods as $id => $method) {
+            $business->paymentMethods()->where('id', $id)->update($method);
+        }
+    
+        // nambah payment method baru
+        foreach ($newMethods as $method) {
+            $business->paymentMethods()->create($method);
+        }
+    
+        // hapus payment method
+        if ($request->has('deleted_payment_methods')) {
+            $business->paymentMethods()
+                ->whereIn('id', $request->deleted_payment_methods)
+                ->delete();
+        }
+
         $business->save();
 
         return redirect()->route('listBusiness')->with('success', 'Business updated successfully!');

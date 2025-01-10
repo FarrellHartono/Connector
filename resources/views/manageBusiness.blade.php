@@ -129,7 +129,7 @@
                         Address
                     </label>
                     <textarea name="address" id="address" required
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ $business->address }}</textarea>
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ $business->address }}</textarea>
                     @error('address')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -140,7 +140,8 @@
                         Phone Number
                     </label>
                     <input type="tel" id="phone" name="phone" pattern="08\d{8,}"
-                        title="The number must start with 08 and have at least 10 digits" value="{{ $business->phone_number }}"
+                        title="The number must start with 08 and have at least 10 digits"
+                        value="{{ $business->phone_number }}"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         required>
                     @error('phone')
@@ -157,6 +158,35 @@
                     @error('nominal')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="payment_methods">
+                        Payment Methods
+                    </label>
+                    <div id="paymentMethodsContainer">
+                        @foreach ($paymentMethods as $method)
+                            <div class="flex items-center mb-2">
+                                <input type="text" name="payment_methods[{{ $method->id }}][type]"
+                                    value="{{ $method->type }}" readonly
+                                    class="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed focus:outline-none focus:shadow-outline"
+                                    placeholder="Payment Method Name">
+                                <input type="text" name="payment_methods[{{ $method->id }}][details]"
+                                    value="{{ $method->details }}"
+                                    class="shadow border rounded w-2/3 py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+                                    placeholder="Payment Details">
+                                <button type="button" class="ml-2 text-red-500 font-bold"
+                                    onclick="removePaymentMethod(this)" data-method-id="{{ $method->id }}">
+                                    Remove
+                                </button>
+                            </div>
+                        @endforeach
+                    </div>
+                    <button type="button" id="addPaymentMethod"
+                        class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Add Payment Method
+                    </button>
                 </div>
 
                 <div class="flex justify-between items-center mb-4">
@@ -176,15 +206,17 @@
     </div>
 
     {{-- Hidden add Meeting Form --}}
-    
+
     <div id="addMeetingModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-gray-300 w-[400px] h-auto p-6 rounded-lg">
             <h2 class="text-2xl font-bold text-center mb-6">Add Meeting</h2>
 
             <div class="grid">
                 <div class="mb-5">
-                    <label for="dateMeeting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                    <input type="datetime-local" name="dateMeeting" id="dateMeeting" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
+                    <label for="dateMeeting"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+                    <input type="datetime-local" name="dateMeeting" id="dateMeeting"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required />
                 </div>
                 <div class="mb-5">
                     <label for="titleMeeting"
@@ -198,18 +230,23 @@
                     <textarea name="descriptionMeeting" id="descriptionMeeting"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required></textarea>
                 </div>
-                
+
                 <div class="mb-5">
                     <div class="flex justify-start w-11/12">
                         <label for="meetingLink"
-                            class="block mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-white h-[fit-content] self-center">Meeting Link</label>
+                            class="block mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-white h-[fit-content] self-center">Meeting
+                            Link</label>
                         <button id="generateLinkBtn"
-                            class="text-white mb-1.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-md text-sm w-full sm:w-auto px-2.5 py-1 content-center self-center">Generate Link</button>
+                            class="text-white mb-1.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-md text-sm w-full sm:w-auto px-2.5 py-1 content-center self-center">Generate
+                            Link</button>
                     </div>
-                    <input type="hidden" id="meetingLinkData"/>
+                    <input type="hidden" id="meetingLinkData" />
                     <div class="flex justify-start w-12/12">
-                        <div id="meetingLink" class="bg-gray-50 mr-2 border border-gray-300 text-gray-900 text-sm rounded-lg w-11/12 h-8 px-2.5 content-center"></div>
-                        <button id="copyLink" class="w-1/12 hover:shadow-lg rounded-md text-black filter brightness-0 content-center self-center">&#128279;</button>
+                        <div id="meetingLink"
+                            class="bg-gray-50 mr-2 border border-gray-300 text-gray-900 text-sm rounded-lg w-11/12 h-8 px-2.5 content-center">
+                        </div>
+                        <button id="copyLink"
+                            class="w-1/12 hover:shadow-lg rounded-md text-black filter brightness-0 content-center self-center">&#128279;</button>
                     </div>
                 </div>
                 <input type="hidden" name="business_id" value="{{ $business->id }}" />
@@ -232,13 +269,13 @@
             const generateLinkBtn = document.getElementById('generateLinkBtn');
             const submitMeetingButton = document.getElementById('submitMeetingButton');
 
-        // Meeting Elements
-        const dateMeeting = document.getElementById('dateMeeting');
-        const titleMeeting = document.getElementById('titleMeeting');
-        const descriptionMeeting = document.getElementById('descriptionMeeting');
-        const meetingLink = document.getElementById('meetingLink');
-        const meetingLinkData = document.getElementById('meetingLinkData');
-        const copyLink = document.getElementById('copyLink');
+            // Meeting Elements
+            const dateMeeting = document.getElementById('dateMeeting');
+            const titleMeeting = document.getElementById('titleMeeting');
+            const descriptionMeeting = document.getElementById('descriptionMeeting');
+            const meetingLink = document.getElementById('meetingLink');
+            const meetingLinkData = document.getElementById('meetingLinkData');
+            const copyLink = document.getElementById('copyLink');
 
             // Buat nge show pop up add meeting
             addMeetingBtn.addEventListener('click', function() {
@@ -257,7 +294,7 @@
 
             copyLink.addEventListener('click', function() {
                 console.log("date meeting value: ", dateMeeting.value);
-                if (meetingLinkData.value == null || meetingLinkData.value == ""){
+                if (meetingLinkData.value == null || meetingLinkData.value == "") {
                     Swal.fire({
                         title: 'Link Not Found!',
                         icon: 'error',
@@ -270,31 +307,30 @@
                 }
 
                 navigator.clipboard.writeText(meetingLinkData.value)
-                .then(() => {
-                    Swal.fire({
-                        title: 'Link Copied to Clipboard!',
-                        icon: 'success',
-                        timer: 5000, // 5 seconds
-                        showConfirmButton: false, // No button
-                        toast: true, // Toast-style popup
-                        position: 'top-end' // Position on top-right
+                    .then(() => {
+                        Swal.fire({
+                            title: 'Link Copied to Clipboard!',
+                            icon: 'success',
+                            timer: 5000, // 5 seconds
+                            showConfirmButton: false, // No button
+                            toast: true, // Toast-style popup
+                            position: 'top-end' // Position on top-right
+                        });
+                    })
+                    .catch(err => {
+                        Swal.fire({
+                            title: 'Failed to Copy Link, ' + err + '!',
+                            icon: 'error',
+                            timer: 5000,
+                            showConfirmButton: false,
+                            toast: true,
+                            position: 'top-end'
+                        });
                     });
-                })
-                .catch(err => {
-                    Swal.fire({
-                        title: 'Failed to Copy Link, '+err+'!',
-                        icon: 'error',
-                        timer: 5000,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
-                    });
-                });
             });
 
-            generateLinkBtn.addEventListener('click', async () =>{
-                if ( dateMeeting.value == null || dateMeeting.value == "" )
-                {
+            generateLinkBtn.addEventListener('click', async () => {
+                if (dateMeeting.value == null || dateMeeting.value == "") {
                     Swal.fire({
                         title: 'Please Select Meeting date first!',
                         icon: 'error',
@@ -309,7 +345,8 @@
                 var startDateMeeting = new Date(dateMeeting.value);
 
                 var year = startDateMeeting.getFullYear();
-                var month = String(startDateMeeting.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+                var month = String(startDateMeeting.getMonth() + 1).padStart(2,
+                    "0"); // Months are 0-indexed
                 var day = String(startDateMeeting.getDate()).padStart(2, "0");
                 var hours = String(startDateMeeting.getHours()).padStart(2, "0");
                 var minutes = String(startDateMeeting.getMinutes()).padStart(2, "0");
@@ -319,20 +356,23 @@
 
                 var endDateMeeting = new Date(dateMeeting.value);
                 endDateMeeting.setMinutes(endDateMeeting.getMinutes() + 60);
-                
-                
+
+
                 year = endDateMeeting.getFullYear();
                 month = String(endDateMeeting.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
                 day = String(endDateMeeting.getDate()).padStart(2, "0");
                 hours = String(endDateMeeting.getHours()).padStart(2, "0");
                 minutes = String(endDateMeeting.getMinutes()).padStart(2, "0");
                 seconds = String(endDateMeeting.getSeconds()).padStart(2, "0");
-                
+
                 var endMeeting = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
-                var ACCESS_TOKEN = "ya29.a0ARW5m74DMZpLu2WP_p8k3QM_7MQH_WcrcQHDoZTO67uWsa3my-w1RurhC_RzZY7pLQiOVEf3FN4dRVTL0VZWGWOelNi4ioD6fCy5xPSTnfUJjykR2nl-s5lwjc6zrNKQlY4U-gO6ozzSijlGzicIHnmQEm2CjlSlo_-2J1O3aCgYKAawSARISFQHGX2Miu0EtaK4vfa9AzPIvGiKN6g0175";
-                const refreshToken  = "1//04NB2muFhI-SWCgYIARAAGAQSNwF-L9IrGDNgrW6p56yt7HP8_gLWFw8hawnq-4TWCfHfOQysA4gVAjXtx7xF2MnzSpkTaoE4zhE";
-                const clientId = "55274203711-r618icujj491fsutlvefk6n27puogqbi.apps.googleusercontent.com";
+                var ACCESS_TOKEN =
+                    "ya29.a0ARW5m74DMZpLu2WP_p8k3QM_7MQH_WcrcQHDoZTO67uWsa3my-w1RurhC_RzZY7pLQiOVEf3FN4dRVTL0VZWGWOelNi4ioD6fCy5xPSTnfUJjykR2nl-s5lwjc6zrNKQlY4U-gO6ozzSijlGzicIHnmQEm2CjlSlo_-2J1O3aCgYKAawSARISFQHGX2Miu0EtaK4vfa9AzPIvGiKN6g0175";
+                const refreshToken =
+                    "1//04NB2muFhI-SWCgYIARAAGAQSNwF-L9IrGDNgrW6p56yt7HP8_gLWFw8hawnq-4TWCfHfOQysA4gVAjXtx7xF2MnzSpkTaoE4zhE";
+                const clientId =
+                    "55274203711-r618icujj491fsutlvefk6n27puogqbi.apps.googleusercontent.com";
                 const clientSecret = "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";
 
                 const response = await fetch("https://oauth2.googleapis.com/token", {
@@ -357,12 +397,12 @@
                     summary: "Google Meet Event",
                     description: "This is a test event with a Google Meet link.",
                     start: {
-                    dateTime: startMeeting, // ISO 8601 format
-                    timeZone: "UTC",
+                        dateTime: startMeeting, // ISO 8601 format
+                        timeZone: "UTC",
                     },
                     end: {
-                    dateTime: endMeeting, // ISO 8601 format
-                    timeZone: "UTC",
+                        dateTime: endMeeting, // ISO 8601 format
+                        timeZone: "UTC",
                     },
                     conferenceData: {
                         createRequest: {
@@ -373,28 +413,30 @@
                         },
                     },
                     anyoneCanAddSelf: true,
-                    guestsCanModify: true, 
-                    guestsCanInviteOthers: true, 
-                    guestsCanSeeOtherGuests: true, 
-                    visibility: "public", 
+                    guestsCanModify: true,
+                    guestsCanInviteOthers: true,
+                    guestsCanSeeOtherGuests: true,
+                    visibility: "public",
                 };
 
                 // Make the API request
                 try {
-                    const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${ACCESS_TOKEN}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(event),
-                    });
+                    const response = await fetch(
+                        "https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1", {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Bearer ${ACCESS_TOKEN}`,
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(event),
+                        });
 
                     const data = await response.json();
                     if (response.ok) {
-                        
+
                         console.log("data: ", data);
-                        meetingLink.innerHTML = `<a href="${data.hangoutLink}" target="_blank">${data.hangoutLink}</a>`;
+                        meetingLink.innerHTML =
+                            `<a href="${data.hangoutLink}" target="_blank">${data.hangoutLink}</a>`;
                         meetingLinkData.value = `${data.hangoutLink}`;
                     } else {
                         meetingLink.textContent = `Error: ${data.error.message}`;
@@ -406,32 +448,28 @@
             });
 
             submitMeetingButton.addEventListener('click', function() {
-                if (!dateMeeting.value)
-                {
+                if (!dateMeeting.value) {
                     Swal.fire({
                         text: 'Meeting date must be filled!',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                     return false;
-                }else if (new Date(dateMeeting.value) < Date.now())
-                {
+                } else if (new Date(dateMeeting.value) < Date.now()) {
                     Swal.fire({
                         text: 'Meeting date must be later than today or today!',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                     return false;
-                }else if (!titleMeeting.value)
-                {
+                } else if (!titleMeeting.value) {
                     Swal.fire({
                         text: 'Meeting title must be filled!',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
                     return false;
-                }else if (!descriptionMeeting.value)
-                {
+                } else if (!descriptionMeeting.value) {
                     Swal.fire({
                         text: 'Meeting description must be filled!',
                         icon: 'error',
@@ -442,12 +480,13 @@
                 $.ajax({
                     url: "{{ route('addMeeting') }}",
                     method: "GET",
-                    data: { business_id: {{ $business->id }},
-                            date: dateMeeting.value,
-                            title: titleMeeting.value,
-                            description: descriptionMeeting.value,
-                            meeting_link: meetingLinkData.value
-                        },
+                    data: {
+                        business_id: {{ $business->id }},
+                        date: dateMeeting.value,
+                        title: titleMeeting.value,
+                        description: descriptionMeeting.value,
+                        meeting_link: meetingLinkData.value
+                    },
                     success: function(response) {
                         if (response.success) {
                             Swal.fire({
@@ -571,7 +610,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         Swal.fire('Success!', 'Your changes has been saved', 'success').then((
-                        result) => {
+                            result) => {
                             form.submit();
                         });
                     }
@@ -598,9 +637,11 @@
         function validateForm() {
             const form = document.getElementById('manage-business');
             const inputs = form.querySelectorAll('input[required],textarea[required]');
+            const paymentMethodInputs = document.querySelectorAll('#paymentMethodsContainer input[type="text"]');
             const button = document.getElementById('save-button');
             const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
-            if (!allFilled) {
+            const hasValidPaymentMethod = Array.from(paymentMethodInputs).some(input => input.value.trim() !== '');
+            if (!allFilled || !hasValidPaymentMethod) {
                 button.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'text-black', 'font-bold', 'rounded',
                     'focus:outline-none', 'focus:shadow-outline');
                 button.classList.add('bg-gray-200', 'text-black', 'font-bold', 'cursor-not-allowed', 'opacity-50');
@@ -612,5 +653,48 @@
                 button.disabled = false;
             }
         }
+
+        let paymentMethodIndex = 0;
+
+        function addPaymentMethod() {
+            paymentMethodIndex++;
+            const container = document.getElementById('paymentMethodsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'flex items-center mb-2';
+            newRow.innerHTML = `
+            <select name="payment_methods[new_${paymentMethodIndex}][type]"
+                class="shadow border rounded w-1/3 py-2 px-3 mr-2 text-gray-700 focus:outline-none focus:shadow-outline"
+                onchange="validateForm()">
+                <option value="">Select Payment Type</option>
+                <option value="Virtual Banking">Virtual Banking</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Gopay">Gopay</option>
+            </select>
+            <input type="text" name="payment_methods[new_${paymentMethodIndex}][details]"
+                class="shadow border rounded w-2/3 py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+                placeholder="Payment Details"
+                oninput="validateForm()">
+            <button type="button" class="ml-2 text-red-500 font-bold" onclick="removePaymentMethod(this)">
+                Remove
+            </button>
+        `;
+            container.appendChild(newRow);
+            validateForm()
+        }
+
+        function removePaymentMethod(button) {
+            const methodId = button.dataset.methodId;
+            if (methodId) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'deleted_payment_methods[]';
+                hidden.value = methodId;
+                document.getElementById('paymentMethodsContainer').appendChild(hidden);
+            }
+            button.closest('.flex').remove();
+            validateForm();
+        }
+
+        document.getElementById('addPaymentMethod').addEventListener('click', addPaymentMethod);
     </script>
 @endsection
