@@ -9,7 +9,7 @@
     <div class="flex flex-wrap items-center justify-between mx-auto w-full p-4">
         <div class="flex gap-2 pl-16">
             <a href="{{ route('home') }}" class="">
-                <img src="assets/ConnectorLogo.png" alt="image" class="w-12">
+                <img src="{{ asset('assets/ConnectorLogo.png') }}" alt="image" class="w-12">
             </a>
             <div class="relative z-0">
                 <!-- Icon Tanggal -->
