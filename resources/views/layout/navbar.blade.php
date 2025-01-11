@@ -1,109 +1,114 @@
 <style>
-
-.fc-event {
-    cursor: pointer; /* Add pointer cursor to all events */
-}
+    .fc-event {
+        cursor: pointer;
+        /* Add pointer cursor to all events */
+    }
 </style>
 
 <nav class="bg-white border-gray-200 dark:bg-gray-900 w-full">
     <div class="flex flex-wrap items-center justify-between mx-auto w-full p-4">
-    <div class="flex gap-2">
-        <a href="{{ route('home') }}" class="text-lg font-bold flex items-center space-x-3 rtl:space-x-reverse">
-            Connector<span class="text-blue-500">App</span>
-        </a>
+        <div class="flex gap-2 pl-16">
+            <a href="{{ route('home') }}" class="">
+                <img src="assets/ConnectorLogo.png" alt="image" class="w-12">
+            </a>
+            <div class="relative z-0">
+                <!-- Icon Tanggal -->
+                <button id="calendar-button"
+                    class="group relative flex items-center justify-center w-12 h-12 bg-gray-200 rounded-md hover:bg-[#0370A3]">
+                    <div class="group absolute inset-0 text-center w-full h-full z-30 rounded-md ">
+                        <div class="text-xs font-semibold bg-[#aa5f5f] rounded-t-md text-white " id="month"></div>
+                        <div class="text-lg font-bold group-hover:text-white" id="day"></div>
+                    </div>
 
-        <div class="relative z-0">
-            <!-- Icon Tanggal -->
-            <button id="calendar-button"
-                class="group relative flex items-center justify-center w-12 h-12 bg-gray-200 rounded-md hover:bg-[#0370A3]">
-                <div class="group absolute inset-0 text-center w-full h-full z-30 rounded-md ">
-                    <div class="text-xs font-semibold bg-[#aa5f5f] rounded-t-md text-white " id="month"></div>
-                    <div class="text-lg font-bold group-hover:text-white" id="day"></div>
-                </div>
-
-                <div
-                    class="absolute top-0.5 left-12 z-20 transform -translate-x-6 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
-                    <span id="day-name"
-                        class=" block bg-transparent text-black rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap"></span>
-                </div>
-            </button>
-
-            <!-- Pop-up Kalender -->
-            <div id="calendar-popup" class="hidden absolute top-20 left-20 z-10 bg-white rounded-md shadow-lg">
-                <!-- <iframe src="{{ route('home') }}" class="absolute w-60 h-60"></iframe> -->
-            </div>
-
-        </div>
-    </div>
-
-    <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-        @if (Auth::check())
-        <div class="flex items-center justify-center h-full">
-            <p class="flex flex-col text-right m-0 sm:flex-row hidden md:flex">
-                <span id="typewriter" class="relative w-32 text-right"></span>
-                <span>, {{ Auth::user()->name }}!</span>
-            </p>
-
-            <form action="{{ route('logout') }}" method="POST" class="flex items-center m-0 ml-4">
-                @csrf
-                <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">
-                    Logout
+                    <div
+                        class="absolute top-0.5 left-12 z-20 transform -translate-x-6 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
+                        <span id="day-name"
+                            class=" block bg-transparent text-black rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap"></span>
+                    </div>
                 </button>
-            </form>
-        </div>
-        @else
-        <a href="{{ route('login') }}"
-            class="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
-            Login
-        </a>
-        @endif
 
-        <button data-collapse-toggle="navbar-cta" type="button"
-            class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-cta" aria-expanded="false">
-            <span class="sr-only">Open main menu</span>
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M1 1h15M1 7h15M1 13h15" />
-            </svg>
-        </button>
-    </div>
-    <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
-      <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-        <li>
-            <a href="{{ route('home') }}"
-               class="group relative block py-2 px-3 {{ request()->routeIs('home') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-               aria-current="page">
-                Home
-                <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
-            </a>
-        </li>
-        @if (auth()->id() !== 1)
-        <li>
-            <a href="{{ route('listBusiness') }}"
-               class="group relative block py-2 px-3 {{ request()->routeIs('listBusiness') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                My Business
-                <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('profile') }}"
-               class="group relative block py-2 px-3 {{ request()->routeIs('profile') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                Profile
-                <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
-            </a>
-        </li>
-        @else
-        <li>
-            <a href="{{ route('admin.businesses') }}"
-               class="group relative block py-2 px-3 {{ request()->routeIs('admin.businesses') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-                Business Approval
-                <span class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
-            </a>
-        </li>
-        @endif
-      </ul>
-    </div>
+                <!-- Pop-up Kalender -->
+                <div id="calendar-popup" class="hidden absolute top-20 left-20 z-10 bg-white rounded-md shadow-lg">
+                    <!-- <iframe src="{{ route('home') }}" class="absolute w-60 h-60"></iframe> -->
+                </div>
+
+            </div>
+        </div>
+
+        <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+            @if (Auth::check())
+                <div class="flex items-center justify-center h-full">
+                    <p class="flex flex-col text-right m-0 sm:flex-row hidden md:flex">
+                        <span id="typewriter" class="relative w-32 text-right"></span>
+                        <span>, {{ Auth::user()->name }}!</span>
+                    </p>
+
+                    <form action="{{ route('logout') }}" method="POST" class="flex items-center m-0 ml-4">
+                        @csrf
+                        <button type="submit" class="ml-4 bg-red-500 text-white px-4 py-2 rounded">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            @else
+                <a href="{{ route('login') }}"
+                    class="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center">
+                    Login
+                </a>
+            @endif
+
+            <button data-collapse-toggle="navbar-cta" type="button"
+                class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                aria-controls="navbar-cta" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M1 1h15M1 7h15M1 13h15" />
+                </svg>
+            </button>
+        </div>
+        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
+            <ul
+                class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                <li>
+                    <a href="{{ route('home') }}"
+                        class="group relative block py-2 px-3 {{ request()->routeIs('home') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        aria-current="page">
+                        Home
+                        <span
+                            class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                </li>
+                @if (auth()->id() !== 1)
+                    <li>
+                        <a href="{{ route('listBusiness') }}"
+                            class="group relative block py-2 px-3 {{ request()->routeIs('listBusiness') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                            My Business
+                            <span
+                                class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('profile') }}"
+                            class="group relative block py-2 px-3 {{ request()->routeIs('profile') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                            Profile
+                            <span
+                                class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                        </a>
+                    </li>
+                @else
+                    <li>
+                        <a href="{{ route('admin.businesses') }}"
+                            class="group relative block py-2 px-3 {{ request()->routeIs('admin.businesses') ? 'text-blue-700 font-bold' : 'text-gray-900' }} rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+                            Business Approval
+                            <span
+                                class="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-700 transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"></span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </div>
     </div>
 </nav>
 
@@ -115,24 +120,26 @@
         </button>
     </div>
 
-  <div class="flex w-full">
-    <div id="calendarContent"  class="justify-self-center w-3/4 bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] p-4 rounded-b-md shadow-lg" >
-    </div>
-    
-    <div id="calendarDescription"  class="flex-col content-around w-2/4 bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-3">
-        <div id="title" class="text-center font-bold text-xl"></div>
-        <div id="business" class="text-center font-semibold" ></div>
-        <div id="dateTime" class="text-center mb-10" ></div>
-
-        <div id="linkTitle" class="flex hidden">
-            <h2 class="font-bold text-xl mr-2">Meeting Link</h2>
-            <h2 class="font-semibold text-md self-center">(Click to Open)</h2>
+    <div class="flex w-full">
+        <div id="calendarContent"
+            class="justify-self-center w-3/4 bg-gradient-to-b from-[#0370A3] to-[#A1F3CD] p-4 rounded-b-md shadow-lg">
         </div>
-        <div id="link" class="mb-2"></div>
-        <h2 id="descriptionTitle" class="font-bold text-xl hidden">Description</h2>
-        <div id="description"></div>
+
+        <div id="calendarDescription"
+            class="flex-col content-around w-2/4 bg-[#0370A3] h-auto rounded-md rounded-t-none shadow-lg p-3">
+            <div id="title" class="text-center font-bold text-xl"></div>
+            <div id="business" class="text-center font-semibold"></div>
+            <div id="dateTime" class="text-center mb-10"></div>
+
+            <div id="linkTitle" class="flex hidden">
+                <h2 class="font-bold text-xl mr-2">Meeting Link</h2>
+                <h2 class="font-semibold text-md self-center">(Click to Open)</h2>
+            </div>
+            <div id="link" class="mb-2"></div>
+            <h2 id="descriptionTitle" class="font-bold text-xl hidden">Description</h2>
+            <div id="description"></div>
+        </div>
     </div>
-  </div>
 </div>
 
 
@@ -188,26 +195,39 @@
                 url: "{{ route('getRegisteredMeetings') }}",
                 method: "GET",
                 success: function(response) {
-                  console.log(response.registered);
-                  var calendar = new FullCalendar.Calendar(calendarEl, {
-                      initialView: 'dayGridMonth',
-                      events: response.registered,
-                      fixedWeekCount: false,
-                      eventClick: function(info) {
-                          $("#title").html(info.event.title);
-                          $("#dateTime").html(new Date(info.event.start).toLocaleString([], { year: "numeric",month: "long",day: "numeric", hour: '2-digit', minute: '2-digit', hour12: true }));
-                          $("#business").html(info.event.extendedProps.business.title);
-                          $("#linkTitle").removeClass("hidden");
-                          $("#link").html(`<a class="underline" href="`+info.event.extendedProps.meeting_link+`" target="_blank">`+info.event.extendedProps.meeting_link+`</a>`);
-                          if (info.event.extendedProps.meeting_link == null){
-                            $("#link").html("-");
-                          }
-                          $("#descriptionTitle").removeClass("hidden");
-                          $("#description").html(info.event.extendedProps.description);
-                      }
-                  });
-                  calendar.render();
-                  console.log("meetings: ", meetings);
+                    console.log(response.registered);
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        events: response.registered,
+                        fixedWeekCount: false,
+                        eventClick: function(info) {
+                            $("#title").html(info.event.title);
+                            $("#dateTime").html(new Date(info.event.start)
+                                .toLocaleString([], {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true
+                                }));
+                            $("#business").html(info.event.extendedProps
+                                .business.title);
+                            $("#linkTitle").removeClass("hidden");
+                            $("#link").html(`<a class="underline" href="` + info
+                                .event.extendedProps.meeting_link +
+                                `" target="_blank">` + info.event
+                                .extendedProps.meeting_link + `</a>`);
+                            if (info.event.extendedProps.meeting_link == null) {
+                                $("#link").html("-");
+                            }
+                            $("#descriptionTitle").removeClass("hidden");
+                            $("#description").html(info.event.extendedProps
+                                .description);
+                        }
+                    });
+                    calendar.render();
+                    console.log("meetings: ", meetings);
                 }
             });
         });
@@ -229,7 +249,7 @@
         $("#calendarContainer").css("display", "none");
         $("#modal").css("display", "none");
     });
-    $("#closeBurger").on('click', function(e){
+    $("#closeBurger").on('click', function(e) {
         $("#menu").classlist.add("-translate-y-full");
     });
 
@@ -238,11 +258,6 @@
     });
 
     var typed = new Typed('#typewriter', {
-        strings: ['Welcome', 'Selamat Datang', '환영', '歓迎', '欢迎', 'Bonjour'],
-        typeSpeed: 120,
-        loop: true
-    });
-    var typed = new Typed('#typewriter2', {
         strings: ['Welcome', 'Selamat Datang', '환영', '歓迎', '欢迎', 'Bonjour'],
         typeSpeed: 120,
         loop: true

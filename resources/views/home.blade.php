@@ -1,91 +1,99 @@
 @extends('layout.master')
 
 @section('title')
-  Home
+    Home
 @endsection
 
 @section('content')
+    @extends('layout.navbar')
 
-@extends('layout.navbar')
+    <div class="flex flex-col items-end px-9">
+        <form action="{{ route('home') }}" method="GET" class="flex items-center space-x-2 bg-white p-1 rounded-full">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search businesses..."
+                id="search-bar"
+                class="bg-transparent outline-none focus:outline-none focus:ring-0 focus:border-transparent border-0">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center justify-center">
+                <x-svg-icon name="search" />
+            </button>
+        </form>
 
-<div class="flex flex-col items-end px-9">
-    <form action="{{ route('home') }}" method="GET" class="flex items-center space-x-2 bg-white p-1 rounded-full">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search businesses..." id="search-bar" class="bg-transparent outline-none focus:outline-none focus:ring-0 focus:border-transparent border-0">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center justify-center">
-            <x-svg-icon name="search" />
-        </button>
-    </form>
-
-    <form action="{{ route('home') }}" method="GET">
-        <select name="sort_by" onchange="this.form.submit()" class="rounded-full outline-none">
-            <option value="title" {{ request('sort_by') == 'title' ? 'selected' : '' }}>Sort by Name</option>
-            <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Sort by Date</option>
-        </select>
-        <select name="order" onchange="this.form.submit()" class="rounded-full outline-none">
-            <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
-            <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
-        </select>
-    </form>
-</div>
+        <form action="{{ route('home') }}" method="GET">
+            <select name="sort_by" onchange="this.form.submit()" class="rounded-full outline-none">
+                <option value="title" {{ request('sort_by') == 'title' ? 'selected' : '' }}>Sort by Name</option>
+                <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Sort by Date</option>
+            </select>
+            <select name="order" onchange="this.form.submit()" class="rounded-full outline-none">
+                <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
+            </select>
+        </form>
+    </div>
 
 
-<div class="grid grid-cols-1 justify-items-center md:grid-cols-2 xl:grid-cols-4 gap-3">
-    @foreach($businesses as $business)
-    @php
-        $folderPath = $business->image_path;
-        $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-        $filePath = null;
-        foreach ($extensions as $extension) {
-        $fullFilePath = $folderPath . '/' . 'main' . '.' . $extension;
+    <div class="grid grid-cols-1 justify-items-center md:grid-cols-2 xl:grid-cols-4 gap-3">
+        @foreach ($businesses as $business)
+            @php
+                $folderPath = $business->image_path;
+                $extensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+                $filePath = null;
+                foreach ($extensions as $extension) {
+                    $fullFilePath = $folderPath . '/' . 'main' . '.' . $extension;
 
-        if (Storage::disk('public')->exists(str_replace('public/','',$fullFilePath))) {
-            $filePath = $fullFilePath;
-            break;
-        }
-    }
-    @endphp
-        <div class="flex-1 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <img class= "w-full h-64 rounded-lg" src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" />
+                    if (Storage::disk('public')->exists(str_replace('public/', '', $fullFilePath))) {
+                        $filePath = $fullFilePath;
+                        break;
+                    }
+                }
+            @endphp
+            <div
+                class="flex-1 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <img class= "w-full h-64 rounded-lg"
+                    src="{{ asset('storage/' . str_replace('public/', '', $filePath)) }}" />
 
-            <a href="{{ route('business.show', $business->id) }}">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $business->title }}</h5>
-            </a>
-            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ \Illuminate\Support\Str::limit($business->description, 100, '...') }}</p>
-            <a href="{{ route('business.show', $business->id) }}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Read more
-                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                </svg>
-            </a>
-        </div>
-    @endforeach
-</div>
+                <a href="{{ route('business.show', $business->id) }}">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $business->title }}
+                    </h5>
+                </a>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                    {{ \Illuminate\Support\Str::limit($business->description, 100, '...') }}</p>
+                <a href="{{ route('business.show', $business->id) }}"
+                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Read more
+                    <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9" />
+                    </svg>
+                </a>
+            </div>
+        @endforeach
+    </div>
 @endsection
 
 
 @section('scripts')
-  @if(session('successRegister'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script>
-          Swal.fire({
-              title: 'Success!',
-              text: 'Registration successful!',
-              icon: 'success',
-              confirmButtonText: 'OK'
-          });
-      </script>
-  @endif
-  <script>
-    let typingTimer;               // Timer variable
-    const doneTypingInterval = 800; // Time in ms (500ms or 0.5 seconds)
+    @if (session('successRegister'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: 'Registration successful!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+    <script>
+        let typingTimer; // Timer variable
+        const doneTypingInterval = 800; // Time in ms (500ms or 0.5 seconds)
 
-    const searchInput = document.getElementById('search-bar');
+        const searchInput = document.getElementById('search-bar');
 
-    searchInput.addEventListener('input', function() {
-        clearTimeout(typingTimer); // Clear the previous timer
-        typingTimer = setTimeout(() => {
-            this.form.submit();     // Submit the form after the delay
-        }, doneTypingInterval);
-    });
-  </script>
+        searchInput.addEventListener('input', function() {
+            clearTimeout(typingTimer); // Clear the previous timer
+            typingTimer = setTimeout(() => {
+                this.form.submit(); // Submit the form after the delay
+            }, doneTypingInterval);
+        });
+    </script>
 @endsection

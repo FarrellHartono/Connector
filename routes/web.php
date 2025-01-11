@@ -107,11 +107,15 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->middleware(['throttle:6,1'])->name('verification.send');
 
 
-// Route::get('/test-email', function () {
-//     Mail::raw('This is a test email sent using Google App Password.', function ($message) {
-//         $message->to('christofer2002wibowo@gmail.com') // Replace with the recipient email
-//                 ->subject('Test Email');
-//     });
+Route::get('/test-email', function () {
+    Mail::raw('This is a test email sent using Google App Password.', function ($message) {
+        $message->to('christofer2002wibowo@gmail.com') // Replace with the recipient email
+                ->subject('Test Email');
+    });
 
-//     return 'Email sent successfully!';
-// });
+    return 'Email sent successfully!';
+
+    Route::get('/test', function () {
+    return view('test');
+    });
+});

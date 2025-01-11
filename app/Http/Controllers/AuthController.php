@@ -31,10 +31,10 @@ class AuthController extends Controller
                 Auth::logout();
                 return redirect('/email/verify');
             }
-
             return redirect(route('home'));
         }else{
             return redirect()->back()->with('show_register_confirmation', true)->with('email', $request->email);
+            // return redirect(route('register'));
         }
     }
 

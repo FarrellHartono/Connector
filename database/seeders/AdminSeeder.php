@@ -21,14 +21,16 @@ class AdminSeeder extends Seeder
             'phone_number' => '12345678',
             'dob' => '2000/01/01',
             'isAdmin' => true,
+            'email_verified_at' => '2025-01-11 06:51:45',
         ]);
         User::create([
             'name'=> 'Farrell',
-            'email' => 'farrell@gmail.com',
+            'email' => 'farrellhartono@gmail.com',
             'password' => Hash::make('12345678'),
             'phone_number' => '081223555823',
             'dob' => '2003/05/08',
             'isAdmin' => false,
+            'email_verified_at' => '2025-01-11 06:51:45',
         ]);
         User::create([
             'name'=> 'Chris',
@@ -37,6 +39,7 @@ class AdminSeeder extends Seeder
             'phone_number' => '081223555823',
             'dob' => '2003/05/08',
             'isAdmin' => false,
+            'email_verified_at' => '2025-01-11 06:51:45',
         ]);
         User::create([
             'name'=> 'Ricky',

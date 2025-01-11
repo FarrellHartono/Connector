@@ -30,7 +30,7 @@ class RegisteredMeetings extends Model
         return $this->belongsTo(Business::class);
     }
 
-    public function meetings(): BelongsTo
+    public function meeting(): BelongsTo
     {
         return $this->belongsTo(Meeting::class);
     }
