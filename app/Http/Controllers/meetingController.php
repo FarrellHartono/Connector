@@ -13,22 +13,22 @@ class MeetingController extends Controller
 {
     public function getRegisteredMeetings(Request $request) {
 
-        $upcomingMeetings = Meeting::with('business')
-                ->whereHas('business', function ($query) {
-                    $query->where('user_id', Auth::id()); // Filter businesses owned by the logged-in user
-                })
-                ->where('date', '>=', now()) // Filter for upcoming meetings
-                ->orderBy('date', 'asc') // Order meetings by date
-                ->get()
-                ->map(function ($meeting) {
-                    return [
-                        'title' => $meeting->title,
-                        'description' => $meeting->description,
-                        'start' => $meeting->date, // Rename 'date' to 'start'
-                        'business' => $meeting->business, // Include related business if needed
-                        'meeting_link' => $meeting->meeting_link
-                    ];
-                });
+        $upcomingMeetings = RegisteredMeetings::with(['meeting', 'business'])
+        ->where('user_id', Auth::id())
+        ->whereHas('meeting', function ($query) {
+            $query->where('date', '>=', now()); 
+        })
+        ->get()
+        ->map(function ($registeredMeeting) {
+            return [
+                'title' => $registeredMeeting->meeting->title, 
+                'description' => $registeredMeeting->meeting->description, 
+                'start' => $registeredMeeting->meeting->date, 
+                'business' => $registeredMeeting->business, 
+                'meeting_link' => $registeredMeeting->meeting->meeting_link 
+            ];
+        });
+    return response()->json(['registered' => $upcomingMeetings]);
         
         return response()->json(['registered' => $upcomingMeetings]);
     }
